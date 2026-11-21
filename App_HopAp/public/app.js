@@ -21,7 +21,7 @@ const state = {
   samplesSid: null, series: [], range: 600,
   unsubs: [], samplesUnsub: null, confirmTimer: null,
   lich: null, dayCmd: null, dayConfirmTimer: null, dayInputTouched: false, doAm: null,
-  batchCmd: null, runCmd: null,
+  batchCmd: null, runCmd: null, tayCmd: null,
 };
 const serverNow = () => Date.now() + state.offset;
 
@@ -171,6 +171,7 @@ function startListening() {
   listen(`${ROOT}/commands/ngay_ap`, (v) => { state.dayCmd = v; renderLich(); });
   listen(`${ROOT}/commands/me_ap`, (v) => { state.batchCmd = v; renderControls(); });
   listen(`${ROOT}/commands/luot`, (v) => { state.runCmd = v; renderControls(); });
+  listen(`${ROOT}/commands/tay`, (v) => { state.tayCmd = v; renderControls(); });
   listen(`${ROOT}/alerts`, renderAlerts, query(ref(db, `${ROOT}/alerts`), orderByKey(), limitToLast(30)));
   listen(`${ROOT}/sessions`, (v) => { state.sessions = v; renderHistory(); });
 }
@@ -469,6 +470,42 @@ const resetRun = twoStep($('run-start'), 'Bắt đầu lượt',
     $('run-ack').checked = false;  // Mỗi lượt phải xác nhận lại.
   });
 
+const tayPick = () => ({ lamp: Number($('tay-bong')?.value), fan: Number($('tay-quat')?.value),
+  seconds: Number($('tay-han')?.value) });
+const resetTay = twoStep($('tay-apply'), 'Áp dụng chỉnh tay',
+  () => { const p = tayPick(); return `Bấm lần nữa: bóng ${p.lamp} %, quạt ${p.fan} % trong ${L.MANUAL_SECONDS[p.seconds]}`; },
+  $('tay-status'),
+  () => { const p = tayPick(); return sendCommand('tay', { hanh_dong: 'dat', bong: p.lamp, quat: p.fan, thoi_han_s: p.seconds }); });
+$('tay-return')?.addEventListener('click', async () => {
+  $('tay-return').disabled = true;
+  try {
+    await sendCommand('tay', { hanh_dong: 'tra_ve' });
+  } catch (error) {
+    $('tay-status').textContent = `Không gửi được: ${error.code || error.message}`;
+  }
+  renderControls();
+});
+
+function renderManual(c) {
+  if (!$('tay-apply')) return;  // HTML cũ trong cache.
+  const cmd = L.commandStatus(state.tayCmd, 'Chưa chỉnh tay.');
+  const live = state.live || {};
+  const m = L.manualState(state.tayCmd, serverNow());
+  const active = m.active && c.running && L.isHoldPhase(live.pha);
+  const p = tayPick();
+  const fan100 = $('tay-quat').querySelector('option[value="100"]');
+  fan100.disabled = p.lamp === 100;  // 100/100 không có trong 9 hành động đã khảo sát.
+  if (fan100.disabled && $('tay-quat').value === '100') { $('tay-quat').value = '75'; p.fan = 75; }
+  const gate = L.canManual({ piOnline: c.piOnline, running: c.running, pha: live.pha, pending: cmd.pending, ...p });
+  $('tay-apply').disabled = !gate.ok;
+  if (!gate.ok) resetTay();
+  $('tay-return').disabled = !(active && c.piOnline && !cmd.pending);
+  $('tay-active').textContent = active ? m.text : (c.running ? 'RL / thermostat đang điều khiển.' : '--');
+  $('tay-active').className = `small ${active ? 'warn-text' : 'muted'}`;
+  $('tay-status').textContent = gate.ok || cmd.pending ? cmd.text : `${cmd.text} — ${gate.reason}`;
+  $('tay-status').className = `small ${cmd.tone === 'warn' ? 'warn-text' : cmd.tone === 'bad' ? 'bad-text' : 'muted'}`;
+}
+
 function renderControls() {
   if (!$('batch-create') || !$('run-start')) return;  // HTML cũ trong cache.
   const c = connection();
@@ -487,9 +524,10 @@ function renderControls() {
   $('run-status').textContent = gate.ok || run.pending ? run.text : `${run.text} — ${gate.reason}`;
   $('run-status').className = `small ${run.tone === 'warn' ? 'warn-text' : run.tone === 'bad' ? 'bad-text' : 'muted'}`;
   if (!gate.ok) resetRun();
+  renderManual(c);
 }
 
-['batch-day', 'batch-speed', 'run-ack', 'run-ctrl', 'run-min'].forEach((id) =>
+['batch-day', 'batch-speed', 'run-ack', 'run-ctrl', 'run-min', 'tay-bong', 'tay-quat', 'tay-han'].forEach((id) =>
   $(id)?.addEventListener(id === 'batch-day' ? 'input' : 'change', renderControls));
 
 // ------------------------------------------------------------------ lịch sử & so sánh
@@ -623,7 +661,7 @@ async function notify(alert) {
 }
 
 // ------------------------------------------------------------------ nhịp 1 s & PWA
-setInterval(() => { if (auth.currentUser) renderStatus(); }, 1000);
+setInterval(() => { if (auth.currentUser) { renderStatus(); renderControls(); } }, 1000);  // đếm ngược chỉnh tay
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(console.error));

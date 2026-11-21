@@ -91,6 +91,7 @@ class TestPolicy(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.lich = Path(self.tmp.name) / 'lich.json'
+        self.tay = Path(self.tmp.name) / 'lenh_tay.json'
         self.now = 0.0
         me_ap.start_batch(self.lich, now=self.wall(), ngay=5)
 
@@ -101,7 +102,8 @@ class TestPolicy(unittest.TestCase):
         return WALL0 + self.now
 
     def make(self, package=None, minutes=30):
-        p = ap_trung.ApTrungPolicy(package or self.package, minutes, self.lich, wall_clock=self.wall)
+        p = ap_trung.ApTrungPolicy(package or self.package, minutes, self.lich, wall_clock=self.wall,
+                                   tay_path=self.tay)
         p.bind_sensor(self.package['sensor_id'])
         p.observe_output(self.now, 0, 100)
         return p
@@ -213,6 +215,59 @@ class TestPolicy(unittest.TestCase):
     def test_rejects_unknown_controller(self):
         with self.assertRaises(ValueError):
             ap_trung.ApTrungPolicy(self.package, 30, self.lich, wall_clock=self.wall, controller='pid')
+
+    def write_manual(self, lamp, fan, seconds, by='a@b.c'):
+        self.tay.write_text(json.dumps({'bong': lamp, 'quat': fan, 'het_han': self.wall() + seconds, 'by': by,
+                                        'ghi_luc': self.wall()}), encoding='utf-8')
+
+    def test_manual_override_expires_and_returns_to_rl(self):
+        p = self.make()
+        self.call(p, 28.0)
+        self.call(p, 37.8)
+        self.write_manual(0, 75, 60)
+        for _ in range(3):
+            dec = self.call(p, 37.8)
+            self.assertEqual((dec.phase, dec.lamp, dec.fan), ('ap_ngay05_gd1_tay', 0, 75))
+        self.assertIn('a@b.c', dec.note)
+        self.assertEqual(p.stats['chinh_tay'], 1)  # một lần chỉnh tay dù kéo dài nhiều bước
+        self.now += 60  # hết hạn: RL quyết định lại
+        dec = self.call(p, 37.8)
+        self.assertEqual(dec.phase, 'ap_ngay05_gd1')
+        self.assertFalse(p.manual_active)
+
+    def test_manual_return_now_and_rejects_unsurveyed_pairs(self):
+        p = self.make()
+        self.call(p, 28.0)
+        self.call(p, 37.8)
+        for lamp, fan in ((100, 100), (50, 0), (30, 75)):  # không thuộc 9 hành động đã khảo sát
+            self.write_manual(lamp, fan, 120)
+            self.assertFalse(self.call(p, 37.8).phase.endswith('_tay'), (lamp, fan))
+        self.write_manual(100, 75, 120)
+        self.assertTrue(self.call(p, 37.8).phase.endswith('_tay'))
+        self.tay.write_text('{"bong": 0, "quat": 100, "het_han": 0}', encoding='utf-8')  # trả về RL
+        self.assertFalse(self.call(p, 37.8).phase.endswith('_tay'))
+        self.tay.write_text('{hỏng', encoding='utf-8')
+        self.assertFalse(self.call(p, 37.8).phase.endswith('_tay'))
+
+    def test_manual_command_from_previous_run_is_ignored(self):
+        self.write_manual(0, 75, 300)  # ghi lúc lượt trước còn chạy, vẫn còn hạn
+        self.now += 10
+        p = self.make()
+        self.call(p, 28.0)
+        self.call(p, 37.8)
+        self.assertFalse(self.call(p, 37.8).phase.endswith('_tay'))
+        self.write_manual(0, 75, 300)
+        self.assertTrue(self.call(p, 37.8).phase.endswith('_tay'))
+
+    def test_guard_beats_manual_and_warmup_ignores_it(self):
+        p = self.make()
+        self.write_manual(100, 75, 300)
+        self.assertEqual(self.call(p, 28.0).phase, 'lam_am_ap')  # chưa giữ nhiệt: không nhận lệnh tay
+        self.call(p, 37.8)
+        self.assertTrue(self.call(p, 37.9).phase.endswith('_tay'))
+        dec = self.call(p, 38.3)
+        self.assertEqual((dec.lamp, dec.fan), (0, 100))
+        self.assertTrue(dec.phase.endswith('_bao_ve'))
 
     def test_finishes_after_requested_minutes(self):
         p = self.make(minutes=1)

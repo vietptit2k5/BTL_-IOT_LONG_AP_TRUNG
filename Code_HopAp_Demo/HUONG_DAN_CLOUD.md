@@ -88,6 +88,7 @@ Bridge có thể bật trước hoặc sau chương trình điều khiển. Tắ
 | `hop_ap_01/sessions/<id>/summary` | Tóm tắt thống nhất (MAE, % trong 37,3–37,7 °C, độ lệch chuẩn, số lần đổi mức, thời gian làm ấm) cùng `ket_qua_goc` từ `ket_qua.json` |
 | `hop_ap_01/alerts/<ms>_<loại>` | Cảnh báo: `loai`, `muc` (`thong_tin`/`canh_bao`/`nguy_hiem`), `noi_dung`, `phien`, `nhiet_c` |
 | `hop_ap_01/commands/stop` | `{value, ts, by}`: app ghi `value: true`; Pi xử lý xong thì đặt lại `false` và ghi `ket_qua` |
+| `hop_ap_01/commands/tay` | Chỉnh tay: `{hanh_dong: 'dat', bong, quat, thoi_han_s}` hoặc `{hanh_dong: 'tra_ve'}`, kèm `ts`, `by`. Pi trả `ket_qua` (`DA_AP_DUNG` kèm `het_han_ms`, `DA_TRA_VE`, `TU_CHOI: …`, `KHONG_HOP_LE`). Xem mục 6b |
 | `hop_ap_01/trang_thai/bridge` | Nhịp sống của bridge, gửi mỗi 5 s. App dựa vào đây để biết Pi có online hay không |
 
 Khóa của mẫu, sự kiện và cảnh báo đều tính từ thời gian đo. Vì vậy gửi lại sau khi mất mạng sẽ **ghi đè đúng chỗ cũ, không tạo bản trùng**.
@@ -104,6 +105,7 @@ Khóa của mẫu, sự kiện và cảnh báo đều tính từ thời gian đo
 | `PI_KHONG_GHI` | CSV ngừng cập nhật quá 20 s mà chưa kết thúc | nguy hiểm |
 | `KET_THUC` | Lượt chạy kết thúc (dòng END) | thông tin |
 | `DUNG_TU_XA` | Đã xử lý lệnh dừng từ app, kèm kết quả | cảnh báo |
+| `CHINH_TAY` / `TRA_VE_RL` | Có người chỉnh tay bóng/quạt từ app / trả quyền lại cho RL | cảnh báo / thông tin |
 
 Mỗi loại cảnh báo được gửi tối đa 1 lần mỗi 5 phút (trừ `ON_DINH`, `KET_THUC`, `DUNG_TU_XA`). Đã kiểm tra trên 4 lượt đo thật (thermostat và Q1 ngày 17/11, Q2 ngày 20/11, đáp ứng 20/11): không có `NGHI_MO_NAP` hay báo lỗi giả. Ngưỡng mở nắp **chưa được thử với lần mở nắp thật**. Cần chỉnh lại sau phép thử mở nắp ở giai đoạn 2.
 
@@ -115,6 +117,22 @@ Mỗi loại cảnh báo được gửi tối đa 1 lần mỗi 5 phút (trừ `
 4. Bridge đặt lại `value: false`, ghi `ket_qua`, rồi tạo một cảnh báo `DUNG_TU_XA`.
 
 Lệnh quá 10 phút bị bỏ qua, để tránh trường hợp bridge vừa khởi động lại thì thực hiện một lệnh dừng cũ. Lệnh dừng từ xa **không thay thế** việc rút adapter 12 V khi tải không tắt.
+
+## 6b. Chỉnh tay khi RL đang chạy (bridge 1.4)
+
+Dùng để thử phản ứng của hộp hoặc "đẩy" hệ thống ra khỏi mốc, rồi xem RL kéo về.
+
+1. App ghi `commands/tay = {hanh_dong: 'dat', bong, quat, thoi_han_s}`. Chỉ nhận 9 cặp đã khảo sát, tức đúng 9 hành động của Q-table: bóng 0/25/50/75/100 %, quạt 75/100 %, trừ cặp 100/100. Thời hạn là 60, 120 hoặc 300 s. Quy tắc Firebase và bridge đều kiểm tra lại.
+2. Bridge chỉ nhận lệnh khi đang có tiến trình `ap_trung.py`. Nó ghi nguyên khối `lenh_tay.json` (`bong`, `quat`, `het_han`, `ghi_luc`, `by`) cạnh code, rồi trả `DA_AP_DUNG` kèm `het_han_ms` để app đếm ngược, và tạo cảnh báo `CHINH_TAY`.
+3. Mỗi bước điều khiển, `ap_trung.py` đọc file theo thứ tự ưu tiên:
+   - **bảo vệ 38,3 °C / dừng cứng 38,8 °C** luôn thắng;
+   - sau đó đến lệnh tay còn hạn;
+   - cuối cùng là RL / thermostat.
+
+   Pha ghi vào CSV là `ap_ngayNN_gdK_tay`. Bridge xếp các bước này vào nhóm `tay`, không tính vào chỉ số giữ nhiệt của RL. Trong lúc làm ấm, lệnh tay bị bỏ qua.
+4. Khi hết hạn, hoặc khi bấm **Trả về RL ngay** (bridge ghi `het_han = 0`), RL quyết định lại ngay ở bước kế tiếp. Lệnh ghi trước khi lượt bắt đầu (`ghi_luc` cũ) thì bị bỏ qua, nên không lan sang lượt sau.
+
+Lịch demo vẫn chạy tiếp trong lúc chỉnh tay.
 
 ## 7. Kiểm thử
 

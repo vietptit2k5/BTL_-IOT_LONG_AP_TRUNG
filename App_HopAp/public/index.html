@@ -172,6 +172,35 @@
         <p class="muted small">Pi tự kiểm tra lại trước khi bật tải: có mẻ ấp, không có chương trình khác đang chạy, đọc được DS18B20, hộp ≤ 30 °C. Thiếu điều kiện nào thì từ chối.</p>
       </div>
       <hr class="sep">
+      <h3>Chỉnh tay (đè lên RL có hạn giờ)</h3>
+      <div class="run-form" id="tay-form">
+        <div class="day-row wrap">
+          <select id="tay-bong" aria-label="Mức bóng">
+            <option value="0">Bóng 0 %</option>
+            <option value="25">Bóng 25 %</option>
+            <option value="50" selected>Bóng 50 %</option>
+            <option value="75">Bóng 75 %</option>
+            <option value="100">Bóng 100 %</option>
+          </select>
+          <select id="tay-quat" aria-label="Mức quạt">
+            <option value="75">Quạt 75 %</option>
+            <option value="100" selected>Quạt 100 %</option>
+          </select>
+          <select id="tay-han" aria-label="Thời hạn">
+            <option value="60">1 phút</option>
+            <option value="120" selected>2 phút</option>
+            <option value="300">5 phút</option>
+          </select>
+        </div>
+        <div class="day-row wrap">
+          <button id="tay-apply" class="primary" type="button" disabled>Áp dụng chỉnh tay</button>
+          <button id="tay-return" class="ghost" type="button" disabled>Trả về RL ngay</button>
+        </div>
+        <p id="tay-active" class="small muted" role="status" aria-live="polite">--</p>
+        <p id="tay-status" class="small muted">--</p>
+        <p class="muted small">Chỉ nhận khi lượt <b>ap_trung</b> đã vào giữ nhiệt. Hết giờ thì RL tự lấy lại quyền. Bảo vệ 38,3 °C (tắt bóng, quạt 100 %) và dừng cứng 38,8 °C vẫn luôn thắng lệnh tay. Các bước chỉnh tay không tính vào chỉ số của RL.</p>
+      </div>
+      <hr class="sep">
       <h3>Dừng khẩn cấp</h3>
       <p class="muted small">Pi sẽ tắt bóng, tắt quạt và kết thúc lượt chạy. Không thay thế việc rút adapter 12 V nếu tải không tắt.</p>
       <button id="stop" class="danger" disabled>Dừng lượt đang chạy</button>
@@ -206,6 +235,6 @@
     </section>
   </main>
 
-  <footer class="foot muted small">Pi tự đo và điều khiển cục bộ; đám mây lưu trữ, hiển thị và nhận lệnh (dừng, đổi ngày, mẻ, bắt đầu lượt). · <span id="app-version">Phiên bản app: v10</span></footer>
+  <footer class="foot muted small">Pi tự đo và điều khiển cục bộ; đám mây lưu trữ, hiển thị và nhận lệnh (dừng, đổi ngày, mẻ, bắt đầu lượt, chỉnh tay). · <span id="app-version">Phiên bản app: v11</span></footer>
 </body>
 </html>

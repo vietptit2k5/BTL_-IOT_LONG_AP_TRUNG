@@ -199,6 +199,8 @@ const COMMAND_RESULT = {
   KHONG_CO_ME: 'Không có mẻ nào để kết thúc.',
   KHONG_HOP_LE: 'Tham số không hợp lệ.',
   BO_QUA_LENH_CU: 'Lệnh quá cũ nên Pi bỏ qua.',
+  DA_AP_DUNG: 'Pi đã áp dụng lệnh chỉnh tay.',
+  DA_TRA_VE: 'Đã trả quyền cho bộ điều khiển tự động.',
 };
 
 /** Trạng thái lệnh me_ap / luot: đang chờ Pi, hoặc kết quả đã xử lý (kể cả lý do từ chối). */
@@ -223,6 +225,34 @@ export function canStartRun({ piOnline, running, hasBatch, ack, pending }) {
   if (!hasBatch) missing.push('đã tạo mẻ ấp');
   if (!ack) missing.push('tích xác nhận có người ở cạnh hộp');
   if (pending) missing.push('chờ lệnh trước xử lý xong');
+  return { ok: missing.length === 0, reason: missing.length ? `Cần: ${missing.join(' · ')}` : '' };
+}
+
+// ---- chỉnh tay: chỉ 9 cặp (bóng, quạt) đã khảo sát = 9 hành động của Q-table; bóng bật thì quạt không tắt.
+export const MANUAL_LAMP = [0, 25, 50, 75, 100];
+export const MANUAL_FAN = [75, 100];
+export const MANUAL_SECONDS = { 60: '1 phút', 120: '2 phút', 300: '5 phút' };
+export const isManualPair = (lamp, fan) => MANUAL_LAMP.includes(lamp) && MANUAL_FAN.includes(fan) && !(lamp === 100 && fan === 100);
+/** Lượt ap_trung đã vào giữ nhiệt (pha ap_ngayNN_gdK...): làm ấm và chương trình khác không nhận lệnh tay. */
+export const isHoldPhase = (pha) => /^ap_ngay\d{2}_gd[123]/.test(String(pha || ''));
+
+/** Lệnh tay đang có hiệu lực trên Pi? Dựa vào phản hồi DA_AP_DUNG + het_han_ms (đồng hồ máy chủ). */
+export function manualState(cmd, now) {
+  const on = !!cmd && cmd.da_xu_ly === true && cmd.ket_qua === 'DA_AP_DUNG' && isNum(cmd.het_han_ms) && cmd.het_han_ms > now;
+  if (!on) return { active: false, text: 'RL / thermostat đang điều khiển.' };
+  const left = Math.ceil((cmd.het_han_ms - now) / 1000);
+  const mmss = `${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}`;
+  return { active: true, left, text: `Đang chỉnh tay: bóng ${cmd.bong} %, quạt ${cmd.quat} % · còn ${mmss} (${cmd.yeu_cau_boi || '?'})` };
+}
+
+/** Nút "Áp dụng chỉnh tay": bấm được khi nào. Pi vẫn tự kiểm tra lại. */
+export function canManual({ piOnline, running, pha, pending, lamp, fan }) {
+  const missing = [];
+  if (!piOnline) missing.push('Pi online');
+  if (!running) missing.push('có lượt đang chạy');
+  else if (!isHoldPhase(pha)) missing.push('lượt ap_trung đã qua làm ấm');
+  if (pending) missing.push('chờ lệnh trước xử lý xong');
+  if (!isManualPair(lamp, fan)) missing.push('cặp bóng/quạt đã khảo sát (bóng 100 % chỉ đi với quạt 75 %)');
   return { ok: missing.length === 0, reason: missing.length ? `Cần: ${missing.join(' · ')}` : '' };
 }
 

@@ -10,7 +10,7 @@ Toàn bộ code có test chạy trên laptop.
 | Thứ tự | File | Học gì |
 |---|---|---|
 | 1 | [../Code_HopAp_Demo/HUONG_DAN_CLOUD.md](../Code_HopAp_Demo/HUONG_DAN_CLOUD.md) | Kiến trúc mức 2, cấu trúc dữ liệu trên Firebase, các loại cảnh báo, lệnh dừng |
-| 2 | [../Code_HopAp_Demo/cloud_bridge.py](../Code_HopAp_Demo/cloud_bridge.py) | `CsvTail` (đọc CSV đang ghi), `Engine` (mẫu 5 s, sự kiện, cảnh báo), `FirebaseStore` (REST + đăng nhập), `Bridge` (vòng chạy, gửi bù khi mất mạng, lệnh dừng / đổi ngày / mẻ / lượt, kiểm tra an toàn trước khi bật tải) |
+| 2 | [../Code_HopAp_Demo/cloud_bridge.py](../Code_HopAp_Demo/cloud_bridge.py) | `CsvTail` (đọc CSV đang ghi), `Engine` (mẫu 5 s, sự kiện, cảnh báo), `FirebaseStore` (REST + đăng nhập), `Bridge` (vòng chạy, gửi bù khi mất mạng, lệnh dừng / đổi ngày / mẻ / lượt / chỉnh tay, kiểm tra an toàn trước khi bật tải) |
 | 3 | [../Code_HopAp_Demo/me_ap.py](../Code_HopAp_Demo/me_ap.py) | Lịch 21 ngày lưu bền; tạm dừng lịch demo |
 | 4 | [../Code_HopAp_Demo/cai_dich_vu_bridge.sh](../Code_HopAp_Demo/cai_dich_vu_bridge.sh), [cai_dich_vu_do_am.sh](../Code_HopAp_Demo/cai_dich_vu_do_am.sh), [chay_demo.sh](../Code_HopAp_Demo/chay_demo.sh) | Dịch vụ systemd (`KillMode=process`), chạy lượt trong tmux |
 | 5 | [../App_HopAp/HUONG_DAN_APP.md](../App_HopAp/HUONG_DAN_APP.md) | Chức năng của app, deploy lên Firebase Hosting |

@@ -122,3 +122,10 @@
 - Thêm README gốc và 3 lộ trình: `tai_lieu/LO_TRINH_1_THUAT_TOAN_RL.md`, `LO_TRINH_2_DO_DAC_DU_LIEU.md`, `LO_TRINH_3_IOT_APP.md`.
 - `.gitignore` loại bí mật (firebase_bi_mat.json, .pi-access), lưu trữ, file Office giữa kỳ, file sinh ra khi chạy. `.gitattributes` đặt LF cho code và giữ nguyên từng byte gói Q-table JSON, Du_lieu_*, outputs (mã SHA-256 của gói Q2 sau khi qua git vẫn là 882c7746…).
 - Đã `git init` (nhánh main), chưa commit: 319 file, khoảng 6,9 MB nén, không có file bí mật.
+
+## Chỉnh tay khi RL đang chạy (22/11)
+
+- Bridge 1.4 và app v11 thêm lệnh `commands/tay`. Lệnh đặt cặp bóng/quạt (1 trong 9 hành động đã khảo sát) trong 1, 2 hoặc 5 phút, hoặc trả quyền về RL ngay. Chỉ nhận khi đang có lượt `ap_trung.py` và lượt đã qua làm ấm.
+- `ap_trung.py` đọc `lenh_tay.json` mỗi bước theo thứ tự ưu tiên: bảo vệ, rồi lệnh tay, rồi RL. Pha `_tay` không tính vào chỉ số RL. Lệnh của lượt trước bị bỏ qua.
+- Quy tắc Firebase kiểm tra tham số. Cảnh báo mới: CHINH_TAY, TRA_VE_RL. Kiểm thử phần cứng: T13.
+- Test: 223 Python, 13 app, tất cả qua. Cần chép code lên Pi và chạy lại `cai_dich_vu_bridge.sh`; deploy `database,hosting`.

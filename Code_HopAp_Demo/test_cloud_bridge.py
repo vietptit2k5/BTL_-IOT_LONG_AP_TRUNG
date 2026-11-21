@@ -7,6 +7,7 @@ import json
 import os
 from pathlib import Path
 import tempfile
+import time
 import unittest
 
 import cloud_bridge as cb
@@ -288,6 +289,7 @@ class TestBaGiaiDoan(unittest.TestCase):
         self.assertIsNone(cb.stage_of('kiem_tra_rl_moi'))
         self.assertIsNone(cb.stage_of('ap_ngay30_gd3'))
         self.assertEqual(cb.classify('ap_ngay12_gd2'), 'giu_nhiet')
+        self.assertEqual(cb.classify('ap_ngay12_gd2_tay'), 'tay')  # chỉnh tay: không tính vào chỉ số RL
         self.assertEqual(cb.classify('ap_ngay12_gd2_phuc_hoi'), 'phuc_hoi')
 
     def test_per_row_band_transition_and_no_false_out_of_band(self):
@@ -378,8 +380,9 @@ class TestLenhTuApp(unittest.TestCase):
         self.base = Path(self.tmp.name)
         self.store = cb.FileStore(self.base / 'db')
         self.lich = self.base / 'lich.json'
+        self.tay = self.base / 'lenh_tay.json'
         self.bridge = cb.Bridge(self.store, self.base, state_path=self.base / 's.json', lich_path=self.lich,
-                                do_am_path=self.base / 'do_am.json')
+                                do_am_path=self.base / 'do_am.json', tay_path=self.tay)
         self.launched = []
         self.bridge.launcher = lambda base, ctrl, minutes, rh: self.launched.append((ctrl, minutes, rh)) or 'gia_lap'
         self.bridge.running_probe = lambda: []
@@ -445,6 +448,35 @@ class TestLenhTuApp(unittest.TestCase):
             self.assertTrue(reply['ket_qua'].startswith('TU_CHOI'), case)
             self.assertIn(text, reply['ket_qua'], case)
         self.assertEqual(self.launched, [])
+
+    def test_manual_command_writes_file_with_expiry(self):
+        self.bridge.running_probe = lambda: [(123, 'python3 ap_trung.py --phut 30')]
+        before = time.time()
+        reply = self.send('tay', hanh_dong='dat', bong=0, quat=75, thoi_han_s=120)
+        self.assertEqual(reply['ket_qua'], 'DA_AP_DUNG')
+        data = json.loads(self.tay.read_text(encoding='utf-8'))
+        self.assertEqual((data['bong'], data['quat'], data['by']), (0, 75, 'a@b.c'))
+        self.assertAlmostEqual(data['ghi_luc'], before, delta=5)
+        self.assertAlmostEqual(data['het_han'], before + 120, delta=5)
+        self.assertAlmostEqual(reply['het_han_ms'] / 1000, data['het_han'], delta=0.01)
+        self.assertIn('CHINH_TAY', self.alerts())
+        reply = self.send('tay', hanh_dong='tra_ve')
+        self.assertEqual(reply['ket_qua'], 'DA_TRA_VE')
+        self.assertEqual(json.loads(self.tay.read_text(encoding='utf-8'))['het_han'], 0)
+        self.assertIn('TRA_VE_RL', self.alerts())
+
+    def test_manual_command_refusals(self):
+        self.assertIn('không có lượt ap_trung', self.send('tay', hanh_dong='dat', bong=50, quat=100,
+                                                          thoi_han_s=60)['ket_qua'])
+        self.bridge.running_probe = lambda: [(9, 'python3 kiem_tra_giu_nhiet.py')]
+        self.assertTrue(self.send('tay', hanh_dong='dat', bong=50, quat=100, thoi_han_s=60)['ket_qua']
+                        .startswith('TU_CHOI'))
+        self.bridge.running_probe = lambda: [(123, 'python3 ap_trung.py')]
+        for bad in (dict(bong=100, quat=100, thoi_han_s=60), dict(bong=40, quat=100, thoi_han_s=60),
+                    dict(bong=50, quat=0, thoi_han_s=60), dict(bong=50, quat=100, thoi_han_s=600),
+                    dict(bong=True, quat=100, thoi_han_s=60), dict(bong=False, quat=True, thoi_han_s=60)):
+            self.assertEqual(self.send('tay', hanh_dong='dat', **bad)['ket_qua'], 'KHONG_HOP_LE', bad)
+        self.assertFalse(self.tay.exists())
 
     def test_start_run_needs_batch_valid_args_and_fresh_command(self):
         reply = self.send('luot', hanh_dong='bat_dau', bo_dieu_khien='rl', phut=30, co_nguoi=True)

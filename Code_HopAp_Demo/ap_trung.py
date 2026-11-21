@@ -43,6 +43,9 @@ COOL = 1                        # ACTIONS[1] = bóng 0 %, quạt 100 %.
 CONTROLLERS = {'rl': 'Q-learning 3 giai đoạn', 'thermostat': 'Thermostat 3 giai đoạn'}
 CONFIG_KEYS = {'rl': 'ap-trung', 'thermostat': 'ap-trung-thermostat'}
 WARM = (75, 100)
+# Chỉnh tay từ app: chỉ các cặp (bóng, quạt) đã khảo sát = 9 hành động của Q-table; bóng bật thì quạt không tắt.
+MANUAL_PAIRS = {(round(h * 100), round(f * 100)) for h, f in ACTIONS}
+TAY_FILE = Path(__file__).with_name('lenh_tay.json')
 
 
 def phase_name(info, suffix=''):
@@ -53,7 +56,7 @@ class ApTrungPolicy:
     """Policy cho do_nhiet_hop.main(control_policy=...). now là đồng hồ đơn điệu; lịch dùng giờ thật."""
 
     def __init__(self, package, minutes=30, lich_path=me_ap.MAC_DINH, wall_clock=time.time,
-                 check_start_temperature=True, controller='rl'):
+                 check_start_temperature=True, controller='rl', tay_path=TAY_FILE):
         if not 1 <= minutes <= MAX_MINUTES:
             raise ValueError(f'--phut phải trong 1–{MAX_MINUTES}.')
         if controller not in CONTROLLERS:
@@ -67,6 +70,8 @@ class ApTrungPolicy:
                 raise ValueError('doi_chung_kiem_tra.json không khớp tập hành động đã đo.')
             self.thermostat = ReferenceController(config['configuration'], Q_CENTER, ACTIONS)
         self.package, self.minutes, self.lich_path, self.wall = package, minutes, Path(lich_path), wall_clock
+        self.tay_path, self.manual_active = Path(tay_path), False
+        self.created_wall = wall_clock()  # Lệnh tay ghi trước lượt này (lượt cũ) thì bỏ qua.
         self.check_start = check_start_temperature
         self.model = package['model']
         self.guard = SoftGuard(target=(me_ap.NGAT_MEM_C + me_ap.BAT_LAI_C) / 2,
@@ -171,6 +176,18 @@ class ApTrungPolicy:
                                      f'Ngắt mềm {me_ap.NGAT_MEM_C}→{me_ap.BAT_LAI_C} °C (cố định, không theo ngày).')
         if was_guard:
             self.last_control = None
+        manual = self.manual_command()  # Sau bảo vệ, trước RL: bảo vệ luôn thắng lệnh tay.
+        if manual is not None:
+            lamp, fan, remaining, who = manual
+            if not self.manual_active:
+                self.stats['chinh_tay'] = self.stats.get('chinh_tay', 0) + 1
+            self.manual_active, self.recovery_started, self.last_control = True, None, None
+            self._track_trend(reading)
+            return core.AutoDecision(phase_name(self.info, '_tay'), lamp, fan,
+                                     f'Chỉnh tay ({who}): bóng {lamp} %, quạt {fan} %, còn {remaining:.0f} s; '
+                                     f'{me_ap.describe(self.info)}')
+        if self.manual_active:  # Vừa hết hạn hoặc trả về: RL quyết định lại ngay.
+            self.manual_active, self.last_control = False, None
         if self.recovery_started is not None or t < target - RECOVERY_ENTER_BELOW:
             decision = self._recover(now, reading, target)
             if decision is not None:
@@ -178,6 +195,19 @@ class ApTrungPolicy:
         if self.last_control is None or now - self.last_control >= CONTROL_PERIOD_S:
             self.decision = self._q_decision(now, reading, t, target)
         return self.decision
+
+    def manual_command(self):
+        """Lệnh tay còn hạn trong lenh_tay.json (bridge ghi từ app): (bóng, quạt, giây còn lại, người) hoặc None."""
+        try:
+            data = json.loads(self.tay_path.read_text(encoding='utf-8'))
+            lamp, fan, until = int(data['bong']), int(data['quat']), float(data['het_han'])
+            written = float(data['ghi_luc'])
+        except (OSError, ValueError, KeyError, TypeError):
+            return None
+        remaining = until - self.wall()
+        if remaining <= 0 or written < self.created_wall or (lamp, fan) not in MANUAL_PAIRS:
+            return None
+        return lamp, fan, remaining, str(data.get('by', '?'))[:60]
 
     def _track_trend(self, reading):
         if self.sample_at is None or reading.at - self.sample_at >= CONTROL_PERIOD_S:

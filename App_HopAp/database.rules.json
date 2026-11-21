@@ -30,6 +30,10 @@
         "luot": {
           ".write": "auth != null",
           ".validate": "newData.hasChildren(['hanh_dong','bo_dieu_khien','phut','co_nguoi','ts','by']) && newData.child('ts').isNumber() && newData.child('by').val() === auth.token.email && newData.child('hanh_dong').val() === 'bat_dau' && (newData.child('bo_dieu_khien').val() === 'rl' || newData.child('bo_dieu_khien').val() === 'thermostat') && (newData.child('phut').val() === 10 || newData.child('phut').val() === 20 || newData.child('phut').val() === 30 || newData.child('phut').val() === 45 || newData.child('phut').val() === 60) && newData.child('co_nguoi').val() === true"
+        },
+        "tay": {
+          ".write": "auth != null",
+          ".validate": "newData.hasChildren(['hanh_dong','ts','by']) && newData.child('ts').isNumber() && newData.child('by').val() === auth.token.email && (newData.child('hanh_dong').val() === 'tra_ve' || (newData.child('hanh_dong').val() === 'dat' && (newData.child('bong').val() === 0 || newData.child('bong').val() === 25 || newData.child('bong').val() === 50 || newData.child('bong').val() === 75 || newData.child('bong').val() === 100) && (newData.child('quat').val() === 75 || newData.child('quat').val() === 100) && !(newData.child('bong').val() === 100 && newData.child('quat').val() === 100) && (newData.child('thoi_han_s').val() === 60 || newData.child('thoi_han_s').val() === 120 || newData.child('thoi_han_s').val() === 300)))"
         }
       },
       "lich": {

@@ -119,6 +119,28 @@ test('điều kiện nút bắt đầu lượt', () => {
   assert.match(L.canStartRun({ ...ok, running: true, hasBatch: false }).reason, /không có lượt đang chạy · đã tạo mẻ ấp/);
 });
 
+test('chỉnh tay: cặp hợp lệ, điều kiện nút, đếm ngược', () => {
+  assert.equal(L.isManualPair(100, 75), true);
+  assert.equal(L.isManualPair(100, 100), false);
+  assert.equal(L.isManualPair(50, 0), false);
+  assert.equal(L.isHoldPhase('ap_ngay05_gd1'), true);
+  assert.equal(L.isHoldPhase('ap_ngay05_gd1_tay'), true);
+  assert.equal(L.isHoldPhase('lam_am_ap'), false);
+  assert.equal(L.isHoldPhase('giu_nhiet'), false);
+  const ok = { piOnline: true, running: true, pha: 'ap_ngay12_gd2', pending: false, lamp: 0, fan: 75 };
+  assert.equal(L.canManual(ok).ok, true);
+  assert.match(L.canManual({ ...ok, pha: 'lam_am_ap' }).reason, /qua làm ấm/);
+  assert.match(L.canManual({ ...ok, running: false }).reason, /có lượt đang chạy/);
+  assert.match(L.canManual({ ...ok, lamp: 100, fan: 100 }).reason, /đã khảo sát/);
+  const cmd = { da_xu_ly: true, ket_qua: 'DA_AP_DUNG', het_han_ms: 100000, bong: 0, quat: 75, yeu_cau_boi: 'a@b.c' };
+  const m = L.manualState(cmd, 100000 - 65000);
+  assert.equal(m.active, true);
+  assert.match(m.text, /bóng 0 %, quạt 75 % · còn 1:05/);
+  assert.equal(L.manualState(cmd, 100001).active, false);
+  assert.equal(L.manualState({ ...cmd, ket_qua: 'DA_TRA_VE' }, 0).active, false);
+  assert.match(L.commandStatus({ ...cmd, xu_ly_ts: 1 }).text, /áp dụng lệnh chỉnh tay/);
+});
+
 test('trạng thái lệnh dừng', () => {
   assert.equal(L.stopStatus(null).pending, false);
   assert.equal(L.stopStatus({ value: true, by: 'a@b.c' }).pending, true);

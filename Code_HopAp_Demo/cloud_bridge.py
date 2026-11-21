@@ -37,7 +37,7 @@ import time
 
 import me_ap
 
-VERSION = '1.3'
+VERSION = '1.4'
 DEVICE = 'hop_ap_01'
 CSV_FIELDS = (
     'timestamp_utc', 'elapsed_s', 'event', 'phase', 'sensor_id',
@@ -63,7 +63,7 @@ HOLD = ('giu_nhiet', 'phuc_hoi', 'bao_ve')
 
 PHASE_LABELS = {
     'cho': 'Chờ cảm biến', 'lam_am': 'Làm ấm', 'giu_nhiet': 'Giữ nhiệt', 'phuc_hoi': 'Phục hồi nhiệt',
-    'bao_ve': 'Bảo vệ quá nhiệt', 'quat_cuoi': 'Quạt làm nguội cuối', 'khac': 'Khác',
+    'bao_ve': 'Bảo vệ quá nhiệt', 'quat_cuoi': 'Quạt làm nguội cuối', 'tay': 'Chỉnh tay', 'khac': 'Khác',
 }
 CONTROLLER_LABELS = {'doi-chung': 'Thermostat', 'thu-rl': 'Q-learning v1', 'co-dinh': 'Mức cố định',
                      'ap-trung': 'Q-learning 3 giai đoạn', 'ap-trung-thermostat': 'Thermostat 3 giai đoạn'}
@@ -73,9 +73,12 @@ ALERT_LEVEL = {
     'DUNG_TU_XA': 'canh_bao',
 }
 ALERT_LEVEL.update(CHUYEN_GIAI_DOAN='thong_tin', DOI_NGAY='thong_tin', TAO_ME='thong_tin', KET_THUC_ME='thong_tin',
-                   BAT_DAU_LUOT='canh_bao', DUNG_BAT_THUONG='nguy_hiem')
+                   BAT_DAU_LUOT='canh_bao', DUNG_BAT_THUONG='nguy_hiem', CHINH_TAY='canh_bao', TRA_VE_RL='thong_tin')
 NO_COOLDOWN = {'ON_DINH', 'KET_THUC', 'DUNG_TU_XA', 'CHUYEN_GIAI_DOAN', 'DOI_NGAY', 'TAO_ME', 'KET_THUC_ME',
-               'BAT_DAU_LUOT', 'DUNG_BAT_THUONG'}
+               'BAT_DAU_LUOT', 'DUNG_BAT_THUONG', 'CHINH_TAY', 'TRA_VE_RL'}
+MANUAL_LAMP = (0, 25, 50, 75, 100)
+MANUAL_FAN = (75, 100)
+MANUAL_SECONDS = (60, 120, 300)
 STAGE_RE = re.compile(r'^ap_ngay(\d{1,2})_gd([123])')
 
 
@@ -91,6 +94,8 @@ def classify(phase):
     phase = phase or ''
     if phase == 'cho_cam_bien':
         return 'cho'
+    if phase.endswith('_tay'):
+        return 'tay'  # Chỉnh tay từ app: không tính vào chỉ số của RL/thermostat (không thuộc HOLD).
     if 'bao_ve' in phase:
         return 'bao_ve'
     if 'phuc_hoi' in phase:
@@ -736,11 +741,12 @@ def stop_is_fresh(command, handled_ts, now=None):
 
 class Bridge:
     def __init__(self, store, base, csv_path=None, state_path=None, period=5.0, source='truc_tiep', clock=time.time,
-                 lich_path=None, do_am_path=None):
+                 lich_path=None, do_am_path=None, tay_path=None):
         self.store, self.base, self.fixed_csv = store, Path(base), Path(csv_path) if csv_path else None
         self.lich_path = Path(lich_path) if lich_path else me_ap.MAC_DINH
         self.lich_sig, self.lich_put_at = None, 0.0
         self.do_am_path = Path(do_am_path) if do_am_path else Path(__file__).resolve().with_name('do_am_moi_nhat.json')
+        self.tay_path = Path(tay_path) if tay_path else Path(__file__).resolve().with_name('lenh_tay.json')
         self.do_am_sig, self.do_am_put_at = None, 0.0
         # Phụ thuộc phần cứng, thay được khi kiểm thử.
         self.running_probe = running_controllers
@@ -809,6 +815,7 @@ class Bridge:
             self._handle_day_command()
             self._handle_batch_command()
             self._handle_run_command()
+            self._handle_manual_command()
             self._publish_schedule()
             self._publish_humidity()
         try:
@@ -1031,6 +1038,36 @@ class Bridge:
 
     def running(self):
         return self.running_probe()
+
+    def _handle_manual_command(self):
+        """Chỉnh tay có hạn giờ, đè lên RL/thermostat trong lượt ap_trung đang chạy. Bảo vệ trên Pi vẫn thắng."""
+        command = self._take_command('tay')
+        if command is None:
+            return
+        who = str(command.get('by', '?'))[:100]
+        action = command.get('hanh_dong')
+        if action == 'tra_ve':
+            self._write_manual({'bong': 0, 'quat': 100, 'het_han': 0, 'by': who})
+            return self._reply('tay', command, 'DA_TRA_VE', 'TRA_VE_RL', f'{who} trả quyền điều khiển cho bộ điều khiển tự động.')
+        lamp, fan, seconds = command.get('bong'), command.get('quat'), command.get('thoi_han_s')
+        if action != 'dat' or any(isinstance(v, bool) for v in (lamp, fan, seconds)) or lamp not in MANUAL_LAMP or fan not in MANUAL_FAN or seconds not in MANUAL_SECONDS \
+                or (lamp == 100 and fan == 100):
+            return self._reply('tay', command, 'KHONG_HOP_LE')
+        if self.source != 'truc_tiep' or not os.path.isdir('/proc'):
+            return self._reply('tay', command, 'TU_CHOI: chỉ chỉnh tay được trên Raspberry Pi')
+        if not any('ap_trung.py' in cmd for _, cmd in self.running()):
+            return self._reply('tay', command, 'TU_CHOI: không có lượt ap_trung đang chạy (bắt đầu lượt trước)')
+        until = time.time() + seconds
+        self._write_manual({'bong': int(lamp), 'quat': int(fan), 'het_han': until, 'by': who, 'ts': command.get('ts')})
+        command = dict(command, het_han_ms=int(until * 1000))
+        return self._reply('tay', command, 'DA_AP_DUNG', 'CHINH_TAY',
+                           f'{who} chỉnh tay: bóng {lamp} %, quạt {fan} % trong {seconds // 60} phút '
+                           '(bảo vệ 38,3 / 38,8 °C vẫn hoạt động).')
+
+    def _write_manual(self, data):
+        temp = self.tay_path.with_suffix('.tmp')
+        temp.write_text(json.dumps(dict(data, ghi_luc=time.time()), ensure_ascii=False), encoding='utf-8')
+        os.replace(temp, self.tay_path)  # Ghi nguyên khối: ap_trung không bao giờ đọc file dở.
 
     def _handle_run_command(self):
         command = self._take_command('luot')

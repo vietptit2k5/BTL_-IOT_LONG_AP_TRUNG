@@ -29,6 +29,7 @@ Dùng trong buổi làm với Pi và hộp. Ghi kết quả **thật** vào cộ
 | T9 | Mất cảm biến | (Nên làm cuối buổi) Đang giữ nhiệt, rút dây DATA của DS18B20 | ≤ 3 s chương trình dừng và tắt bóng; app có **LOI_CAM_BIEN** / **KET_THUC** | | Ảnh app, log tmux |
 | T11 | Bắt đầu lượt từ app bị từ chối | Hộp còn > 30 °C, hoặc không tích xác nhận, hoặc đang có lượt chạy | App ghi rõ "Pi từ chối: …", bóng không bật | | Ảnh app |
 | T12 | Tạo mẻ và bắt đầu lượt hoàn toàn từ app | Thẻ Mẻ ấp: ngày 5, thời gian thật; thẻ Lượt chạy: RL 30 phút, tích xác nhận | App ghi "Đang chạy" và cảnh báo **BAT_DAU_LUOT**; `tmux attach -t hopap_app` thấy ap_trung đang chạy | | Ảnh app |
+| T13 | Chỉnh tay khi RL đang chạy | Lượt RL đã qua làm ấm. Chỉnh tay **bóng 0 %, quạt 100 %, 2 phút**, sau đó bấm **Trả về RL ngay** (hoặc chờ hết giờ) | App đếm ngược, giai đoạn hiện "Chỉnh tay", có cảnh báo **CHINH_TAY**; nhiệt tụt dần. Khi trả về: có **TRA_VE_RL**, RL kéo nhiệt về 37,3–37,7 °C. Thử thêm bóng 100 %/quạt 75 % trong 5 phút: lên 38,3 °C thì bảo vệ thắng (tắt bóng) | | Ảnh app, thời gian RL kéo về vùng |
 | T10 | Ngày còn đúng sau khởi động lại | `sudo reboot` rồi `python3 me_ap.py xem` | Vẫn đúng ngày (lịch lưu bền), app hiện đúng ngày | | Kết quả lệnh |
 
 ## 2. Lấy dữ liệu về

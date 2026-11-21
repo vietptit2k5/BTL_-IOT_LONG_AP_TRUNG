@@ -8,6 +8,7 @@
 | Hiện tại | Nhiệt độ, trạng thái trong/ngoài vùng 37,3–37,7 °C, xu hướng, độ ẩm, % bóng, % quạt, giai đoạn, bộ điều khiển, thời gian lượt. Pi mất kết nối quá 15 s thì chuyển trạng thái đỏ và làm mờ số đo |
 | Đồ thị | Nhiệt độ có dải mục tiêu, kèm % bóng và % quạt dạng bậc thang. Xem được 10 phút gần nhất hoặc cả lượt |
 | Cảnh báo | 30 cảnh báo gần nhất, tô màu theo mức. Có nút "Bật thông báo" để hiện thông báo của trình duyệt **khi app đang mở** |
+| Chỉnh tay | Trong thẻ Lượt chạy. Chọn bóng (0–100 %), quạt (75/100 %) và thời hạn (1/2/5 phút), bấm **Áp dụng chỉnh tay** 2 lần. Chỉ bấm được khi lượt ap_trung đã qua làm ấm. App đếm ngược thời gian còn lại; nút **Trả về RL ngay** trả quyền sớm. Bảo vệ quá nhiệt trên Pi vẫn luôn thắng lệnh tay |
 | Dừng khẩn cấp | Chỉ bấm được khi có lượt đang chạy. Phải bấm 2 lần trong 5 giây. App ghi `commands/stop` kèm email người bấm |
 | Lịch sử và so sánh | Bảng MAE, % trong vùng, độ lệch chuẩn, số lần đổi mức, thời gian làm ấm. Chọn 2 lượt để chồng đồ thị, căn từ lúc bắt đầu giữ nhiệt. Mặc định chọn sẵn Thermostat và lượt Q-learning mới nhất |
 
