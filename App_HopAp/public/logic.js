@@ -63,7 +63,52 @@ export function connectionState(bridge, live, now) {
   else if (claimed && !samplesFresh) { label = 'Mất dữ liệu lượt (chương trình trên Pi dừng?)'; tone = 'bad'; }
   else if (running) { label = live.nguon === 'phat_lai' ? 'Đang phát lại' : 'Đang chạy'; tone = 'ok'; }
   else { label = 'Pi online · không có lượt chạy'; tone = 'idle'; }
-  return { piOnline, running, label, tone };
+  const stale = claimed && !samplesFresh;
+  const short = !piOnline ? 'Mất kết nối' : stale ? 'Mất dữ liệu'
+    : running ? (live.nguon === 'phat_lai' ? 'Phát lại' : 'Đang chạy') : 'Online';
+  return { piOnline, running, stale, label, short, tone };
+}
+
+/** Dòng tiêu đề lớn ở Tổng quan: hộp đang làm gì, bằng lời dễ hiểu. */
+export function runHeadline(c, live, hasBatch) {
+  if (!c.piOnline) {
+    return { title: 'Pi mất kết nối', detail: 'Kiểm tra nguồn và Wi-Fi của Raspberry Pi. Nếu đang chạy, Pi vẫn tự điều khiển cục bộ.', tone: 'bad' };
+  }
+  if (c.stale) return { title: 'Mất dữ liệu lượt', detail: 'Chương trình điều khiển trên Pi có thể đã dừng.', tone: 'bad' };
+  if (c.running) {
+    const g = (live && live.giai_doan) || '';
+    const tone = g === 'bao_ve' ? 'bad' : (g === 'tay' || g === 'lam_am') ? 'warn' : 'ok';
+    return {
+      title: (live && live.giai_doan_ten) || 'Đang chạy',
+      detail: `${(live && live.bo_dieu_khien) || 'Bộ điều khiển'} · đã chạy ${fmtDuration(live && live.elapsed_s)}`,
+      tone,
+    };
+  }
+  return hasBatch
+    ? { title: 'Hộp đang nghỉ', detail: 'Mẻ ấp đã sẵn sàng. Bắt đầu một lượt để bật sưởi.', tone: 'idle' }
+    : { title: 'Chưa có mẻ ấp', detail: 'Tạo mẻ ấp trước, rồi bắt đầu lượt chạy.', tone: 'idle' };
+}
+
+/** Thang nhiệt ở Tổng quan: vị trí % (0–100) của một nhiệt độ trên [lo, hi]. */
+export const GAUGE = { lo: 36.5, hi: 39.0, guard: 38.3, stop: 38.8 };
+export function gaugePos(v, lo = GAUGE.lo, hi = GAUGE.hi) {
+  if (!isNum(v)) return null;
+  return Math.min(100, Math.max(0, ((v - lo) / (hi - lo)) * 100));
+}
+
+export function trendInfo(v) {
+  if (!isNum(v)) return { arrow: '', text: '--', tone: 'flat' };
+  const text = `${v >= 0 ? '+' : ''}${fmtNum(v, 2, ' °C/phút')}`;
+  if (v > 0.02) return { arrow: '↑', text, tone: 'up' };
+  if (v < -0.02) return { arrow: '↓', text, tone: 'down' };
+  return { arrow: '→', text, tone: 'flat' };
+}
+
+/** Tab điều hướng từ địa chỉ #/ten-tab. */
+export const TABS = ['tong-quan', 'dieu-khien', 'bieu-do', 'lich-su'];
+export function tabFromHash(hash) {
+  const t = String(hash || '').replace(/^#\/?/, '');
+  return TABS.includes(t) ? t : TABS[0];
 }
 
 export function bandOf(obj) {
@@ -112,6 +157,14 @@ export function alertList(alerts, limit = 30) {
     .filter((a) => isNum(a.ts))
     .sort((a, b) => b.ts - a.ts)
     .slice(0, limit);
+}
+
+/** Số thông báo chưa đọc (mới hơn lần mở chuông gần nhất) và mức nặng nhất trong số đó. */
+export function unreadInfo(list, seenTs) {
+  const unread = list.filter((a) => a.ts > (isNum(seenTs) ? seenTs : 0));
+  const worst = unread.some((a) => a.muc === 'nguy_hiem') ? 'nguy_hiem'
+    : unread.some((a) => a.muc === 'canh_bao') ? 'canh_bao' : unread.length ? 'thong_tin' : null;
+  return { count: unread.length, worst, label: unread.length > 9 ? '9+' : String(unread.length) };
 }
 
 /** Cảnh báo mới xuất hiện sau lần xem trước (để bật thông báo trình duyệt). */
@@ -218,14 +271,20 @@ export function commandStatus(cmd, idle = 'Chưa gửi lệnh.') {
 }
 
 /** Nút "Bắt đầu lượt": bấm được khi nào, nếu không thì vì sao. Pi vẫn tự kiểm tra lại mọi điều kiện. */
+/** Danh sách điều kiện (để hiện dạng ✓/○) + lý do gộp cho dòng trạng thái. */
+function gate(checks) {
+  const missing = checks.filter((c) => !c.ok).map((c) => c.need);
+  return { ok: missing.length === 0, reason: missing.length ? `Cần: ${missing.join(' · ')}` : '', checks };
+}
+
 export function canStartRun({ piOnline, running, hasBatch, ack, pending }) {
-  const missing = [];
-  if (!piOnline) missing.push('Pi online');
-  if (running) missing.push('không có lượt đang chạy');
-  if (!hasBatch) missing.push('đã tạo mẻ ấp');
-  if (!ack) missing.push('tích xác nhận có người ở cạnh hộp');
-  if (pending) missing.push('chờ lệnh trước xử lý xong');
-  return { ok: missing.length === 0, reason: missing.length ? `Cần: ${missing.join(' · ')}` : '' };
+  return gate([
+    { label: 'Pi đang online', need: 'Pi online', ok: !!piOnline },
+    { label: 'Không có lượt khác đang chạy', need: 'không có lượt đang chạy', ok: !running },
+    { label: 'Đã có mẻ ấp', need: 'đã tạo mẻ ấp', ok: !!hasBatch },
+    { label: 'Đã xác nhận có người ở cạnh hộp', need: 'tích xác nhận có người ở cạnh hộp', ok: !!ack },
+    ...(pending ? [{ label: 'Lệnh trước đã xử lý xong', need: 'chờ lệnh trước xử lý xong', ok: false }] : []),
+  ]);
 }
 
 // ---- chỉnh tay: chỉ 9 cặp (bóng, quạt) đã khảo sát = 9 hành động của Q-table; bóng bật thì quạt không tắt.
@@ -247,13 +306,13 @@ export function manualState(cmd, now) {
 
 /** Nút "Áp dụng chỉnh tay": bấm được khi nào. Pi vẫn tự kiểm tra lại. */
 export function canManual({ piOnline, running, pha, pending, lamp, fan }) {
-  const missing = [];
-  if (!piOnline) missing.push('Pi online');
-  if (!running) missing.push('có lượt đang chạy');
-  else if (!isHoldPhase(pha)) missing.push('lượt ap_trung đã qua làm ấm');
-  if (pending) missing.push('chờ lệnh trước xử lý xong');
-  if (!isManualPair(lamp, fan)) missing.push('cặp bóng/quạt đã khảo sát (bóng 100 % chỉ đi với quạt 75 %)');
-  return { ok: missing.length === 0, reason: missing.length ? `Cần: ${missing.join(' · ')}` : '' };
+  return gate([
+    { label: 'Pi đang online', need: 'Pi online', ok: !!piOnline },
+    { label: 'Có lượt đang chạy', need: 'có lượt đang chạy', ok: !!running },
+    ...(running ? [{ label: 'Lượt ap_trung đã qua làm ấm', need: 'lượt ap_trung đã qua làm ấm', ok: isHoldPhase(pha) }] : []),
+    ...(pending ? [{ label: 'Lệnh trước đã xử lý xong', need: 'chờ lệnh trước xử lý xong', ok: false }] : []),
+    { label: 'Cặp bóng/quạt đã khảo sát', need: 'cặp bóng/quạt đã khảo sát (bóng 100 % chỉ đi với quạt 75 %)', ok: isManualPair(lamp, fan) },
+  ]);
 }
 
 const STOP_RESULT = {
@@ -270,4 +329,24 @@ export function stopStatus(cmd) {
   if (!r) return { text: 'Chưa gửi lệnh dừng nào.', pending: false };
   const text = r.startsWith('DA_GUI_SIGTERM') ? 'Pi đã tắt bóng, tắt quạt và dừng lượt chạy.' : (STOP_RESULT[r] || r);
   return { text: `Lần gần nhất (${fmtDateTime(cmd.xu_ly_ts)}): ${text}`, pending: false };
+}
+
+// ------------------------------------------------------------------ so sánh 2 lượt
+export const METRICS = [
+  { key: 'mae_c', label: 'Sai số trung bình (MAE)', fmt: (v) => fmtNum(v, 3, ' °C'), better: 'low' },
+  { key: 'trong_vung_pct', label: 'Thời gian trong vùng', fmt: (v) => fmtNum(v, 1, ' %'), better: 'high' },
+  { key: 'do_lech_chuan_c', label: 'Độ lệch chuẩn', fmt: (v) => fmtNum(v, 3, ' °C'), better: 'low' },
+  { key: 'so_lan_doi_muc', label: 'Số lần đổi mức', fmt: (v) => (isNum(v) ? String(v) : '--'), better: 'low' },
+  { key: 'lam_am_s', label: 'Thời gian làm ấm', fmt: (v) => fmtDuration(v), better: 'low' },
+];
+
+/** Bảng chỉ số 2 lượt cạnh nhau; win = lượt tốt hơn ở chỉ số đó (null nếu hòa hoặc thiếu số). */
+export function compareMetrics(a, b) {
+  return METRICS.map((m) => {
+    const va = a && a[m.key];
+    const vb = b && b[m.key];
+    let win = null;
+    if (isNum(va) && isNum(vb) && va !== vb) win = (m.better === 'low' ? va < vb : va > vb) ? 'a' : 'b';
+    return { key: m.key, label: m.label, a: m.fmt(va), b: m.fmt(vb), win };
+  });
 }

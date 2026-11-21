@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Hộp Ấp Nhóm 13</title>
-  <meta name="description" content="Theo dõi hộp ấp nhiệt độ điều khiển bằng Q-learning (IoT Level-2).">
+  <meta name="description" content="Theo dõi và điều khiển hộp ấp trứng bằng Q-learning (IoT Level-2).">
   <meta name="theme-color" content="#1c1917">
   <script>
     // Mặc định giao diện tối; nhớ lựa chọn của người xem trên máy này.
@@ -20,25 +20,83 @@
 <body>
   <header class="topbar">
     <div class="brand">
-      <img src="icons/icon.svg" alt="" width="28" height="28">
+      <img src="icons/icon.svg" alt="" width="30" height="30">
       <div>
-        <h1>Hộp ấp · Nhóm 13</h1>
+        <h1>Hộp ấp<span class="hide-xs"> · Nhóm 13</span></h1>
         <p class="sub">Q-learning · IoT Level-2</p>
       </div>
     </div>
+
+    <nav class="tabs" id="tabs" aria-label="Các mục" hidden>
+      <a href="#/tong-quan" data-tab="tong-quan">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>
+        <span>Tổng quan</span>
+      </a>
+      <a href="#/dieu-khien" data-tab="dieu-khien">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>
+        <span>Điều khiển</span>
+      </a>
+      <a href="#/bieu-do" data-tab="bieu-do">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18M7 15l4-5 3 3 5-7"/></svg>
+        <span>Biểu đồ</span>
+      </a>
+      <a href="#/lich-su" data-tab="lich-su">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5M12 7v5l3 2"/></svg>
+        <span>Lịch sử</span>
+      </a>
+    </nav>
+
     <div class="top-right">
       <span id="conn" class="chip idle" role="status" aria-live="polite">Đang kết nối…</span>
-      <button id="theme" class="icon-btn" type="button" aria-label="Đổi giao diện sáng/tối" title="Đổi giao diện sáng/tối">
-        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
-        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
-      </button>
-      <button id="logout" class="link" hidden>Đăng xuất</button>
+      <div class="pop-wrap" id="bell-wrap" hidden>
+        <button id="bell" class="icon-btn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="alert-panel" aria-label="Thông báo">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+          <span id="bell-count" class="count" hidden>0</span>
+        </button>
+        <div id="alert-panel" class="popover alert-panel" role="dialog" aria-label="Thông báo" hidden>
+          <div class="pop-head">
+            <strong>Thông báo</strong>
+            <button id="mark-read" class="link small" type="button">Đánh dấu đã đọc</button>
+          </div>
+          <div class="seg small-seg" role="group" aria-label="Lọc thông báo">
+            <button type="button" data-filter="all" aria-pressed="true">Tất cả</button>
+            <button type="button" data-filter="important" aria-pressed="false">Cảnh báo &amp; nguy hiểm</button>
+          </div>
+          <ul id="alerts" class="alerts"><li class="empty">Chưa có thông báo.</li></ul>
+          <div class="pop-foot">
+            <button id="notify" class="link small" type="button">Bật thông báo trình duyệt</button>
+            <span class="muted tiny">30 thông báo gần nhất</span>
+          </div>
+        </div>
+      </div>
+      <div class="pop-wrap" id="menu-wrap" hidden>
+        <button id="menu-btn" class="icon-btn" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="menu-panel" aria-label="Tài khoản và cài đặt">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+        </button>
+        <div id="menu-panel" class="popover menu-panel" hidden>
+          <p class="muted small">Đăng nhập bằng</p>
+          <p id="user-email" class="user-email">--</p>
+          <button id="theme" class="menu-item" type="button">
+            <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+            <span id="theme-label">Giao diện sáng</span>
+          </button>
+          <button id="logout" class="menu-item" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+            <span>Đăng xuất</span>
+          </button>
+          <p class="muted tiny about">Pi tự đo và điều khiển cục bộ; đám mây lưu trữ, hiển thị và nhận lệnh. · <span id="app-version">Phiên bản app: v12</span></p>
+        </div>
+      </div>
     </div>
   </header>
+
+  <div id="toasts" class="toasts" aria-live="polite"></div>
 
   <!-- Đăng nhập -->
   <section id="login-view" class="login" hidden>
     <form id="login-form" class="card login-card">
+      <img src="icons/icon.svg" alt="" width="48" height="48">
       <h2>Đăng nhập</h2>
       <p class="muted">Dùng tài khoản nhóm được tạo trong Firebase Authentication.</p>
       <label>Email<input id="email" type="email" autocomplete="username" required></label>
@@ -48,193 +106,310 @@
     </form>
   </section>
 
-  <!-- Ứng dụng -->
-  <main id="app-view" class="layout" hidden>
-    <section class="card now" aria-labelledby="now-title">
-      <div class="card-head">
-        <h2 id="now-title">Hiện tại</h2>
-        <span id="updated" class="muted small">--</span>
-      </div>
-      <div class="temp-row">
-        <div>
-          <div id="temp" class="temp">-- °C</div>
-          <div id="band" class="badge idle">Không có số đo</div>
+  <main id="app-view" hidden>
+    <!-- ================================================================ TỔNG QUAN -->
+    <section class="view overview" data-view="tong-quan" aria-label="Tổng quan">
+      <div class="col">
+      <article class="card hero" id="hero">
+        <div class="hero-status">
+          <span id="hero-dot" class="dot idle" aria-hidden="true"></span>
+          <div>
+            <h2 id="hero-title">Đang kết nối…</h2>
+            <p id="hero-detail" class="muted small">--</p>
+          </div>
+          <a id="hero-cta" class="cta" href="#/dieu-khien" hidden>Bắt đầu</a>
         </div>
-        <div class="trend"><span class="muted small">Xu hướng</span><strong id="trend">--</strong></div>
-      </div>
-      <dl class="stats">
-        <div><dt>Độ ẩm</dt><dd id="rh">-- %</dd><span id="rh-note" class="tiny muted"></span></div>
-        <div><dt>Bóng sưởi</dt><dd id="lamp">-- %</dd></div>
-        <div><dt>Quạt</dt><dd id="fan">-- %</dd></div>
-        <div><dt>Giai đoạn</dt><dd id="phase">--</dd></div>
-        <div><dt>Bộ điều khiển</dt><dd id="controller">--</dd></div>
-        <div><dt>Thời gian lượt</dt><dd id="elapsed">--</dd></div>
+
+        <div id="tay-banner" class="banner warn" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 11V6a2 2 0 0 0-4 0M14 10V4a2 2 0 0 0-4 0v2M10 10.5V6a2 2 0 0 0-4 0v8a8 8 0 0 0 16 0v-2a2 2 0 0 0-4 0"/></svg>
+          <span id="tay-banner-text">Đang chỉnh tay</span>
+          <a href="#/dieu-khien" data-scroll="card-tay" class="link small">Điều khiển</a>
+        </div>
+
+        <div class="temp-block">
+          <div>
+            <div class="temp"><span id="temp">--</span><span class="unit">°C</span></div>
+            <span id="band" class="badge idle">Không có số đo</span>
+          </div>
+          <dl class="temp-side">
+            <div><dt>Mốc</dt><dd id="target">--</dd></div>
+            <div><dt>Xu hướng</dt><dd><span id="trend-arrow" class="trend-arrow" aria-hidden="true"></span> <span id="trend">--</span></dd></div>
+          </dl>
+        </div>
+
+        <div class="gauge" aria-hidden="true">
+          <div class="gauge-track">
+            <div id="gauge-band" class="gauge-band"></div>
+            <div id="gauge-guard" class="gauge-tick guard"></div>
+            <div id="gauge-stop" class="gauge-tick stop"></div>
+            <div id="gauge-marker" class="gauge-marker" hidden></div>
+          </div>
+          <div class="gauge-scale"><span>36,5</span><span>37,5</span><span>38,3 bảo vệ</span><span>39</span></div>
+        </div>
+        <p id="updated" class="muted tiny">--</p>
+      </article>
+
+      <dl class="tiles">
+        <div class="tile">
+          <dt>Độ ẩm</dt><dd id="rh">-- %</dd>
+          <span id="rh-note" class="tiny muted"></span>
+        </div>
+        <div class="tile">
+          <dt>Bóng sưởi</dt><dd id="lamp">-- %</dd>
+          <div class="meter lamp"><span id="lamp-bar"></span></div>
+        </div>
+        <div class="tile">
+          <dt>Quạt</dt><dd id="fan">-- %</dd>
+          <div class="meter fan"><span id="fan-bar"></span></div>
+        </div>
+        <div class="tile">
+          <dt>Giai đoạn</dt><dd id="phase">--</dd>
+          <span id="controller" class="tiny muted">--</span>
+        </div>
       </dl>
-      <p class="muted small" id="band-note">Vùng mục tiêu 37,3–37,7 °C. % bóng/quạt là mức lệnh PWM, không phải công suất đo được.</p>
+      </div>
+
+      <div class="col">
+      <article class="card lich-card">
+        <div class="card-head">
+          <h2>Lịch ấp 21 ngày</h2>
+          <a href="#/dieu-khien" data-scroll="card-me" class="link small">Quản lý mẻ</a>
+        </div>
+        <div class="lich-row">
+          <div>
+            <div id="lich-day" class="lich-day">--</div>
+            <div id="lich-target" class="muted small">--</div>
+          </div>
+          <span id="lich-stage" class="badge idle">--</span>
+        </div>
+        <div class="timeline" aria-hidden="true">
+          <div class="seg1"><span>GĐ1 · 37,8</span></div>
+          <div class="seg2"><span>GĐ2 · 37,5</span></div>
+          <div class="seg3"><span>GĐ3 · 37,2</span></div>
+          <div id="lich-marker" class="marker" hidden></div>
+        </div>
+        <div class="timeline-days" aria-hidden="true"><span>Ngày 1</span><span>11</span><span>18</span><span>21</span></div>
+        <p id="lich-speed" class="muted small"></p>
+        <p id="lich-rh" class="badge idle small">--</p>
+      </article>
+
+      <article class="card mini-card">
+        <div class="card-head">
+          <h2>10 phút gần nhất</h2>
+          <a href="#/bieu-do" class="link small">Biểu đồ đầy đủ</a>
+        </div>
+        <div class="chart-box mini"><canvas id="mini-chart" aria-label="Nhiệt độ 10 phút gần nhất"></canvas></div>
+        <p id="mini-empty" class="empty-state" hidden>Chưa có lượt nào đang chạy.</p>
+      </article>
+      </div>
     </section>
 
-    <section class="card lich-card" aria-labelledby="lich-title">
-      <div class="card-head">
-        <h2 id="lich-title">Lịch ấp 21 ngày</h2>
-        <span id="lich-speed" class="muted small"></span>
-      </div>
-      <div class="lich-row">
-        <div>
-          <div id="lich-day" class="lich-day">--</div>
-          <div id="lich-target" class="muted small">--</div>
-        </div>
-        <span id="lich-stage" class="badge idle">--</span>
-      </div>
-      <div class="timeline" aria-hidden="true">
-        <div class="seg1"><span>GĐ1 · 37,8</span></div>
-        <div class="seg2"><span>GĐ2 · 37,5</span></div>
-        <div class="seg3"><span>GĐ3 · 37,2</span></div>
-        <div id="lich-marker" class="marker" hidden></div>
-      </div>
-      <p id="lich-rh" class="badge idle small">--</p>
-      <div class="day-control">
-        <label class="small" for="day-input">Đổi sang ngày</label>
-        <div class="day-row">
-          <input id="day-input" type="number" min="1" max="21" step="1" inputmode="numeric" value="1">
-          <button type="button" class="chipbtn" data-day="1">GĐ1</button>
-          <button type="button" class="chipbtn" data-day="11">GĐ2</button>
-          <button type="button" class="chipbtn" data-day="18">GĐ3</button>
-        </div>
-        <button id="day-send" class="primary" type="button" disabled>Đổi ngày</button>
-        <p id="day-status" class="small muted" role="status" aria-live="polite">--</p>
-      </div>
-      <div class="batch-control">
-        <h3>Mẻ ấp</h3>
-        <div class="day-row wrap">
-          <label class="small" for="batch-day">Bắt đầu ngày</label>
-          <input id="batch-day" type="number" min="1" max="21" step="1" inputmode="numeric" value="1">
-          <select id="batch-speed" aria-label="Tốc độ lịch">
-            <option value="86400">Thời gian thật</option>
-            <option value="300">Demo: 1 ngày = 5 phút</option>
-            <option value="120">Demo: 1 ngày = 2 phút</option>
-            <option value="60">Demo: 1 ngày = 1 phút</option>
-          </select>
-        </div>
-        <div class="btn-row">
-          <button id="batch-create" class="primary" type="button" disabled>Tạo mẻ mới</button>
-          <button id="batch-end" class="ghost" type="button" disabled>Kết thúc mẻ</button>
-        </div>
-        <p id="batch-status" class="small muted" role="status" aria-live="polite">--</p>
-        <p class="muted small">Mẻ demo: lịch đứng yên trong lúc làm ấm và giữa các lượt, chỉ chạy khi RL đang giữ nhiệt. Mẻ thời gian thật luôn chạy theo đồng hồ.</p>
-      </div>
-      <p class="muted small">RL đổi mốc theo ngày trong ≤ 5 giây. Bảo vệ cố định 38,3 °C (ngắt mềm) và 38,8 °C (dừng), không đổi theo ngày.</p>
-    </section>
+    <!-- ================================================================ ĐIỀU KHIỂN -->
+    <section class="view control" data-view="dieu-khien" aria-label="Điều khiển" hidden>
+      <article class="card step" id="card-me">
+        <header class="step-head">
+          <span class="step-num">1</span>
+          <div>
+            <h2>Mẻ ấp</h2>
+            <p id="batch-summary" class="muted small">--</p>
+          </div>
+        </header>
 
-    <section class="card chart-card" aria-labelledby="chart-title">
-      <div class="card-head">
-        <div>
-          <h2 id="chart-title">Diễn biến lượt hiện tại</h2>
-          <span id="session-name" class="muted small">--</span>
+        <div class="field-group">
+          <h3>Tạo mẻ mới</h3>
+          <div class="form-row">
+            <label class="field">
+              <span>Bắt đầu từ ngày</span>
+              <input id="batch-day" type="number" min="1" max="21" step="1" inputmode="numeric" value="1">
+            </label>
+            <label class="field grow">
+              <span>Tốc độ lịch</span>
+              <select id="batch-speed">
+                <option value="86400">Thời gian thật</option>
+                <option value="300">Demo: 1 ngày = 5 phút</option>
+                <option value="120">Demo: 1 ngày = 2 phút</option>
+                <option value="60">Demo: 1 ngày = 1 phút</option>
+              </select>
+            </label>
+          </div>
+          <div class="btn-row">
+            <button id="batch-create" class="primary" type="button" disabled>Tạo mẻ mới</button>
+            <button id="batch-end" class="ghost" type="button" disabled>Kết thúc mẻ</button>
+          </div>
+          <p id="batch-status" class="status" role="status" aria-live="polite">--</p>
         </div>
-        <div class="seg" role="group" aria-label="Khoảng thời gian">
-          <button type="button" data-range="600" aria-pressed="true">10 phút</button>
-          <button type="button" data-range="0" aria-pressed="false">Cả lượt</button>
-        </div>
-      </div>
-      <div class="chart-box tall"><canvas id="temp-chart" aria-label="Đồ thị nhiệt độ"></canvas></div>
-      <div class="chart-box short"><canvas id="pwm-chart" aria-label="Đồ thị mức bóng và quạt"></canvas></div>
-      <p id="chart-empty" class="muted small" hidden>Chưa có dữ liệu cho lượt này.</p>
-    </section>
 
-    <section class="card alerts-card" aria-labelledby="alerts-title">
-      <div class="card-head">
-        <h2 id="alerts-title">Cảnh báo</h2>
-        <button id="notify" class="link small">Bật thông báo</button>
-      </div>
-      <ul id="alerts" class="alerts"><li class="muted">Chưa có cảnh báo.</li></ul>
-    </section>
-
-    <section class="card stop-card" aria-labelledby="stop-title">
-      <h2 id="stop-title">Lượt chạy</h2>
-      <div class="run-form">
-        <div class="day-row wrap">
-          <select id="run-ctrl" aria-label="Bộ điều khiển">
-            <option value="rl">Q-learning (RL)</option>
-            <option value="thermostat">Thermostat (đối chứng)</option>
-          </select>
-          <select id="run-min" aria-label="Thời lượng">
-            <option value="10">10 phút</option>
-            <option value="20">20 phút</option>
-            <option value="30" selected>30 phút</option>
-            <option value="45">45 phút</option>
-            <option value="60">60 phút</option>
-          </select>
+        <div class="field-group">
+          <h3>Đổi ngày ấp</h3>
+          <div class="form-row">
+            <div class="stepper">
+              <button type="button" class="step-btn" data-step="-1" aria-label="Lùi 1 ngày">−</button>
+              <input id="day-input" type="number" min="1" max="21" step="1" inputmode="numeric" value="1" aria-label="Ngày ấp">
+              <button type="button" class="step-btn" data-step="1" aria-label="Tiến 1 ngày">+</button>
+            </div>
+            <div class="quick">
+              <button type="button" class="chipbtn" data-day="1">GĐ1</button>
+              <button type="button" class="chipbtn" data-day="11">GĐ2</button>
+              <button type="button" class="chipbtn" data-day="18">GĐ3</button>
+            </div>
+          </div>
+          <p id="day-preview" class="muted small">--</p>
+          <button id="day-send" class="primary" type="button" disabled>Đổi ngày</button>
+          <p id="day-status" class="status" role="status" aria-live="polite">--</p>
         </div>
-        <label class="check small"><input id="run-ack" type="checkbox">
-          Tôi đang ở cạnh hộp; hộp rỗng, đã nguội ≤ 30 °C, adapter 12 V đã cắm.</label>
+
+        <details class="help">
+          <summary>Mẻ ấp và lịch hoạt động thế nào?</summary>
+          <p>Mẻ demo: lịch đứng yên trong lúc làm ấm và giữa các lượt, chỉ chạy khi RL đang giữ nhiệt. Mẻ thời gian thật luôn chạy theo đồng hồ.</p>
+          <p>Khi đổi ngày, RL chuyển sang mốc mới trong ≤ 5 giây. Bảo vệ cố định 38,3 °C (ngắt mềm) và 38,8 °C (dừng), không đổi theo ngày.</p>
+        </details>
+      </article>
+
+      <article class="card step" id="card-luot">
+        <header class="step-head">
+          <span class="step-num">2</span>
+          <div>
+            <h2>Lượt chạy</h2>
+            <p class="muted small">Bật sưởi và để bộ điều khiển giữ nhiệt theo lịch.</p>
+          </div>
+        </header>
+        <div class="field-group">
+          <h3>Bộ điều khiển</h3>
+          <div class="choices" role="radiogroup" aria-label="Bộ điều khiển">
+            <label><input type="radio" name="run-ctrl" value="rl" checked><span>Q-learning<small>RL</small></span></label>
+            <label><input type="radio" name="run-ctrl" value="thermostat"><span>Thermostat<small>đối chứng</small></span></label>
+          </div>
+          <h3>Thời lượng</h3>
+          <div class="choices compact" role="radiogroup" aria-label="Thời lượng">
+            <label><input type="radio" name="run-min" value="10"><span>10′</span></label>
+            <label><input type="radio" name="run-min" value="20"><span>20′</span></label>
+            <label><input type="radio" name="run-min" value="30" checked><span>30′</span></label>
+            <label><input type="radio" name="run-min" value="45"><span>45′</span></label>
+            <label><input type="radio" name="run-min" value="60"><span>60′</span></label>
+          </div>
+        </div>
+        <ul id="run-checks" class="checks" aria-label="Điều kiện bắt đầu"></ul>
+        <label class="check ack"><input id="run-ack" type="checkbox">
+          <span>Tôi đang ở cạnh hộp; hộp rỗng, đã nguội ≤ 30 °C, adapter 12 V đã cắm.</span></label>
         <button id="run-start" class="primary" type="button" disabled>Bắt đầu lượt</button>
-        <p id="run-status" class="small muted" role="status" aria-live="polite">--</p>
-        <p class="muted small">Pi tự kiểm tra lại trước khi bật tải: có mẻ ấp, không có chương trình khác đang chạy, đọc được DS18B20, hộp ≤ 30 °C. Thiếu điều kiện nào thì từ chối.</p>
-      </div>
-      <hr class="sep">
-      <h3>Chỉnh tay (đè lên RL có hạn giờ)</h3>
-      <div class="run-form" id="tay-form">
-        <div class="day-row wrap">
-          <select id="tay-bong" aria-label="Mức bóng">
-            <option value="0">Bóng 0 %</option>
-            <option value="25">Bóng 25 %</option>
-            <option value="50" selected>Bóng 50 %</option>
-            <option value="75">Bóng 75 %</option>
-            <option value="100">Bóng 100 %</option>
-          </select>
-          <select id="tay-quat" aria-label="Mức quạt">
-            <option value="75">Quạt 75 %</option>
-            <option value="100" selected>Quạt 100 %</option>
-          </select>
-          <select id="tay-han" aria-label="Thời hạn">
-            <option value="60">1 phút</option>
-            <option value="120" selected>2 phút</option>
-            <option value="300">5 phút</option>
-          </select>
+        <p id="run-status" class="status" role="status" aria-live="polite">--</p>
+        <p id="stop-status" class="status muted"></p>
+        <details class="help">
+          <summary>Pi kiểm tra gì trước khi bật tải?</summary>
+          <p>Có mẻ ấp, không có chương trình khác đang chạy, đọc được DS18B20, hộp ≤ 30 °C. Thiếu điều kiện nào thì Pi từ chối và báo lý do.</p>
+          <p>Khi lượt đang chạy, nút <b>Dừng khẩn cấp</b> luôn nằm ở thanh dưới cùng màn hình. Dừng từ xa không thay thế việc rút adapter 12 V nếu tải không tắt.</p>
+        </details>
+      </article>
+
+      <article class="card step" id="card-tay">
+        <header class="step-head">
+          <span class="step-num">3</span>
+          <div>
+            <h2>Chỉnh tay</h2>
+            <p class="muted small">Tạm đè lên RL trong vài phút, hết giờ RL tự lấy lại quyền.</p>
+          </div>
+        </header>
+        <p id="tay-active" class="banner idle" role="status" aria-live="polite">--</p>
+        <div class="field-group">
+          <h3>Bóng sưởi</h3>
+          <div class="choices compact" role="radiogroup" aria-label="Mức bóng">
+            <label><input type="radio" name="tay-bong" value="0"><span>0 %</span></label>
+            <label><input type="radio" name="tay-bong" value="25"><span>25 %</span></label>
+            <label><input type="radio" name="tay-bong" value="50" checked><span>50 %</span></label>
+            <label><input type="radio" name="tay-bong" value="75"><span>75 %</span></label>
+            <label><input type="radio" name="tay-bong" value="100"><span>100 %</span></label>
+          </div>
+          <h3>Quạt</h3>
+          <div class="choices compact" role="radiogroup" aria-label="Mức quạt">
+            <label><input type="radio" name="tay-quat" value="75"><span>75 %</span></label>
+            <label><input type="radio" name="tay-quat" value="100" checked><span>100 %</span></label>
+          </div>
+          <h3>Trong</h3>
+          <div class="choices compact" role="radiogroup" aria-label="Thời hạn">
+            <label><input type="radio" name="tay-han" value="60"><span>1 phút</span></label>
+            <label><input type="radio" name="tay-han" value="120" checked><span>2 phút</span></label>
+            <label><input type="radio" name="tay-han" value="300"><span>5 phút</span></label>
+          </div>
         </div>
-        <div class="day-row wrap">
+        <ul id="tay-checks" class="checks" aria-label="Điều kiện chỉnh tay"></ul>
+        <div class="btn-row">
           <button id="tay-apply" class="primary" type="button" disabled>Áp dụng chỉnh tay</button>
           <button id="tay-return" class="ghost" type="button" disabled>Trả về RL ngay</button>
         </div>
-        <p id="tay-active" class="small muted" role="status" aria-live="polite">--</p>
-        <p id="tay-status" class="small muted">--</p>
-        <p class="muted small">Chỉ nhận khi lượt <b>ap_trung</b> đã vào giữ nhiệt. Hết giờ thì RL tự lấy lại quyền. Bảo vệ 38,3 °C (tắt bóng, quạt 100 %) và dừng cứng 38,8 °C vẫn luôn thắng lệnh tay. Các bước chỉnh tay không tính vào chỉ số của RL.</p>
-      </div>
-      <hr class="sep">
-      <h3>Dừng khẩn cấp</h3>
-      <p class="muted small">Pi sẽ tắt bóng, tắt quạt và kết thúc lượt chạy. Không thay thế việc rút adapter 12 V nếu tải không tắt.</p>
-      <button id="stop" class="danger" disabled>Dừng lượt đang chạy</button>
-      <p id="stop-status" class="small" role="status" aria-live="polite">--</p>
+        <p id="tay-status" class="status">--</p>
+        <details class="help">
+          <summary>An toàn khi chỉnh tay</summary>
+          <p>Chỉ nhận khi lượt <b>ap_trung</b> đã vào giữ nhiệt. Bảo vệ 38,3 °C (tắt bóng, quạt 100 %) và dừng cứng 38,8 °C vẫn luôn thắng lệnh tay.</p>
+          <p>Chỉ có 9 cặp bóng/quạt đã khảo sát (bóng 100 % đi với quạt 75 %). Các bước chỉnh tay không tính vào chỉ số của RL.</p>
+        </details>
+      </article>
     </section>
 
-    <section class="card history-card" aria-labelledby="history-title">
-      <div class="card-head">
-        <h2 id="history-title">Lịch sử và so sánh</h2>
-        <label class="small toggle"><input id="show-replay" type="checkbox"> Hiện phiên phát lại / đọc thử</label>
-      </div>
-      <p class="muted small">Chọn tối đa 2 lượt để chồng đồ thị, căn từ lúc bắt đầu giữ nhiệt (10 phút).</p>
-      <div class="table-wrap">
-        <table class="history">
-          <thead>
-            <tr>
-              <th scope="col"><span class="sr-only">Chọn</span></th>
-              <th scope="col">Lượt</th>
-              <th scope="col">Bộ điều khiển</th>
-              <th scope="col" class="num">MAE</th>
-              <th scope="col" class="num">Trong vùng</th>
-              <th scope="col" class="num wide-only">Độ lệch chuẩn</th>
-              <th scope="col" class="num">Đổi mức</th>
-              <th scope="col" class="num wide-only">Làm ấm</th>
-            </tr>
-          </thead>
-          <tbody id="history"><tr><td colspan="8" class="muted">Đang tải…</td></tr></tbody>
-        </table>
-      </div>
-      <div class="chart-box tall"><canvas id="compare-chart" aria-label="Đồ thị so sánh hai lượt"></canvas></div>
-      <p id="compare-empty" class="muted small">Chưa chọn lượt để so sánh.</p>
+    <!-- ================================================================ BIỂU ĐỒ -->
+    <section class="view charts" data-view="bieu-do" aria-label="Biểu đồ" hidden>
+      <article class="card chart-card">
+        <div class="card-head wrap">
+          <div>
+            <h2>Diễn biến lượt</h2>
+            <span id="session-name" class="muted small">--</span>
+          </div>
+          <div class="seg" role="group" aria-label="Khoảng thời gian" id="range-seg">
+            <button type="button" data-range="600" aria-pressed="true">10 phút</button>
+            <button type="button" data-range="1800" aria-pressed="false">30 phút</button>
+            <button type="button" data-range="0" aria-pressed="false">Cả lượt</button>
+          </div>
+        </div>
+        <div class="legend">
+          <span><i class="lg temp"></i>Nhiệt độ</span>
+          <span><i class="lg band"></i>Vùng mục tiêu</span>
+        </div>
+        <div class="chart-box tall"><canvas id="temp-chart" aria-label="Đồ thị nhiệt độ"></canvas></div>
+        <h3 class="chart-sub">Mức lệnh bóng và quạt</h3>
+        <div class="chart-box short"><canvas id="pwm-chart" aria-label="Đồ thị mức bóng và quạt"></canvas></div>
+        <p id="chart-empty" class="empty-state" hidden>Chưa có dữ liệu cho lượt này. Biểu đồ hiện khi có lượt đang chạy.</p>
+        <p id="band-note" class="muted tiny">% bóng/quạt là mức lệnh PWM, không phải công suất đo được.</p>
+      </article>
+    </section>
+
+    <!-- ================================================================ LỊCH SỬ -->
+    <section class="view history" data-view="lich-su" aria-label="Lịch sử và so sánh" hidden>
+      <article class="card runs-card">
+        <div class="card-head wrap">
+          <div>
+            <h2>Các lượt đã chạy</h2>
+            <span id="history-count" class="muted small">--</span>
+          </div>
+          <label class="small toggle"><input id="show-replay" type="checkbox"> Hiện phát lại / đọc thử</label>
+        </div>
+        <p class="muted small">Chạm vào tối đa 2 lượt để so sánh.</p>
+        <div id="history" class="run-list"><p class="empty-state">Đang tải…</p></div>
+      </article>
+
+      <article class="card compare-card">
+        <div class="card-head">
+          <h2>So sánh</h2>
+          <button id="compare-clear" class="link small" type="button" hidden>Bỏ chọn</button>
+        </div>
+        <p id="compare-empty" class="empty-state">Chưa chọn lượt để so sánh.</p>
+        <div id="compare-body" hidden>
+          <div class="table-wrap">
+            <table class="metrics">
+              <thead><tr><th scope="col">Chỉ số</th><th scope="col" id="cmp-a">A</th><th scope="col" id="cmp-b">B</th></tr></thead>
+              <tbody id="compare-table"></tbody>
+            </table>
+          </div>
+          <h3 class="chart-sub">Nhiệt độ 10 phút đầu giữ nhiệt</h3>
+          <div class="chart-box tall"><canvas id="compare-chart" aria-label="Đồ thị so sánh hai lượt"></canvas></div>
+        </div>
+      </article>
     </section>
   </main>
 
-  <footer class="foot muted small">Pi tự đo và điều khiển cục bộ; đám mây lưu trữ, hiển thị và nhận lệnh (dừng, đổi ngày, mẻ, bắt đầu lượt, chỉnh tay). · <span id="app-version">Phiên bản app: v11</span></footer>
+  <!-- Dừng khẩn cấp: luôn ở đáy màn hình khi có lượt đang chạy, ở mọi mục -->
+  <div id="stopbar" class="stopbar" hidden>
+    <span class="dot ok pulse" aria-hidden="true"></span>
+    <span id="stopbar-text" class="stopbar-text">Đang chạy</span>
+    <button id="stop" class="danger" type="button" disabled>Dừng khẩn cấp</button>
+  </div>
 </body>
 </html>

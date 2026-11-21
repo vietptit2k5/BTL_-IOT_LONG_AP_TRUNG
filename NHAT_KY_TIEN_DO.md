@@ -129,3 +129,12 @@
 - `ap_trung.py` đọc `lenh_tay.json` mỗi bước theo thứ tự ưu tiên: bảo vệ, rồi lệnh tay, rồi RL. Pha `_tay` không tính vào chỉ số RL. Lệnh của lượt trước bị bỏ qua.
 - Quy tắc Firebase kiểm tra tham số. Cảnh báo mới: CHINH_TAY, TRA_VE_RL. Kiểm thử phần cứng: T13.
 - Test: 223 Python, 13 app, tất cả qua. Cần chép code lên Pi và chạy lại `cai_dich_vu_bridge.sh`; deploy `database,hosting`.
+
+## Giao diện app v12 (21/11)
+
+- Chia app thành 4 mục: Tổng quan, Điều khiển, Biểu đồ, Lịch sử. Trên điện thoại thanh mục ở đáy, trên màn hình rộng ở thanh trên; mỗi mục có địa chỉ `#/…`.
+- Cảnh báo chuyển thành chuông ở góc phải: số chưa đọc, lọc theo mức, thông báo nổi khi có cảnh báo mới. Đổi giao diện sáng/tối và đăng xuất gom vào menu tài khoản.
+- Tổng quan: câu trạng thái dễ hiểu kèm nút bước tiếp theo, thang nhiệt có vùng mục tiêu và vạch bảo vệ, ô số đo có thanh mức, lịch thu gọn, đồ thị 10 phút.
+- Điều khiển: 3 bước (mẻ, lượt, chỉnh tay), nút lựa chọn lớn thay danh sách thả xuống, danh sách điều kiện ✓/○, giải thích an toàn thu gọn. Dừng khẩn cấp là thanh nổi hiện ở mọi mục khi đang chạy.
+- Lịch sử: danh sách thẻ, bảng so sánh 2 lượt đánh dấu ★ chỉ số tốt hơn.
+- Logic mới có test (17 test app). Đã chạy trong DOM giả lập và chụp thử bằng Edge headless (điện thoại 390 px, máy tính 1440 px). Firebase và lệnh không đổi; chỉ cần deploy hosting.

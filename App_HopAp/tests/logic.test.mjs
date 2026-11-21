@@ -147,3 +147,46 @@ test('trạng thái lệnh dừng', () => {
   assert.match(L.stopStatus({ value: false, ket_qua: 'DA_GUI_SIGTERM_PID_12', xu_ly_ts: 1 }).text, /đã tắt bóng/);
   assert.match(L.stopStatus({ value: false, ket_qua: 'KHONG_TIM_THAY_TIEN_TRINH', xu_ly_ts: 1 }).text, /Không tìm thấy/);
 });
+
+test('giao diện: tiêu đề trạng thái, thang nhiệt, xu hướng, tab', () => {
+  const on = { piOnline: true, running: true, stale: false };
+  assert.equal(L.runHeadline({ piOnline: false }, null, true).tone, 'bad');
+  assert.equal(L.runHeadline({ piOnline: true, stale: true }, null, true).title, 'Mất dữ liệu lượt');
+  const h = L.runHeadline(on, { giai_doan: 'tay', giai_doan_ten: 'Chỉnh tay', bo_dieu_khien: 'Q-learning v2', elapsed_s: 65 }, true);
+  assert.equal(h.tone, 'warn');
+  assert.match(h.detail, /Q-learning v2 · đã chạy 1:05/);
+  assert.equal(L.runHeadline({ piOnline: true, running: false }, null, false).title, 'Chưa có mẻ ấp');
+  assert.equal(L.gaugePos(36.0), 0);
+  assert.equal(L.gaugePos(37.75), 50);
+  assert.equal(L.gaugePos(null), null);
+  assert.equal(L.trendInfo(0.1).arrow, '↑');
+  assert.equal(L.trendInfo(-0.01).arrow, '→');
+  assert.equal(L.tabFromHash('#/lich-su'), 'lich-su');
+  assert.equal(L.tabFromHash('#/khong-co'), 'tong-quan');
+  assert.equal(L.connectionState(null, null, 0).short, 'Mất kết nối');
+});
+
+test('chuông thông báo: đếm chưa đọc và mức nặng nhất', () => {
+  const list = [{ ts: 30, muc: 'thong_tin' }, { ts: 20, muc: 'nguy_hiem' }, { ts: 10, muc: 'canh_bao' }];
+  assert.deepEqual(L.unreadInfo(list, 15), { count: 2, worst: 'nguy_hiem', label: '2' });
+  assert.equal(L.unreadInfo(list, 30).count, 0);
+  assert.equal(L.unreadInfo(Array.from({ length: 12 }, (_, i) => ({ ts: i + 1, muc: 'thong_tin' })), 0).label, '9+');
+});
+
+test('danh sách điều kiện của nút bắt đầu lượt / chỉnh tay', () => {
+  const g = L.canStartRun({ piOnline: true, running: false, hasBatch: false, ack: true, pending: false });
+  assert.deepEqual(g.checks.map((c) => c.ok), [true, true, false, true]);
+  const m = L.canManual({ piOnline: true, running: false, pha: '', pending: false, lamp: 0, fan: 75 });
+  assert.equal(m.checks.some((c) => c.label.includes('làm ấm')), false);  // chưa chạy thì chưa hỏi làm ấm
+});
+
+test('so sánh chỉ số 2 lượt', () => {
+  const rows = L.compareMetrics({ mae_c: 0.05, trong_vung_pct: 90, so_lan_doi_muc: 12 },
+    { mae_c: 0.08, trong_vung_pct: 95, so_lan_doi_muc: 12 });
+  const by = Object.fromEntries(rows.map((r) => [r.key, r]));
+  assert.equal(by.mae_c.win, 'a');
+  assert.equal(by.trong_vung_pct.win, 'b');
+  assert.equal(by.so_lan_doi_muc.win, null);
+  assert.equal(by.lam_am_s.a, '--');
+  assert.equal(L.compareMetrics({ mae_c: 0.1 }, null)[0].win, null);
+});
