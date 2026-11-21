@@ -1,0 +1,18 @@
+# Code chạy trên Raspberry Pi: luôn LF (script bash CRLF báo lỗi "set: pipefail").
+*.sh   text eol=lf
+*.py   text eol=lf
+*.js   text eol=lf
+*.mjs  text eol=lf
+*.md   text eol=lf
+*.html text eol=lf
+*.css  text eol=lf
+
+# Giữ NGUYÊN TỪNG BYTE: gói Q-table được kiểm tra SHA-256 (chúng vốn là CRLF), và dữ liệu đo
+# có mã hash ghi trong báo cáo. Git không được đổi xuống dòng các file này.
+Code_HopAp_Demo/*.json  -text
+Du_lieu_*/**            -text
+outputs/**              -text
+Code_HopAp_PhanTich/results/** -text
+*.npz binary
+*.npy binary
+*.png binary

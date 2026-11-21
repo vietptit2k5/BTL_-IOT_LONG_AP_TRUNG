@@ -1,0 +1,27 @@
+{
+  "purpose": "REFERENCE_CONTROLLER_ONLY",
+  "protocol_version": 2,
+  "target_c": 37.5,
+  "band_c": 0.5,
+  "fan_pwm_hz": 100,
+  "configuration": {
+    "kind": "thermostat",
+    "band": 0.1,
+    "fan_mode": "trend"
+  },
+  "actions": [
+    [0.0, 0.75],
+    [0.0, 1.0],
+    [0.25, 0.75],
+    [0.25, 1.0],
+    [0.5, 0.75],
+    [0.5, 1.0],
+    [0.75, 0.75],
+    [0.75, 1.0],
+    [1.0, 0.75]
+  ],
+  "selection": "Frozen from validation simulations, before robustness checks",
+  "source_run": "20261117_070909_628598",
+  "source_csv_sha256": "7ed00d0151a9d84d4c0d201e26b65f8a63ca9cc0ed0362250364a6d3fac9de14",
+  "note": "Reference thermostat only; not a Q-table and not evidence of hardware performance. Soft guard 38 to 37 C is applied independently."
+}

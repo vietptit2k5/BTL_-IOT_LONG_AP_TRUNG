@@ -1,0 +1,49 @@
+{
+  "command": "do",
+  "bo_dieu_khien": "thu-rl",
+  "goi_thu_rl": "/home/pi/Code_HopAp_Demo/goi_thu_rl_20261117.json",
+  "cau_hinh_doi_chung": "/home/pi/Code_HopAp_Demo/doi_chung_kiem_tra.json",
+  "bong": 50,
+  "quat": 75,
+  "giay": 600,
+  "lam_am_toi_da": 600,
+  "sensor": null,
+  "khong_oled": false,
+  "dry_run": false,
+  "out": null,
+  "profile": {
+    "completed": true,
+    "soft_guard_count": 0,
+    "requested_hold_seconds": 600,
+    "warm_timeout_s": 600,
+    "initial_temperature_c": 27.5,
+    "hold_initial_temperature_c": 37.0,
+    "warm_elapsed_s": 310.08773270500024,
+    "control_period_s": 5,
+    "soft_guard_off_c": 38,
+    "soft_guard_resume_c": 37,
+    "hard_cutoff_c": 40,
+    "pilot": {
+      "seed": 11,
+      "package_sha256": "bd5caa79ebff4c7ee066dc96fec3fd462639b119faca5f9efd73d0397910fc7a",
+      "decisions": 120,
+      "visited_states": [
+        64,
+        70,
+        74,
+        80,
+        86,
+        88,
+        98,
+        104
+      ],
+      "q_updates": 0,
+      "heater_memory": 0.5125432973908286,
+      "observer_source": "applied PWM command, not measured heater power",
+      "automatic_deploy_allowed": false
+    },
+    "note": "Guard intervals remain part of the hold test; supervised experiment only, no online learning."
+  },
+  "reference": null,
+  "hardware_program_exit_code": 0
+}

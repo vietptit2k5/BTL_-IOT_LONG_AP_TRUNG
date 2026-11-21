@@ -1,0 +1,670 @@
+{
+  "status": "NO_VALIDATED_REWARD_CANDIDATE",
+  "target_c": 37.5,
+  "tolerance_c": 0.5,
+  "evidence": "CSV_INPUT_AND_FITTED_SIMULATION_ONLY; no hardware RL validation or hatch claim",
+  "sources": [
+    {
+      "path": "/home/pi/Code_HopAp_Demo/ket_qua_khao_sat/20261117_070909_628598/du_lieu.csv",
+      "sha256": "7ed00d0151a9d84d4c0d201e26b65f8a63ca9cc0ed0362250364a6d3fac9de14",
+      "issues": [],
+      "warnings": []
+    }
+  ],
+  "response_blocks": 35,
+  "model": {
+    "observed_temperature_range_c": [
+      31.5,
+      38.125
+    ],
+    "actions": [
+      [
+        0.0,
+        0.75
+      ],
+      [
+        0.0,
+        1.0
+      ],
+      [
+        0.25,
+        0.75
+      ],
+      [
+        0.25,
+        1.0
+      ],
+      [
+        0.5,
+        0.75
+      ],
+      [
+        0.5,
+        1.0
+      ],
+      [
+        0.75,
+        0.75
+      ],
+      [
+        0.75,
+        1.0
+      ],
+      [
+        1.0,
+        0.75
+      ]
+    ],
+    "action_observation_support": [
+      {
+        "lamp_pct": 0.0,
+        "fan_pct": 75.0,
+        "required_continuous_s": 120.0,
+        "longest_observed_s": 119.01299999999992,
+        "qualified": true
+      },
+      {
+        "lamp_pct": 0.0,
+        "fan_pct": 100.0,
+        "required_continuous_s": 120.0,
+        "longest_observed_s": 119.00799999999981,
+        "qualified": true
+      },
+      {
+        "lamp_pct": 25.0,
+        "fan_pct": 75.0,
+        "required_continuous_s": 120.0,
+        "longest_observed_s": 119.03999999999996,
+        "qualified": true
+      },
+      {
+        "lamp_pct": 25.0,
+        "fan_pct": 100.0,
+        "required_continuous_s": 120.0,
+        "longest_observed_s": 119.04000000000019,
+        "qualified": true
+      },
+      {
+        "lamp_pct": 50.0,
+        "fan_pct": 75.0,
+        "required_continuous_s": 120.0,
+        "longest_observed_s": 119.04600000000028,
+        "qualified": true
+      },
+      {
+        "lamp_pct": 50.0,
+        "fan_pct": 100.0,
+        "required_continuous_s": 120.0,
+        "longest_observed_s": 119.0389999999993,
+        "qualified": true
+      },
+      {
+        "lamp_pct": 75.0,
+        "fan_pct": 75.0,
+        "required_continuous_s": 120.0,
+        "longest_observed_s": 119.00800000000004,
+        "qualified": true
+      },
+      {
+        "lamp_pct": 75.0,
+        "fan_pct": 100.0,
+        "required_continuous_s": 120.0,
+        "longest_observed_s": 119.00700000000006,
+        "qualified": true
+      },
+      {
+        "lamp_pct": 100.0,
+        "fan_pct": 75.0,
+        "required_continuous_s": 120.0,
+        "longest_observed_s": 119.04100000000017,
+        "qualified": true
+      },
+      {
+        "lamp_pct": 100.0,
+        "fan_pct": 100.0,
+        "required_continuous_s": 120.0,
+        "longest_observed_s": 76.98900000000003,
+        "qualified": false
+      }
+    ],
+    "model_domain_margin_c": 0.25,
+    "candidates": [
+      {
+        "tau_s": 0.0,
+        "coefficients": [
+          -0.05204175442664276,
+          -0.003258211198415071,
+          0.4920780357776622,
+          0.1223838548617912,
+          -0.05952856691892954,
+          0.07482153831467415
+        ],
+        "qr_diagonal_ratio": 1.8415236542034719,
+        "validation": {
+          "one_step_rmse_c": 0.04228449532386695,
+          "rollout_30s_rmse_c": 0.12163114825974644,
+          "persistence_30s_rmse_c": 0.307176770273033
+        },
+        "train_steps": 364,
+        "validation_steps": 119,
+        "test_steps": 120
+      },
+      {
+        "tau_s": 10.0,
+        "coefficients": [
+          -0.09576593936597036,
+          -0.007277982209154172,
+          0.1686614256028459,
+          0.22270824205247602,
+          -0.09645131364468157,
+          0.11712306675419215
+        ],
+        "qr_diagonal_ratio": 1.9403756973877178,
+        "validation": {
+          "one_step_rmse_c": 0.038239584371966,
+          "rollout_30s_rmse_c": 0.10987715989754741,
+          "persistence_30s_rmse_c": 0.307176770273033
+        },
+        "train_steps": 364,
+        "validation_steps": 119,
+        "test_steps": 120
+      },
+      {
+        "tau_s": 25.0,
+        "coefficients": [
+          -0.1653616355369684,
+          -0.02058371984111048,
+          -0.14229669206737797,
+          0.38099842574852033,
+          -0.13249781186979606,
+          0.07633251368288317
+        ],
+        "qr_diagonal_ratio": 2.4112716948535717,
+        "validation": {
+          "one_step_rmse_c": 0.03443030589127666,
+          "rollout_30s_rmse_c": 0.07445879878716888,
+          "persistence_30s_rmse_c": 0.307176770273033
+        },
+        "train_steps": 364,
+        "validation_steps": 119,
+        "test_steps": 120
+      }
+    ],
+    "selected": {
+      "tau_s": 25.0,
+      "coefficients": [
+        -0.1653616355369684,
+        -0.02058371984111048,
+        -0.14229669206737797,
+        0.38099842574852033,
+        -0.13249781186979606,
+        0.07633251368288317
+      ],
+      "qr_diagonal_ratio": 2.4112716948535717,
+      "validation": {
+        "one_step_rmse_c": 0.03443030589127666,
+        "rollout_30s_rmse_c": 0.07445879878716888,
+        "persistence_30s_rmse_c": 0.307176770273033
+      },
+      "train_steps": 364,
+      "validation_steps": 119,
+      "test_steps": 120,
+      "test": {
+        "one_step_rmse_c": 0.0327746552379125,
+        "rollout_30s_rmse_c": 0.07250638665812537,
+        "persistence_30s_rmse_c": 0.4292009952501475
+      },
+      "model": {
+        "coefficients": [
+          -0.1653616355369684,
+          -0.02058371984111048,
+          -0.14229669206737797,
+          0.38099842574852033,
+          -0.13249781186979606,
+          0.07633251368288317
+        ],
+        "center": 35.93146794159731,
+        "fan_center": 0.875,
+        "tau": 25.0,
+        "low": 31.25,
+        "high": 38.375,
+        "noise_sd": 0.03622211620849173
+      }
+    }
+  },
+  "needs_more_data": [],
+  "warnings": [
+    "Tổ hợp bóng 100%/quạt 100% chưa có cửa sổ 120s liên tục; không đưa tổ hợp đó vào Q-table ứng viên."
+  ],
+  "reward_formula": "-|T-target|/band - w_hot*(max(0,T-target-band)/band)^2 - w_duty*(u_heat+u_fan)/2 - w_switch*(|du_heat|+|du_fan|)",
+  "effort_is_duty_proxy_not_measured_energy": true,
+  "deploy_allowed": false,
+  "reward_search": {
+    "trials": [
+      {
+        "weights": {
+          "hot": 1.0,
+          "duty": 0.0,
+          "switch": 0.0
+        },
+        "validation": {
+          "mae_c": 0.7654038111444963,
+          "in_band_pct": 61.43229166666667,
+          "hot_area_c_min": 0.08106047875694118,
+          "mean_duty_proxy": 0.6617838541666667,
+          "mean_change": 0.42018229166666665,
+          "guard_rate": 0.0,
+          "fallback_rate": 0.0020833333333333333,
+          "unsupported_fraction": 0.03125,
+          "max_temperature_c": 38.438852170544905
+        }
+      },
+      {
+        "weights": {
+          "hot": 1.0,
+          "duty": 0.0,
+          "switch": 0.03
+        },
+        "validation": {
+          "mae_c": 0.901458260715498,
+          "in_band_pct": 51.015625,
+          "hot_area_c_min": 0.0370273269950665,
+          "mean_duty_proxy": 0.6453450520833333,
+          "mean_change": 0.37330729166666665,
+          "guard_rate": 0.0,
+          "fallback_rate": 0.0054687500000000005,
+          "unsupported_fraction": 0.0625,
+          "max_temperature_c": 38.424731466568
+        }
+      },
+      {
+        "weights": {
+          "hot": 1.0,
+          "duty": 0.05,
+          "switch": 0.0
+        },
+        "validation": {
+          "mae_c": 0.43893357939865263,
+          "in_band_pct": 75.78125,
+          "hot_area_c_min": 0.06516981581260646,
+          "mean_duty_proxy": 0.6754231770833333,
+          "mean_change": 0.43489583333333337,
+          "guard_rate": 0.0,
+          "fallback_rate": 0.0020833333333333333,
+          "unsupported_fraction": 0.0625,
+          "max_temperature_c": 38.41096029789797
+        }
+      },
+      {
+        "weights": {
+          "hot": 1.0,
+          "duty": 0.05,
+          "switch": 0.03
+        },
+        "validation": {
+          "mae_c": 1.671113717735056,
+          "in_band_pct": 49.140625,
+          "hot_area_c_min": 0.09289414040201129,
+          "mean_duty_proxy": 0.5584635416666667,
+          "mean_change": 0.2650390625,
+          "guard_rate": 0.0,
+          "fallback_rate": 0.004166666666666667,
+          "unsupported_fraction": 0.25,
+          "max_temperature_c": 38.47751987980047
+        }
+      },
+      {
+        "weights": {
+          "hot": 1.0,
+          "duty": 0.2,
+          "switch": 0.0
+        },
+        "validation": {
+          "mae_c": 0.5280099475400042,
+          "in_band_pct": 64.81770833333334,
+          "hot_area_c_min": 0.07018456451911591,
+          "mean_duty_proxy": 0.6636393229166666,
+          "mean_change": 0.3950520833333333,
+          "guard_rate": 0.0,
+          "fallback_rate": 0.00859375,
+          "unsupported_fraction": 0.0625,
+          "max_temperature_c": 38.456396557566755
+        }
+      },
+      {
+        "weights": {
+          "hot": 1.0,
+          "duty": 0.2,
+          "switch": 0.03
+        },
+        "validation": {
+          "mae_c": 0.7439250275794782,
+          "in_band_pct": 67.578125,
+          "hot_area_c_min": 0.029223763748633672,
+          "mean_duty_proxy": 0.6378580729166667,
+          "mean_change": 0.409375,
+          "guard_rate": 0.0,
+          "fallback_rate": 0.00078125,
+          "unsupported_fraction": 0.09375,
+          "max_temperature_c": 38.45236340251221
+        }
+      },
+      {
+        "weights": {
+          "hot": 3.0,
+          "duty": 0.0,
+          "switch": 0.0
+        },
+        "validation": {
+          "mae_c": 1.27528337048053,
+          "in_band_pct": 26.744791666666668,
+          "hot_area_c_min": 0.05947146717380353,
+          "mean_duty_proxy": 0.6086588541666667,
+          "mean_change": 0.39921875,
+          "guard_rate": 0.0,
+          "fallback_rate": 0.0013020833333333333,
+          "unsupported_fraction": 0.15625,
+          "max_temperature_c": 38.416111951767725
+        }
+      },
+      {
+        "weights": {
+          "hot": 3.0,
+          "duty": 0.0,
+          "switch": 0.03
+        },
+        "validation": {
+          "mae_c": 1.1849039509047237,
+          "in_band_pct": 46.5625,
+          "hot_area_c_min": 0.005933446746428854,
+          "mean_duty_proxy": 0.6410807291666667,
+          "mean_change": 0.49251302083333337,
+          "guard_rate": 0.0,
+          "fallback_rate": 0.00026041666666666666,
+          "unsupported_fraction": 0.0,
+          "max_temperature_c": 38.15181965623377
+        }
+      },
+      {
+        "weights": {
+          "hot": 3.0,
+          "duty": 0.05,
+          "switch": 0.0
+        },
+        "validation": {
+          "mae_c": 0.7387344645703611,
+          "in_band_pct": 69.32291666666666,
+          "hot_area_c_min": 0.011374016812096691,
+          "mean_duty_proxy": 0.6340169270833333,
+          "mean_change": 0.42578125,
+          "guard_rate": 0.0,
+          "fallback_rate": 0.0013020833333333335,
+          "unsupported_fraction": 0.0625,
+          "max_temperature_c": 38.402012424623045
+        }
+      },
+      {
+        "weights": {
+          "hot": 3.0,
+          "duty": 0.05,
+          "switch": 0.03
+        },
+        "validation": {
+          "mae_c": 0.441897171339803,
+          "in_band_pct": 63.54166666666667,
+          "hot_area_c_min": 0.033617682017591556,
+          "mean_duty_proxy": 0.67294921875,
+          "mean_change": 0.4096354166666667,
+          "guard_rate": 0.0,
+          "fallback_rate": 0.0020833333333333333,
+          "unsupported_fraction": 0.0,
+          "max_temperature_c": 38.24723735673256
+        }
+      },
+      {
+        "weights": {
+          "hot": 3.0,
+          "duty": 0.2,
+          "switch": 0.0
+        },
+        "validation": {
+          "mae_c": 0.4139771013456948,
+          "in_band_pct": 69.765625,
+          "hot_area_c_min": 0.025937477740451447,
+          "mean_duty_proxy": 0.6857096354166667,
+          "mean_change": 0.44954427083333337,
+          "guard_rate": 0.0,
+          "fallback_rate": 0.00234375,
+          "unsupported_fraction": 0.0,
+          "max_temperature_c": 38.247307509942615
+        }
+      },
+      {
+        "weights": {
+          "hot": 3.0,
+          "duty": 0.2,
+          "switch": 0.03
+        },
+        "validation": {
+          "mae_c": 1.1352823208939355,
+          "in_band_pct": 39.97395833333333,
+          "hot_area_c_min": 0.033816119653862185,
+          "mean_duty_proxy": 0.63271484375,
+          "mean_change": 0.4866536458333333,
+          "guard_rate": 0.0,
+          "fallback_rate": 0.004427083333333333,
+          "unsupported_fraction": 0.03125,
+          "max_temperature_c": 38.42231631485948
+        }
+      },
+      {
+        "weights": {
+          "hot": 10.0,
+          "duty": 0.0,
+          "switch": 0.0
+        },
+        "validation": {
+          "mae_c": 1.289933469971511,
+          "in_band_pct": 49.42708333333333,
+          "hot_area_c_min": 0.0816969740843048,
+          "mean_duty_proxy": 0.58857421875,
+          "mean_change": 0.3022135416666667,
+          "guard_rate": 0.0,
+          "fallback_rate": 0.0020833333333333333,
+          "unsupported_fraction": 0.15625,
+          "max_temperature_c": 38.40990185108995
+        }
+      },
+      {
+        "weights": {
+          "hot": 10.0,
+          "duty": 0.0,
+          "switch": 0.03
+        },
+        "validation": {
+          "mae_c": 0.806674922623031,
+          "in_band_pct": 51.796875,
+          "hot_area_c_min": 0.013208117516831524,
+          "mean_duty_proxy": 0.647265625,
+          "mean_change": 0.32747395833333337,
+          "guard_rate": 0.0,
+          "fallback_rate": 0.0018229166666666667,
+          "unsupported_fraction": 0.03125,
+          "max_temperature_c": 38.38963769758391
+        }
+      },
+      {
+        "weights": {
+          "hot": 10.0,
+          "duty": 0.05,
+          "switch": 0.0
+        },
+        "validation": {
+          "mae_c": 0.8988007738131822,
+          "in_band_pct": 55.104166666666664,
+          "hot_area_c_min": 0.020252371629403264,
+          "mean_duty_proxy": 0.65009765625,
+          "mean_change": 0.4033203125,
+          "guard_rate": 0.0,
+          "fallback_rate": 0.0010416666666666667,
+          "unsupported_fraction": 0.03125,
+          "max_temperature_c": 38.42983480984205
+        }
+      },
+      {
+        "weights": {
+          "hot": 10.0,
+          "duty": 0.05,
+          "switch": 0.03
+        },
+        "validation": {
+          "mae_c": 1.3042695928508579,
+          "in_band_pct": 34.21875,
+          "hot_area_c_min": 0.029431033618660542,
+          "mean_duty_proxy": 0.6075846354166667,
+          "mean_change": 0.4392578125,
+          "guard_rate": 0.0,
+          "fallback_rate": 0.0013020833333333333,
+          "unsupported_fraction": 0.0625,
+          "max_temperature_c": 38.38457985322465
+        }
+      },
+      {
+        "weights": {
+          "hot": 10.0,
+          "duty": 0.2,
+          "switch": 0.0
+        },
+        "validation": {
+          "mae_c": 0.33599527895644243,
+          "in_band_pct": 75.28645833333334,
+          "hot_area_c_min": 0.0041493793671054475,
+          "mean_duty_proxy": 0.6755859375,
+          "mean_change": 0.4853515625,
+          "guard_rate": 0.0,
+          "fallback_rate": 0.00026041666666666666,
+          "unsupported_fraction": 0.0,
+          "max_temperature_c": 38.1841226979229
+        }
+      },
+      {
+        "weights": {
+          "hot": 10.0,
+          "duty": 0.2,
+          "switch": 0.03
+        },
+        "validation": {
+          "mae_c": 0.5463193124553581,
+          "in_band_pct": 70.02604166666667,
+          "hot_area_c_min": 0.0037733883927659933,
+          "mean_duty_proxy": 0.6894205729166667,
+          "mean_change": 0.45286458333333335,
+          "guard_rate": 0.0,
+          "fallback_rate": 0.0018229166666666667,
+          "unsupported_fraction": 0.0,
+          "max_temperature_c": 38.13966284855942
+        }
+      }
+    ],
+    "selected": {
+      "weights": {
+        "hot": 10.0,
+        "duty": 0.2,
+        "switch": 0.03
+      },
+      "validation": {
+        "mae_c": 0.5463193124553581,
+        "in_band_pct": 70.02604166666667,
+        "hot_area_c_min": 0.0037733883927659933,
+        "mean_duty_proxy": 0.6894205729166667,
+        "mean_change": 0.45286458333333335,
+        "guard_rate": 0.0,
+        "fallback_rate": 0.0018229166666666667,
+        "unsupported_fraction": 0.0,
+        "max_temperature_c": 38.13966284855942
+      }
+    },
+    "test_by_seed": [
+      {
+        "seed": 11,
+        "metrics": {
+          "mae_c": 1.1145372805843283,
+          "in_band_pct": 44.479166666666664,
+          "hot_area_c_min": 0.0035886091931848036,
+          "mean_duty_proxy": 0.6431640625,
+          "mean_change": 0.5162760416666666,
+          "guard_rate": 0.0,
+          "fallback_rate": 0.0010416666666666667,
+          "unsupported_fraction": 0.03125,
+          "max_temperature_c": 38.37538222844372
+        }
+      },
+      {
+        "seed": 29,
+        "metrics": {
+          "mae_c": 0.24448810415824776,
+          "in_band_pct": 87.109375,
+          "hot_area_c_min": 0.006868352998806023,
+          "mean_duty_proxy": 0.7141927083333334,
+          "mean_change": 0.37786458333333334,
+          "guard_rate": 0.0,
+          "fallback_rate": 0.0005208333333333333,
+          "unsupported_fraction": 0.0,
+          "max_temperature_c": 38.25988873988048
+        }
+      }
+    ],
+    "test_mean": {
+      "mae_c": 0.6795126923712881,
+      "in_band_pct": 65.79427083333333,
+      "hot_area_c_min": 0.005228481095995413,
+      "mean_duty_proxy": 0.6786783854166667,
+      "mean_change": 0.44707031249999996,
+      "guard_rate": 0.0,
+      "fallback_rate": 0.00078125,
+      "unsupported_fraction": 0.015625,
+      "max_temperature_c": 38.37538222844372
+    },
+    "baseline": {
+      "configuration": {
+        "kind": "thermostat",
+        "band": 0.1,
+        "fan_mode": "trend"
+      },
+      "validation": {
+        "mae_c": 0.15588535398653136,
+        "in_band_pct": 96.30208333333333,
+        "hot_area_c_min": 0.0,
+        "mean_duty_proxy": 0.6727864583333333,
+        "mean_change": 0.266796875,
+        "guard_rate": 0.0,
+        "fallback_rate": 0.0,
+        "unsupported_fraction": 0.0,
+        "max_temperature_c": 37.85854426893687
+      },
+      "test": {
+        "mae_c": 0.15716534512934024,
+        "in_band_pct": 95.703125,
+        "hot_area_c_min": 0.0007497789127855852,
+        "mean_duty_proxy": 0.675,
+        "mean_change": 0.26861979166666666,
+        "guard_rate": 0.0,
+        "fallback_rate": 0.0,
+        "unsupported_fraction": 0.0,
+        "max_temperature_c": 38.07525199682697
+      }
+    },
+    "validation_eligible": false,
+    "passed_simulation_test": false,
+    "better_than_baseline_on_simulation_test": false,
+    "train_seeds": [
+      11,
+      29
+    ],
+    "validation_seed": 140,
+    "test_seed": 905,
+    "episodes_per_seed": 250,
+    "simulation_horizon_s": 600.0,
+    "deploy_allowed": false
+  }
+}

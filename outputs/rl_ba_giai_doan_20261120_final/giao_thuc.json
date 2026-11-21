@@ -1,0 +1,167 @@
+{
+  "profile": {
+    "name": "CHICKEN_3_STAGE_ENGINEERING_DEMO_V1",
+    "deploy_allowed": false,
+    "biological_tolerance_validated": false,
+    "source": "https://khuyennongvn.gov.vn/data/documents/0/2026/11/09/hangweb/ban-tin-khuyen-nong-so-4-2026.pdf#page=43",
+    "bands_note": "Proposed engineering bands, NOT biological tolerances specified by the source.",
+    "guard_off_c": 38.0,
+    "guard_resume_c": 37.0,
+    "stages": [
+      {
+        "id": 0,
+        "days": [
+          1,
+          10
+        ],
+        "target_c": 37.8,
+        "lower_c": 37.6,
+        "upper_c": 38.0,
+        "source_temperature_c": [
+          37.8,
+          38.0
+        ],
+        "guard_overlap": true
+      },
+      {
+        "id": 1,
+        "days": [
+          11,
+          17
+        ],
+        "target_c": 37.5,
+        "lower_c": 37.3,
+        "upper_c": 37.7,
+        "source_temperature_c": [
+          37.5,
+          37.5
+        ],
+        "guard_overlap": false
+      },
+      {
+        "id": 2,
+        "days": [
+          18,
+          21
+        ],
+        "target_c": 37.2,
+        "lower_c": 37.0,
+        "upper_c": 37.4,
+        "source_temperature_c": [
+          37.2,
+          37.2
+        ],
+        "guard_overlap": false
+      }
+    ]
+  },
+  "model": {
+    "coefficients": [
+      -0.1653616355369684,
+      -0.02058371984111048,
+      -0.14229669206737797,
+      0.38099842574852033,
+      -0.13249781186979606,
+      0.07633251368288317
+    ],
+    "center": 35.93146794159731,
+    "fan_center": 0.875,
+    "tau": 25.0,
+    "low": 31.25,
+    "high": 38.375,
+    "noise_sd": 0.03622211620849173
+  },
+  "actions": [
+    [
+      0.0,
+      0.75
+    ],
+    [
+      0.0,
+      1.0
+    ],
+    [
+      0.25,
+      0.75
+    ],
+    [
+      0.25,
+      1.0
+    ],
+    [
+      0.5,
+      0.75
+    ],
+    [
+      0.5,
+      1.0
+    ],
+    [
+      0.75,
+      0.75
+    ],
+    [
+      0.75,
+      1.0
+    ],
+    [
+      1.0,
+      0.75
+    ]
+  ],
+  "state_count_per_stage": 2430,
+  "separate_q_tables": 3,
+  "episodes_per_stage_seed": 64000,
+  "grid": [
+    [
+      0.25,
+      2.0
+    ],
+    [
+      0.25,
+      4.0
+    ],
+    [
+      0.5,
+      2.0
+    ],
+    [
+      0.5,
+      4.0
+    ],
+    [
+      1.0,
+      2.0
+    ],
+    [
+      1.0,
+      4.0
+    ]
+  ],
+  "seeds": [
+    11,
+    29,
+    47
+  ],
+  "source_package_sha256": "bd5caa79ebff4c7ee066dc96fec3fd462639b119faca5f9efd73d0397910fc7a",
+  "source_csv_sha256": "7ed00d0151a9d84d4c0d201e26b65f8a63ca9cc0ed0362250364a6d3fac9de14",
+  "validation_seeds": [
+    203001,
+    203002,
+    203003
+  ],
+  "test_seeds": [
+    203101,
+    203102,
+    203103
+  ],
+  "selection": "Validation only; require in-band>=95%, no invalid/unseen, guard<=2% before weighted ranking.",
+  "evidence": "SIMULATION ENGINEERING BANDS, NOT BIOLOGICALLY VALIDATED; old empty-box model, no embryo heat model",
+  "deploy_allowed": false,
+  "code_sha256": {
+    "Code_HopAp_PhanTich\\hoc_ba_giai_doan.py": "20659d6ab15a8c922cf5b09c36e3794796c793ab8b0aa1130701668d8ae262da",
+    "Code_HopAp_PhanTich\\hoc_vung_on_dinh.py": "670382bcd468992934dc4dea490e132d13944a7b8980fa168c5cfd22796133b0",
+    "Code_HopAp_Demo\\rl_vung_on_dinh.py": "4625d1a4f265bd1dbc62addcec03aa5c6c8d66f7833b35f43dd2b2b52f862361",
+    "Code_HopAp_Demo\\lich_ap_ba_giai_doan.py": "d58319572f41c81d8315c164c2377d67cf260b62d6dbf2dabef42726996b2ff7"
+  }
+}

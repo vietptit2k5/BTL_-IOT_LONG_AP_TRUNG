@@ -1,0 +1,277 @@
+{
+  "tau_selection": [
+    {
+      "tau": 5.0,
+      "cv30_rmse_c": 0.08649857763487008
+    },
+    {
+      "tau": 10.0,
+      "cv30_rmse_c": 0.07506231492256721
+    },
+    {
+      "tau": 25.0,
+      "cv30_rmse_c": 0.058096143098473996
+    },
+    {
+      "tau": 45.0,
+      "cv30_rmse_c": 0.07557878746913504
+    },
+    {
+      "tau": 60.0,
+      "cv30_rmse_c": 0.09239913912440254
+    }
+  ],
+  "tau_s": 25.0,
+  "cv_folds": [
+    {
+      "group": 1,
+      "step5": {
+        "samples": 89,
+        "rmse_c": 0.03489693653025154,
+        "persistence_rmse_c": 0.10908382040337523,
+        "endpoint_rmse_c": 0.03489693653025154
+      },
+      "free30": {
+        "samples": 84,
+        "rmse_c": 0.07174616877166522,
+        "persistence_rmse_c": 0.4095395233673199,
+        "endpoint_rmse_c": 0.10003730559672604
+      },
+      "free60": {
+        "samples": 84,
+        "rmse_c": 0.1151827110853591,
+        "persistence_rmse_c": 0.744903292410663,
+        "endpoint_rmse_c": 0.17742268209841516
+      }
+    },
+    {
+      "group": 2,
+      "step5": {
+        "samples": 401,
+        "rmse_c": 0.02780085792177024,
+        "persistence_rmse_c": 0.07660492717773126,
+        "endpoint_rmse_c": 0.02780085792177024
+      },
+      "free30": {
+        "samples": 396,
+        "rmse_c": 0.05171689097353942,
+        "persistence_rmse_c": 0.27578365638717284,
+        "endpoint_rmse_c": 0.07102310785768022
+      },
+      "free60": {
+        "samples": 396,
+        "rmse_c": 0.08476500670914484,
+        "persistence_rmse_c": 0.5173812410792012,
+        "endpoint_rmse_c": 0.12673290133886436
+      }
+    },
+    {
+      "group": 3,
+      "step5": {
+        "samples": 193,
+        "rmse_c": 0.02762823990452902,
+        "persistence_rmse_c": 0.10066360539436948,
+        "endpoint_rmse_c": 0.02762823990452902
+      },
+      "free30": {
+        "samples": 192,
+        "rmse_c": 0.05304798735341122,
+        "persistence_rmse_c": 0.38195896784392724,
+        "endpoint_rmse_c": 0.0798821860504387
+      },
+      "free60": {
+        "samples": 192,
+        "rmse_c": 0.08710012034354055,
+        "persistence_rmse_c": 0.7176558212819798,
+        "endpoint_rmse_c": 0.13712215178453435
+      }
+    },
+    {
+      "group": 4,
+      "step5": {
+        "samples": 186,
+        "rmse_c": 0.02564738758355113,
+        "persistence_rmse_c": 0.1058231318504499,
+        "endpoint_rmse_c": 0.02564738758355113
+      },
+      "free30": {
+        "samples": 186,
+        "rmse_c": 0.056720249045359404,
+        "persistence_rmse_c": 0.4043452807839414,
+        "endpoint_rmse_c": 0.07847636037665673
+      },
+      "free60": {
+        "samples": 180,
+        "rmse_c": 0.09144393429590597,
+        "persistence_rmse_c": 0.7663597815066774,
+        "endpoint_rmse_c": 0.13876500989563334
+      }
+    },
+    {
+      "group": 5,
+      "step5": {
+        "samples": 168,
+        "rmse_c": 0.028077964199130365,
+        "persistence_rmse_c": 0.1158359619377774,
+        "endpoint_rmse_c": 0.028077964199130365
+      },
+      "free30": {
+        "samples": 168,
+        "rmse_c": 0.05330975735081816,
+        "persistence_rmse_c": 0.4387254917687189,
+        "endpoint_rmse_c": 0.07538242647197711
+      },
+      "free60": {
+        "samples": 168,
+        "rmse_c": 0.08957373205684574,
+        "persistence_rmse_c": 0.8216957984585088,
+        "endpoint_rmse_c": 0.1314557071876769
+      }
+    },
+    {
+      "group": 6,
+      "step5": {
+        "samples": 168,
+        "rmse_c": 0.03253388463437231,
+        "persistence_rmse_c": 0.11365860074735205,
+        "endpoint_rmse_c": 0.03253388463437231
+      },
+      "free30": {
+        "samples": 168,
+        "rmse_c": 0.06903901774205377,
+        "persistence_rmse_c": 0.42904492131905353,
+        "endpoint_rmse_c": 0.09270791820990058
+      },
+      "free60": {
+        "samples": 168,
+        "rmse_c": 0.11263934221356312,
+        "persistence_rmse_c": 0.7976223375602285,
+        "endpoint_rmse_c": 0.16089568983218644
+      }
+    },
+    {
+      "group": 7,
+      "step5": {
+        "samples": 184,
+        "rmse_c": 0.02866036881946733,
+        "persistence_rmse_c": 0.10907755017489927,
+        "endpoint_rmse_c": 0.02866036881946733
+      },
+      "free30": {
+        "samples": 180,
+        "rmse_c": 0.05282123175075914,
+        "persistence_rmse_c": 0.4088186347790792,
+        "endpoint_rmse_c": 0.06839126314715187
+      },
+      "free60": {
+        "samples": 180,
+        "rmse_c": 0.078569603230093,
+        "persistence_rmse_c": 0.7604665090687962,
+        "endpoint_rmse_c": 0.10881182917533008
+      }
+    },
+    {
+      "group": 8,
+      "step5": {
+        "samples": 176,
+        "rmse_c": 0.030904299870325294,
+        "persistence_rmse_c": 0.11831841586781884,
+        "endpoint_rmse_c": 0.030904299870325294
+      },
+      "free30": {
+        "samples": 174,
+        "rmse_c": 0.056367841800185656,
+        "persistence_rmse_c": 0.45034905809499004,
+        "endpoint_rmse_c": 0.07583125011766327
+      },
+      "free60": {
+        "samples": 168,
+        "rmse_c": 0.08984466951542894,
+        "persistence_rmse_c": 0.8557084473771617,
+        "endpoint_rmse_c": 0.12425337082477254
+      }
+    }
+  ],
+  "held_out_cycles": [
+    {
+      "group": 9,
+      "step5": {
+        "samples": 169,
+        "rmse_c": 0.03064044855119754,
+        "persistence_rmse_c": 0.12050165104548798,
+        "endpoint_rmse_c": 0.03064044855119754
+      },
+      "free30": {
+        "samples": 168,
+        "rmse_c": 0.05777738607636297,
+        "persistence_rmse_c": 0.4514869104327735,
+        "endpoint_rmse_c": 0.0811085127074772
+      },
+      "free60": {
+        "samples": 168,
+        "rmse_c": 0.09348994107372632,
+        "persistence_rmse_c": 0.8459830042089694,
+        "endpoint_rmse_c": 0.13729881628284654
+      }
+    },
+    {
+      "group": 10,
+      "step5": {
+        "samples": 163,
+        "rmse_c": 0.029977895235641813,
+        "persistence_rmse_c": 0.11366521900915516,
+        "endpoint_rmse_c": 0.029977895235641813
+      },
+      "free30": {
+        "samples": 162,
+        "rmse_c": 0.05211308298637373,
+        "persistence_rmse_c": 0.4202012257148547,
+        "endpoint_rmse_c": 0.06849934608238786
+      },
+      "free60": {
+        "samples": 156,
+        "rmse_c": 0.08117869931899652,
+        "persistence_rmse_c": 0.7916420524443168,
+        "endpoint_rmse_c": 0.1112599936300649
+      }
+    }
+  ],
+  "cv30_rmse_c": 0.058096143098473996,
+  "cv60_rmse_c": 0.09363988993123515,
+  "acceptance": "CV30<=0.15C; CV60<=0.25C; every cycle60<=0.4C; held30 beats persistence; heat gain positive and passive cooling negative",
+  "model_passed": true,
+  "development_model": {
+    "coefficients": [
+      -0.1848903527669608,
+      -0.007347993228647447,
+      -0.27669815876635373,
+      0.4118637057200872,
+      -0.0511287206494426,
+      -0.17207626610752588
+    ],
+    "center": 37.5,
+    "fan_center": 0.875,
+    "tau": 25.0,
+    "low": 29.0,
+    "high": 38.125,
+    "noise_sd": 0.028162834072006666
+  },
+  "final_model": {
+    "coefficients": [
+      -0.18957956364935008,
+      -0.0072636885175875665,
+      -0.2747916774104852,
+      0.42233438838092724,
+      -0.08962174561804416,
+      -0.09864495660903512
+    ],
+    "center": 37.5,
+    "fan_center": 0.875,
+    "tau": 25.0,
+    "low": 29.0,
+    "high": 38.125,
+    "noise_sd": 0.02852547212294265
+  },
+  "final_refit_note": "All cycles refit AFTER model structure validation; no independent whole-run validation yet.",
+  "causal_limits": "One empty-box run, no ambient sensor. Closed-loop preparation is included; partial probes identify short transitions, not long-run equilibria."
+}

@@ -1,0 +1,118 @@
+{
+  "source_sha256": "7ed00d0151a9d84d4c0d201e26b65f8a63ca9cc0ed0362250364a6d3fac9de14",
+  "source": "D:\\BTL_Nhom13\\Du_lieu_khao_sat\\20261117_070909_628598\\du_lieu.csv",
+  "measurement_count": 3037,
+  "duration_s": 3037.85,
+  "temperature_min_c": 31.5,
+  "temperature_max_c": 38.125,
+  "sample_gap_max_s": 1.0320000000001528,
+  "sample_age_max_s": 0.056,
+  "software_guards": [
+    {
+      "phase": "bao_ve_mem_1",
+      "start_s": 678.138,
+      "duration_s": 60.011999999999944,
+      "peak_c": 38.125,
+      "peak_after_off_s": 7.016999999999939,
+      "resume_c": 37.0
+    },
+    {
+      "phase": "bao_ve_mem_2",
+      "start_s": 806.163,
+      "duration_s": 50.999000000000024,
+      "peak_c": 38.062,
+      "peak_after_off_s": 4.996999999999957,
+      "resume_c": 37.0
+    },
+    {
+      "phase": "bao_ve_mem_3",
+      "start_s": 919.163,
+      "duration_s": 52.03099999999995,
+      "peak_c": 38.125,
+      "peak_after_off_s": 7.016999999999939,
+      "resume_c": 37.0
+    },
+    {
+      "phase": "bao_ve_mem_4",
+      "start_s": 1840.265,
+      "duration_s": 52.03800000000001,
+      "peak_c": 38.0,
+      "peak_after_off_s": 1.0529999999998836,
+      "resume_c": 37.0
+    },
+    {
+      "phase": "bao_ve_mem_5",
+      "start_s": 1967.327,
+      "duration_s": 51.021999999999935,
+      "peak_c": 38.062,
+      "peak_after_off_s": 1.9649999999999181,
+      "resume_c": 37.0
+    }
+  ],
+  "qualified_actions": 9,
+  "state_count": 729,
+  "complete_trial_blocks": 16,
+  "model_and_selected_policy_reproduction_matches": true,
+  "training_diagnostics": [
+    {
+      "seed": 11,
+      "updates": 29240,
+      "states_seen": 382,
+      "state_action_pairs_seen": 2675,
+      "median_visits_among_seen": 5,
+      "total_cells": 6561,
+      "validation": {
+        "mae_c": 0.8377799094832552,
+        "in_band_pct": 53.489583333333336,
+        "hot_area_c_min": 0.0,
+        "mean_duty_proxy": 0.6652994791666667,
+        "mean_change": 0.5110677083333334,
+        "guard_rate": 0.0,
+        "fallback_rate": 0.0036458333333333334,
+        "unsupported_fraction": 0.0,
+        "max_temperature_c": 37.9958631815898
+      },
+      "test": {
+        "mae_c": 1.1145372805843283,
+        "in_band_pct": 44.479166666666664,
+        "hot_area_c_min": 0.0035886091931848036,
+        "mean_duty_proxy": 0.6431640625,
+        "mean_change": 0.5162760416666666,
+        "guard_rate": 0.0,
+        "fallback_rate": 0.0010416666666666667,
+        "unsupported_fraction": 0.03125,
+        "max_temperature_c": 38.37538222844372
+      }
+    },
+    {
+      "seed": 29,
+      "updates": 29431,
+      "states_seen": 386,
+      "state_action_pairs_seen": 2685,
+      "median_visits_among_seen": 4,
+      "total_cells": 6561,
+      "validation": {
+        "mae_c": 0.254858715427461,
+        "in_band_pct": 86.5625,
+        "hot_area_c_min": 0.0075467767855319865,
+        "mean_duty_proxy": 0.7135416666666666,
+        "mean_change": 0.3946614583333333,
+        "guard_rate": 0.0,
+        "fallback_rate": 0.0,
+        "unsupported_fraction": 0.0,
+        "max_temperature_c": 38.13966284855942
+      },
+      "test": {
+        "mae_c": 0.24448810415824776,
+        "in_band_pct": 87.109375,
+        "hot_area_c_min": 0.006868352998806023,
+        "mean_duty_proxy": 0.7141927083333334,
+        "mean_change": 0.37786458333333334,
+        "guard_rate": 0.0,
+        "fallback_rate": 0.0005208333333333333,
+        "unsupported_fraction": 0.0,
+        "max_temperature_c": 38.25988873988048
+      }
+    }
+  ]
+}

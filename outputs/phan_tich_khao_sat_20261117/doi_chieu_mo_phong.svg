@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="1100" height="490" preserveAspectRatio="xMinYMin meet" viewBox="0 0 1100 490" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="1100" height="490"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-490)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="1100" height="490" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="65" y="454" style="font-family: Helvetica; font-size: 20px;fill: rgb(14%,20%,29%); stroke:none;" transform="translate(0,908) scale(1,-1)">KẾT QUẢ ĐỐI CHIẾU TRONG MÔ PHỎNG</text>
+			<text x="65" y="429" style="font-family: Helvetica; font-size: 12px;fill: rgb(14%,20%,29%); stroke:none;" transform="translate(0,858) scale(1,-1)">32 tình huống test × 600 giây; chưa phải điều khiển đo thực trên hộp</text>
+			<text x="65" y="381" style="font-family: Helvetica; font-size: 14px;fill: rgb(14%,20%,29%); stroke:none;" transform="translate(0,762) scale(1,-1)">Sai số tuyệt đối trung bình (°C)</text>
+			<path d="M 65,110 L 495,110 Z" style="stroke: rgb(89%,90%,93%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="51.44" y="107.0" style="font-family: Helvetica; font-size: 10px;fill: rgb(14%,20%,29%); stroke:none;" transform="translate(0,214) scale(1,-1)">0</text>
+			<path d="M 65,159 L 495,159 Z" style="stroke: rgb(89%,90%,93%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="37.54" y="156.0" style="font-family: Helvetica; font-size: 10px;fill: rgb(14%,20%,29%); stroke:none;" transform="translate(0,312) scale(1,-1)">0.25</text>
+			<path d="M 65,208 L 495,208 Z" style="stroke: rgb(89%,90%,93%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="43.099999999999994" y="205.0" style="font-family: Helvetica; font-size: 10px;fill: rgb(14%,20%,29%); stroke:none;" transform="translate(0,410) scale(1,-1)">0.5</text>
+			<path d="M 65,257 L 495,257 Z" style="stroke: rgb(89%,90%,93%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="37.54" y="254.0" style="font-family: Helvetica; font-size: 10px;fill: rgb(14%,20%,29%); stroke:none;" transform="translate(0,508) scale(1,-1)">0.75</text>
+			<path d="M 65,306 L 495,306 Z" style="stroke: rgb(89%,90%,93%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="51.44" y="303.0" style="font-family: Helvetica; font-size: 10px;fill: rgb(14%,20%,29%); stroke:none;" transform="translate(0,606) scale(1,-1)">1</text>
+			<path d="M 65,355 L 495,355 Z" style="stroke: rgb(89%,90%,93%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="37.54" y="352.0" style="font-family: Helvetica; font-size: 10px;fill: rgb(14%,20%,29%); stroke:none;" transform="translate(0,704) scale(1,-1)">1.25</text>
+			<rect x="81" y="110" width="68" height="30.804407645350693" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(14%,48%,50%); fill-rule: evenodd;"/>
+			<text x="99.988" y="149.8044076453507" style="font-family: Helvetica; font-size: 12px;fill: rgb(14%,20%,29%); stroke:none;" transform="translate(0,299) scale(1,-1)">0.157</text>
+			<text x="89.715" y="90" style="font-family: Helvetica; font-size: 10px;fill: rgb(14%,20%,29%); stroke:none;" transform="translate(0,180) scale(1,-1)">Thermostat</text>
+			<rect x="186" y="110" width="68" height="133.18448770477247" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(75%,41%,15%); fill-rule: evenodd;"/>
+			<text x="204.988" y="252.18448770477247" style="font-family: Helvetica; font-size: 12px;fill: rgb(14%,20%,29%); stroke:none;" transform="translate(0,504) scale(1,-1)">0.680</text>
+			<text x="189.70499999999998" y="90" style="font-family: Helvetica; font-size: 10px;fill: rgb(14%,20%,29%); stroke:none;" transform="translate(0,180) scale(1,-1)">RL trung bình</text>
+			<rect x="291" y="110" width="68" height="218.44930699452834" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(55%,60%,67%); fill-rule: evenodd;"/>
+			<text x="309.988" y="337.44930699452834" style="font-family: Helvetica; font-size: 12px;fill: rgb(14%,20%,29%); stroke:none;" transform="translate(0,674) scale(1,-1)">1.115</text>
+			<text x="299.43" y="90" style="font-family: Helvetica; font-size: 10px;fill: rgb(14%,20%,29%); stroke:none;" transform="translate(0,180) scale(1,-1)">RL seed 11</text>
+			<rect x="396" y="110" width="68" height="47.91966841501656" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(55%,60%,67%); fill-rule: evenodd;"/>
+			<text x="414.988" y="166.91966841501656" style="font-family: Helvetica; font-size: 12px;fill: rgb(14%,20%,29%); stroke:none;" transform="translate(0,333) scale(1,-1)">0.244</text>
+			<text x="404.43" y="90" style="font-family: Helvetica; font-size: 10px;fill: rgb(14%,20%,29%); stroke:none;" transform="translate(0,180) scale(1,-1)">RL seed 29</text>
+			<text x="605" y="381" style="font-family: Helvetica; font-size: 14px;fill: rgb(14%,20%,29%); stroke:none;" transform="translate(0,762) scale(1,-1)">Thời gian trong vùng 37–38°C (%)</text>
+			<path d="M 605,110 L 1035,110 Z" style="stroke: rgb(89%,90%,93%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="591.44" y="107.0" style="font-family: Helvetica; font-size: 10px;fill: rgb(14%,20%,29%); stroke:none;" transform="translate(0,214) scale(1,-1)">0</text>
+			<path d="M 605,159 L 1035,159 Z" style="stroke: rgb(89%,90%,93%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="585.88" y="156.0" style="font-family: Helvetica; font-size: 10px;fill: rgb(14%,20%,29%); stroke:none;" transform="translate(0,312) scale(1,-1)">20</text>
+			<path d="M 605,208 L 1035,208 Z" style="stroke: rgb(89%,90%,93%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="585.88" y="205.0" style="font-family: Helvetica; font-size: 10px;fill: rgb(14%,20%,29%); stroke:none;" transform="translate(0,410) scale(1,-1)">40</text>
+			<path d="M 605,257 L 1035,257 Z" style="stroke: rgb(89%,90%,93%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="585.88" y="254.0" style="font-family: Helvetica; font-size: 10px;fill: rgb(14%,20%,29%); stroke:none;" transform="translate(0,508) scale(1,-1)">60</text>
+			<path d="M 605,306 L 1035,306 Z" style="stroke: rgb(89%,90%,93%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="585.88" y="303.0" style="font-family: Helvetica; font-size: 10px;fill: rgb(14%,20%,29%); stroke:none;" transform="translate(0,606) scale(1,-1)">80</text>
+			<path d="M 605,355 L 1035,355 Z" style="stroke: rgb(89%,90%,93%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="580.32" y="352.0" style="font-family: Helvetica; font-size: 10px;fill: rgb(14%,20%,29%); stroke:none;" transform="translate(0,704) scale(1,-1)">100</text>
+			<rect x="621" y="110" width="68" height="234.47265625" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(14%,48%,50%); fill-rule: evenodd;"/>
+			<text x="637.99" y="353.47265625" style="font-family: Helvetica; font-size: 12px;fill: rgb(14%,20%,29%); stroke:none;" transform="translate(0,706) scale(1,-1)">95.7%</text>
+			<text x="629.715" y="90" style="font-family: Helvetica; font-size: 10px;fill: rgb(14%,20%,29%); stroke:none;" transform="translate(0,180) scale(1,-1)">Thermostat</text>
+			<rect x="726" y="110" width="68" height="161.19596354166663" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(75%,41%,15%); fill-rule: evenodd;"/>
+			<text x="742.99" y="280.19596354166663" style="font-family: Helvetica; font-size: 12px;fill: rgb(14%,20%,29%); stroke:none;" transform="translate(0,560) scale(1,-1)">65.8%</text>
+			<text x="729.705" y="90" style="font-family: Helvetica; font-size: 10px;fill: rgb(14%,20%,29%); stroke:none;" transform="translate(0,180) scale(1,-1)">RL trung bình</text>
+			<rect x="831" y="110" width="68" height="108.97395833333331" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(55%,60%,67%); fill-rule: evenodd;"/>
+			<text x="847.99" y="227.97395833333331" style="font-family: Helvetica; font-size: 12px;fill: rgb(14%,20%,29%); stroke:none;" transform="translate(0,455) scale(1,-1)">44.5%</text>
+			<text x="839.43" y="90" style="font-family: Helvetica; font-size: 10px;fill: rgb(14%,20%,29%); stroke:none;" transform="translate(0,180) scale(1,-1)">RL seed 11</text>
+			<rect x="936" y="110" width="68" height="213.41796875" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(55%,60%,67%); fill-rule: evenodd;"/>
+			<text x="952.99" y="332.41796875" style="font-family: Helvetica; font-size: 12px;fill: rgb(14%,20%,29%); stroke:none;" transform="translate(0,664) scale(1,-1)">87.1%</text>
+			<text x="944.43" y="90" style="font-family: Helvetica; font-size: 10px;fill: rgb(14%,20%,29%); stroke:none;" transform="translate(0,180) scale(1,-1)">RL seed 29</text>
+			<path d="M 605,306 L 1035,306 Z" style="stroke: rgb(61%,27%,25%); stroke-linecap: butt; stroke-width: 1; stroke-dasharray: 5, 3;"/>
+			<text x="950.88" y="314.0" style="font-family: Helvetica; font-size: 10px;fill: rgb(61%,27%,25%); stroke:none;" transform="translate(0,628) scale(1,-1)">Mốc kiểm tra 80%</text>
+			<text x="65" y="48" style="font-family: Helvetica; font-size: 12px;fill: rgb(14%,20%,29%); stroke:none;" transform="translate(0,96) scale(1,-1)">Thermostat dùng cùng tập action đã được phép; tham số chọn trên validation.</text>
+			<text x="65" y="25" style="font-family: Helvetica; font-size: 12px;fill: rgb(14%,20%,29%); stroke:none;" transform="translate(0,50) scale(1,-1)">RL hiện chưa vượt điều kiện kiểm tra; chưa có Q-table đủ điều kiện triển khai.</text>
+		</g>
+	</g>
+</svg>

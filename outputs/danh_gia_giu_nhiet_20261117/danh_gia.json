@@ -1,0 +1,190 @@
+{
+  "status": "PASS_SHORT_HORIZON_ONLY",
+  "evidence": "NEW_MEASURED_THERMOSTAT_LOG; no measured RL trajectory",
+  "summary": {
+    "status": "COMPLETED_HARDWARE_HOLD_TEST",
+    "source": "Du_lieu_giu_nhiet\\20261117_084602_831190\\du_lieu.csv",
+    "source_sha256": "e5a3d6dcc0a1683bc8fe1704a654db3af2f7aeb6e6f17a6b1dae36e74a8dee93",
+    "controller": "doi-chung",
+    "target_c": 37.5,
+    "band_c": 0.5,
+    "hold_span_s": 600.009,
+    "covered_s": 600.009,
+    "coverage_pct": 100.0,
+    "mae_c": 0.1213842942355866,
+    "in_band_pct": 100.0,
+    "above_band_s": 0.0,
+    "below_band_s": 0.0,
+    "min_c": 37.0,
+    "max_c": 37.75,
+    "soft_guard_count": 0,
+    "errors": [],
+    "note": "Measured single-probe temperature; warm-up/post-cooling excluded; guard time included. No energy/RH/hatch claim."
+  },
+  "hold_start_s": 326.081,
+  "hold_end_s": 926.09,
+  "model_rows": 119,
+  "frozen_model": {
+    "coefficients": [
+      -0.1653616355369684,
+      -0.02058371984111048,
+      -0.14229669206737797,
+      0.38099842574852033,
+      -0.13249781186979606,
+      0.07633251368288317
+    ],
+    "center": 35.93146794159731,
+    "fan_center": 0.875,
+    "tau": 25.0,
+    "low": 31.25,
+    "high": 38.375,
+    "noise_sd": 0.03622211620849173
+  },
+  "model_short_horizon": {
+    "one_step_rmse_c": 0.05001582538614327,
+    "rollout_30s_rmse_c": 0.11072612946043091,
+    "persistence_30s_rmse_c": 0.22304589645729908
+  },
+  "hold_inside_model_domain": true,
+  "open_loop": {
+    "rmse_c": 0.37228979312043786,
+    "bias_c": 0.26813306571405165,
+    "max_abs_c": 0.6955338075680331
+  },
+  "residuals": {
+    "mean_c_per_5s": -0.011293992385966936,
+    "std_c_per_5s": 0.04872400358183731
+  },
+  "source_hash_verified": true,
+  "same_sensor": true,
+  "same_frequency": true,
+  "user_confirmed_same_layout_empty_box": true,
+  "shadow": [
+    {
+      "seed": 11,
+      "unknown_states_steps": 0,
+      "unique_states": 14,
+      "action_suggestions_counts": {
+        "100/75": 16,
+        "25/100": 39,
+        "0/75": 10,
+        "0/100": 8,
+        "75/75": 37,
+        "50/75": 9
+      }
+    },
+    {
+      "seed": 29,
+      "unknown_states_steps": 0,
+      "unique_states": 14,
+      "action_suggestions_counts": {
+        "100/75": 26,
+        "0/75": 21,
+        "0/100": 12,
+        "75/75": 20,
+        "50/75": 16,
+        "25/100": 24
+      }
+    },
+    {
+      "seed": 47,
+      "unknown_states_steps": 0,
+      "unique_states": 14,
+      "action_suggestions_counts": {
+        "100/75": 24,
+        "0/75": 15,
+        "25/75": 34,
+        "0/100": 8,
+        "75/100": 22,
+        "75/75": 7,
+        "50/75": 9
+      }
+    }
+  ],
+  "sensitivity_simulation": {
+    "method": "64 cases; residual blocks of 6 x 5s; seed 17110846",
+    "limitation": "Residuals depend on this controller/conditions; not a policy-invariant plant or hardware RL test",
+    "baseline": {
+      "mae_c": 0.13087579552439277,
+      "observed_mae_c": 0.13087579552439277,
+      "in_band_pct": 100.0,
+      "invalid_fraction": 0.0,
+      "guard_rate": 0.0,
+      "guard_count": 0,
+      "fallback_rate": 0.0,
+      "mean_duty_proxy": 0.678759765625,
+      "mean_change": 0.26826171875,
+      "hot_area_c_min": 0.0,
+      "max_temperature_c": 37.868207946287605
+    },
+    "rl_by_seed": [
+      {
+        "seed": 11,
+        "metrics": {
+          "mae_c": 0.07706612356464784,
+          "observed_mae_c": 0.07706612356464784,
+          "in_band_pct": 100.0,
+          "invalid_fraction": 0.0,
+          "guard_rate": 0.0,
+          "guard_count": 0,
+          "fallback_rate": 0.0,
+          "mean_duty_proxy": 0.6607096354166666,
+          "mean_change": 0.28069661458333334,
+          "hot_area_c_min": 0.0,
+          "max_temperature_c": 37.74107571116432
+        }
+      },
+      {
+        "seed": 29,
+        "metrics": {
+          "mae_c": 0.07464322107906861,
+          "observed_mae_c": 0.07464322107906861,
+          "in_band_pct": 100.0,
+          "invalid_fraction": 0.0,
+          "guard_rate": 0.0,
+          "guard_count": 0,
+          "fallback_rate": 0.0,
+          "mean_duty_proxy": 0.6569986979166667,
+          "mean_change": 0.2873046875,
+          "hot_area_c_min": 0.0,
+          "max_temperature_c": 37.73386010937222
+        }
+      },
+      {
+        "seed": 47,
+        "metrics": {
+          "mae_c": 0.07576221669252522,
+          "observed_mae_c": 0.07576221669252522,
+          "in_band_pct": 100.0,
+          "invalid_fraction": 0.0,
+          "guard_rate": 0.0,
+          "guard_count": 0,
+          "fallback_rate": 0.0,
+          "mean_duty_proxy": 0.6598307291666666,
+          "mean_change": 0.25266927083333335,
+          "hot_area_c_min": 0.0,
+          "max_temperature_c": 37.727625673952936
+        }
+      }
+    ],
+    "rl_mean": {
+      "mae_c": 0.07582385377874723,
+      "observed_mae_c": 0.07582385377874723,
+      "in_band_pct": 100.0,
+      "invalid_fraction": 0.0,
+      "guard_rate": 0.0,
+      "guard_count": 0,
+      "fallback_rate": 0.0,
+      "mean_duty_proxy": 0.6591796875,
+      "mean_change": 0.2735568576388889,
+      "hot_area_c_min": 0.0,
+      "max_temperature_c": 37.74107571116432,
+      "worst_seed_in_band_pct": 100.0,
+      "eligible": true
+    }
+  },
+  "supervised_pilot_allowed": true,
+  "automatic_deploy_allowed": false,
+  "candidate_sha256": "95c8d40cfc3746780d1e9e499a0bcdf67990fd9282ee9def073ee552cd1b8e5c",
+  "new_log_sha256": "e5a3d6dcc0a1683bc8fe1704a654db3af2f7aeb6e6f17a6b1dae36e74a8dee93"
+}

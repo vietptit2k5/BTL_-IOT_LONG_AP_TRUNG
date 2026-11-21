@@ -1,0 +1,63 @@
+<div id="incubator-layout-n13">
+  <style>
+    #incubator-layout-n13 { color: var(--foreground); --edge: color-mix(in srgb,var(--foreground) 40%,var(--background)); --rule: color-mix(in srgb,var(--foreground) 18%,var(--background)); }
+    #incubator-layout-n13 .layout { display: grid; grid-template-columns: minmax(0,1.35fr) minmax(0,1fr); gap: calc(var(--font-size-base) * 1.5); align-items: start; }
+    #incubator-layout-n13 .section-label { font-weight: 500; margin-bottom: calc(var(--font-size-base) * .5); }
+    #incubator-layout-n13 .inside { border: 12px solid var(--muted); outline: 1px solid var(--edge); min-height: 300px; display: grid; grid-template-columns: 1.1fr .7fr 1fr; grid-template-rows: auto auto auto; gap: calc(var(--font-size-base) * .65); padding: calc(var(--font-size-base) * .75); position: relative; box-sizing: border-box; }
+    #incubator-layout-n13 .component { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: calc(var(--font-size-base) * .3); text-align: center; min-width: 0; }
+    #incubator-layout-n13 .heater { border: 1px solid var(--edge); background: color-mix(in srgb,var(--viz-series-1) 9%,var(--background)); padding: calc(var(--font-size-base) * .5); grid-column: 1; }
+    #incubator-layout-n13 .fan { border: 1px solid var(--edge); grid-column: 3; padding: calc(var(--font-size-base) * .5); }
+    #incubator-layout-n13 .air { grid-column: 2; align-self: center; text-align: center; }
+    #incubator-layout-n13 .air-arrow { display: block; color: var(--viz-series-1); }
+    #incubator-layout-n13 .thermostat { grid-column: 1 / 3; display: flex; align-items: center; gap: calc(var(--font-size-base) * .5); }
+    #incubator-layout-n13 .ksd-body { border: 1px solid var(--edge); border-radius: 50%; width: 32px; height: 32px; display: grid; place-items: center; flex-shrink: 0; }
+    #incubator-layout-n13 .entry { grid-column: 3; text-align: end; align-self: center; }
+    #incubator-layout-n13 .tray { grid-column: 1 / 4; border: 1px solid var(--edge); padding: calc(var(--font-size-base) * .65); display: flex; flex-direction: column; gap: calc(var(--font-size-base) * .65); text-align: center; }
+    #incubator-layout-n13 .tray-slots { display: grid; grid-template-columns: repeat(5,1fr); gap: 6px; height: 22px; }
+    #incubator-layout-n13 .tray-slots span { border-bottom: 1px solid var(--rule); border-top: 1px solid var(--rule); }
+    #incubator-layout-n13 .probe { display: flex; justify-content: center; align-items: center; gap: calc(var(--font-size-base) * .5); }
+    #incubator-layout-n13 .probe-body { width: 38px; height: 8px; border: 1px solid var(--edge); border-radius: 5px; flex-shrink: 0; }
+    #incubator-layout-n13 .front { display: flex; align-items: center; justify-content: space-between; gap: calc(var(--font-size-base) * .75); margin-top: calc(var(--font-size-base) * .75); }
+    #incubator-layout-n13 .oled { border: 1px solid var(--edge); padding: calc(var(--font-size-base) * .4) calc(var(--font-size-base) * .9); font-family: ui-monospace,monospace; background: var(--muted); }
+    #incubator-layout-n13 .panel { border: 1px solid var(--edge); padding: calc(var(--font-size-base) * .75); display: flex; flex-direction: column; gap: calc(var(--font-size-base) * .75); }
+    #incubator-layout-n13 .pi { border: 1px solid var(--edge); padding: calc(var(--font-size-base) * .65); display: flex; flex-direction: column; gap: calc(var(--font-size-base) * .4); }
+    #incubator-layout-n13 .gpio { height: 10px; width: 86%; background: repeating-linear-gradient(to right,var(--edge) 0 2px,transparent 2px 7px); }
+    #incubator-layout-n13 .ports { display: flex; gap: 5px; height: 12px; justify-content: end; }
+    #incubator-layout-n13 .ports span { width: 22px; border: 1px solid var(--edge); }
+    #incubator-layout-n13 .mos-row { display: grid; grid-template-columns: 1fr 1fr; gap: calc(var(--font-size-base) * .5); }
+    #incubator-layout-n13 .mos { border: 1px solid var(--edge); padding: calc(var(--font-size-base) * .4); display: flex; flex-direction: column; gap: calc(var(--font-size-base) * .4); }
+    #incubator-layout-n13 .contacts { display: flex; gap: 5px; }
+    #incubator-layout-n13 .contacts span { width: 10px; height: 10px; border: 1px solid var(--edge); border-radius: 50%; }
+    #incubator-layout-n13 .rail { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: calc(var(--font-size-base) * .3); border-bottom: 1px solid var(--rule); padding-bottom: calc(var(--font-size-base) * .45); }
+    #incubator-layout-n13 .jack { display: flex; align-items: center; gap: calc(var(--font-size-base) * .5); }
+    #incubator-layout-n13 .jack-ring { width: 15px; height: 15px; border: 2px solid var(--edge); border-radius: 50%; }
+    #incubator-layout-n13 .caption { margin-top: calc(var(--font-size-base) * .75); }
+    @media (max-width: 620px) { #incubator-layout-n13 .layout { grid-template-columns: minmax(0,1fr); } }
+  </style>
+  <div class="layout" role="img" aria-label="Bố trí hộp ấp nhìn từ trên: bóng và giá chịu nhiệt ở góc sau trái, quạt ở góc sau phải, khay và đầu dò ở giữa. OLED trên mặt trước. Pi, hai MOSFET, hai WAGO và jack DC trên tấm đế ngoài cạnh phải.">
+    <div>
+      <div class="section-label">Nhìn từ trên · hộp 30 × 20 cm, cao 20 cm</div>
+      <div class="inside">
+        <div class="component heater"><i data-lucide="lightbulb" aria-hidden="true"></i><span>Bóng + đui</span><span class="text-small">Giá, chắn chịu nhiệt</span></div>
+        <div class="air"><span class="air-arrow" aria-hidden="true">←</span><span class="text-small">Gió dọc thành</span></div>
+        <div class="component fan"><i data-lucide="fan" aria-hidden="true"></i><span>Quạt 12V</span></div>
+        <div class="thermostat"><span class="ksd-body" aria-hidden="true"></span><span>KSD301</span></div>
+        <div class="entry text-small">Lỗ đi dây →</div>
+        <div class="tray"><span>Khay demo</span><div class="tray-slots" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div><div class="probe"><span class="probe-body" aria-hidden="true"></span><span>DS18B20 · ngang khay</span></div></div>
+      </div>
+      <div class="front"><span class="text-small">Mặt trước hộp</span><span class="oled">OLED</span></div>
+    </div>
+    <div>
+      <div class="section-label">Tấm đế ngoài · cạnh phải hộp</div>
+      <div class="panel">
+        <div class="pi"><div class="gpio" aria-hidden="true"></div><span>Raspberry Pi 4</span><span class="text-small">USB-C riêng</span><div class="ports" aria-hidden="true"><span></span><span></span></div></div>
+        <div class="mos-row"><div class="mos"><span>MOSFET quạt</span><div class="contacts" aria-hidden="true"><span></span><span></span><span></span></div></div><div class="mos"><span>MOSFET bóng</span><div class="contacts" aria-hidden="true"><span></span><span></span><span></span></div></div></div>
+        <div class="rail"><span>WAGO A · +12V</span><div class="contacts" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div></div>
+        <div class="rail"><span>WAGO B · 0V</span><div class="contacts" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div></div>
+        <div class="jack"><span class="jack-ring" aria-hidden="true"></span><span>Jack DC</span></div>
+      </div>
+      <div class="caption text-small">Adapter 12V và nguồn Pi để ngoài hộp.</div>
+    </div>
+  </div>
+  <div class="caption text-small">Minh họa vị trí; không xác định khoảng cách chịu nhiệt quanh bóng.</div>
+</div>

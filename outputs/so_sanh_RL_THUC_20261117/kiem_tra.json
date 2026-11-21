@@ -1,0 +1,14 @@
+{
+  "raw_log_hashes_unchanged": true,
+  "copied_baseline_is_duplicate_not_replication": true,
+  "frozen_policy_identity_verified": true,
+  "policy_seed": 11,
+  "online_q_updates": 0,
+  "nominal_seconds_each": 600,
+  "tests_passed": 76,
+  "inputs": [
+    "e5a3d6dcc0a1683bc8fe1704a654db3af2f7aeb6e6f17a6b1dae36e74a8dee93",
+    "2642c2f3d71416bb1d424b277e202c5a8a2e82dcdc1a52ee2194b32d213eb1b2"
+  ],
+  "result_scope": "one measured pair; no causal/general superiority or Wh claim"
+}

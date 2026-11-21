@@ -1,0 +1,187 @@
+{
+  "status": "PASS_SIMULATION_ONLY",
+  "selected": {
+    "switch_weight": 0.25,
+    "recovery_weight": 2.0,
+    "seed": 11,
+    "validation": {
+      "in_band_pct": 98.05989583333334,
+      "mae_c": 0.059508798169582225,
+      "lamp_changes": 19.6171875,
+      "fan_changes": 9.7890625,
+      "longest_in_band_s": 574.140625,
+      "recovery_penalized_s": 12.395833333333332,
+      "invalid_fraction": 0.0,
+      "unseen_fraction": 0.0,
+      "guard_fraction": 0.0013020833333333333,
+      "max_temperature_c": 37.71001193659804,
+      "min_temperature_c": 37.23417183588858,
+      "hot_pct": 0.6770833333333334,
+      "cold_pct": 1.2630208333333333
+    }
+  },
+  "candidate": {
+    "in_band_pct": 98.20312499999996,
+    "mae_c": 0.059651751103550234,
+    "lamp_changes": 19.5625,
+    "fan_changes": 9.755208333333334,
+    "longest_in_band_s": 564.4010416666666,
+    "recovery_penalized_s": 12.669270833333336,
+    "invalid_fraction": 0.0,
+    "unseen_fraction": 0.0,
+    "guard_fraction": 0.001388888888888889,
+    "max_temperature_c": 37.71249306358176,
+    "min_temperature_c": 37.23388600459002,
+    "hot_pct": 0.7118055555555555,
+    "cold_pct": 1.0850694444444444
+  },
+  "selected_seed": 11,
+  "test_by_seed": [
+    {
+      "seed": 11,
+      "metrics": {
+        "in_band_pct": 98.20312499999996,
+        "mae_c": 0.059651751103550234,
+        "lamp_changes": 19.5625,
+        "fan_changes": 9.755208333333334,
+        "longest_in_band_s": 564.4010416666666,
+        "recovery_penalized_s": 12.669270833333336,
+        "invalid_fraction": 0.0,
+        "unseen_fraction": 0.0,
+        "guard_fraction": 0.001388888888888889,
+        "max_temperature_c": 37.71249306358176,
+        "min_temperature_c": 37.23388600459002,
+        "hot_pct": 0.7118055555555555,
+        "cold_pct": 1.0850694444444444
+      }
+    },
+    {
+      "seed": 29,
+      "metrics": {
+        "in_band_pct": 98.3333333333333,
+        "mae_c": 0.05880942230387783,
+        "lamp_changes": 25.083333333333332,
+        "fan_changes": 21.375,
+        "longest_in_band_s": 578.4375,
+        "recovery_penalized_s": 10.946180555555555,
+        "invalid_fraction": 0.0,
+        "unseen_fraction": 0.0,
+        "guard_fraction": 0.0014322916666666668,
+        "max_temperature_c": 37.7051540000985,
+        "min_temperature_c": 37.23603987384237,
+        "hot_pct": 0.6119791666666666,
+        "cold_pct": 1.0546874999999998
+      }
+    },
+    {
+      "seed": 47,
+      "metrics": {
+        "in_band_pct": 97.59114583333331,
+        "mae_c": 0.06496507616365679,
+        "lamp_changes": 21.96875,
+        "fan_changes": 15.380208333333334,
+        "longest_in_band_s": 482.2395833333333,
+        "recovery_penalized_s": 16.55251736111111,
+        "invalid_fraction": 0.0,
+        "unseen_fraction": 0.0,
+        "guard_fraction": 0.0013454861111111109,
+        "max_temperature_c": 37.700614970131184,
+        "min_temperature_c": 37.22114089866405,
+        "hot_pct": 0.6206597222222222,
+        "cold_pct": 1.7881944444444438
+      }
+    }
+  ],
+  "baselines": {
+    "old_q": {
+      "in_band_pct": 97.93402777777773,
+      "mae_c": 0.071331341638244,
+      "lamp_changes": 49.864583333333336,
+      "fan_changes": 31.765625,
+      "longest_in_band_s": 532.5520833333334,
+      "recovery_penalized_s": 14.717881944444443,
+      "invalid_fraction": 0.0,
+      "unseen_fraction": 0.0,
+      "guard_fraction": 0.0018663194444444445,
+      "max_temperature_c": 37.7287351862366,
+      "min_temperature_c": 37.22967935874217,
+      "hot_pct": 0.7942708333333331,
+      "cold_pct": 1.2717013888888888
+    },
+    "deadband_relay": {
+      "in_band_pct": 46.918402777777764,
+      "mae_c": 0.2044511858220487,
+      "lamp_changes": 13.817708333333334,
+      "fan_changes": 13.5,
+      "longest_in_band_s": 38.125,
+      "recovery_penalized_s": 40.60194726595233,
+      "invalid_fraction": 0.0,
+      "unseen_fraction": 0.0,
+      "guard_fraction": 0.002170138888888889,
+      "max_temperature_c": 37.907025645944,
+      "min_temperature_c": 37.04928828475768,
+      "hot_pct": 25.1345486111111,
+      "cold_pct": 27.947048611111114
+    },
+    "fixed_50_75": {
+      "in_band_pct": 49.37934027777775,
+      "mae_c": 0.25418796219115253,
+      "lamp_changes": 1.4895833333333333,
+      "fan_changes": 1.2239583333333333,
+      "longest_in_band_s": 200.20833333333334,
+      "recovery_penalized_s": 141.4433170995671,
+      "invalid_fraction": 0.0,
+      "unseen_fraction": 0.0,
+      "guard_fraction": 0.025520833333333343,
+      "max_temperature_c": 37.82361444632604,
+      "min_temperature_c": 36.966598775266995,
+      "hot_pct": 22.16145833333333,
+      "cold_pct": 28.459201388888882
+    }
+  },
+  "paired_simulation_differences": {
+    "in_band_pct": {
+      "candidate_minus_old": 0.2690972222222217,
+      "conditional_95pct_interval": [
+        0.11284722222222232,
+        0.4341362847222213
+      ]
+    },
+    "lamp_changes": {
+      "candidate_minus_old": -30.302083333333332,
+      "conditional_95pct_interval": [
+        -31.583463541666667,
+        -29.09375
+      ]
+    },
+    "fan_changes": {
+      "candidate_minus_old": -22.010416666666668,
+      "conditional_95pct_interval": [
+        -22.791796875000003,
+        -21.239453125
+      ]
+    },
+    "longest_in_band_s": {
+      "candidate_minus_old": 31.848958333333332,
+      "conditional_95pct_interval": [
+        15.311197916666666,
+        47.709635416666664
+      ]
+    },
+    "recovery_penalized_s": {
+      "candidate_minus_old": -2.048611111111111,
+      "conditional_95pct_interval": [
+        -10.651475694444445,
+        4.067057291666665
+      ]
+    }
+  },
+  "limitations": [
+    "Not independent hardware evidence",
+    "Only one existing measured model",
+    "No new long-run response CSV",
+    "Reward selection uses simulation validation",
+    "Recovery metric penalizes unfinished excursions; not proof of fastest possible return"
+  ],
+  "deploy_allowed": false
+}

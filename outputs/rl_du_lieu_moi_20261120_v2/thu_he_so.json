@@ -1,0 +1,446 @@
+[
+  {
+    "kind": "Q_5s",
+    "switch_weight": 0.25,
+    "seed": 11,
+    "validation": {
+      "in_band_pct": 98.68489583333331,
+      "mae_c": 0.06124884240220994,
+      "lamp_changes": 29.4140625,
+      "fan_changes": 25.15625,
+      "longest_in_band_s": 582.96875,
+      "recovery_penalized_s": 9.58984375,
+      "invalid_fraction": 0.0,
+      "unseen_fraction": 0.0,
+      "guard_fraction": 0.0008463541666666667,
+      "max_temperature_c": 37.710903231059056,
+      "min_temperature_c": 37.24629125248729,
+      "hot_pct": 0.5598958333333333,
+      "cold_pct": 0.7552083333333333
+    }
+  },
+  {
+    "kind": "Q_5s",
+    "switch_weight": 0.25,
+    "seed": 29,
+    "validation": {
+      "in_band_pct": 98.63281249999999,
+      "mae_c": 0.05332063082827073,
+      "lamp_changes": 25.90625,
+      "fan_changes": 19.0,
+      "longest_in_band_s": 590.1171875,
+      "recovery_penalized_s": 10.078125,
+      "invalid_fraction": 0.0,
+      "unseen_fraction": 0.0,
+      "guard_fraction": 0.00078125,
+      "max_temperature_c": 37.70538338629691,
+      "min_temperature_c": 37.25793425463124,
+      "hot_pct": 0.6575520833333333,
+      "cold_pct": 0.7096354166666666
+    }
+  },
+  {
+    "kind": "Q_5s",
+    "switch_weight": 0.25,
+    "seed": 47,
+    "validation": {
+      "in_band_pct": 98.82161458333333,
+      "mae_c": 0.050538283982109786,
+      "lamp_changes": 17.0546875,
+      "fan_changes": 7.6875,
+      "longest_in_band_s": 591.328125,
+      "recovery_penalized_s": 9.4921875,
+      "invalid_fraction": 0.0,
+      "unseen_fraction": 0.0,
+      "guard_fraction": 0.0,
+      "max_temperature_c": 37.694589516415235,
+      "min_temperature_c": 37.2677582142673,
+      "hot_pct": 0.5338541666666666,
+      "cold_pct": 0.6445312499999999
+    }
+  },
+  {
+    "kind": "Q_5s",
+    "switch_weight": 0.5,
+    "seed": 11,
+    "validation": {
+      "in_band_pct": 98.58072916666666,
+      "mae_c": 0.06934428012270119,
+      "lamp_changes": 21.453125,
+      "fan_changes": 5.5234375,
+      "longest_in_band_s": 554.8046875,
+      "recovery_penalized_s": 9.186197916666668,
+      "invalid_fraction": 0.0,
+      "unseen_fraction": 0.0,
+      "guard_fraction": 0.0009114583333333333,
+      "max_temperature_c": 37.72105883253454,
+      "min_temperature_c": 37.23500388398053,
+      "hot_pct": 0.6575520833333333,
+      "cold_pct": 0.76171875
+    }
+  },
+  {
+    "kind": "Q_5s",
+    "switch_weight": 0.5,
+    "seed": 29,
+    "validation": {
+      "in_band_pct": 98.23567708333336,
+      "mae_c": 0.06420438342443037,
+      "lamp_changes": 9.21875,
+      "fan_changes": 13.4296875,
+      "longest_in_band_s": 537.65625,
+      "recovery_penalized_s": 16.692708333333336,
+      "invalid_fraction": 0.0,
+      "unseen_fraction": 0.0,
+      "guard_fraction": 0.0,
+      "max_temperature_c": 37.69557532547465,
+      "min_temperature_c": 37.22439360692622,
+      "hot_pct": 0.6575520833333334,
+      "cold_pct": 1.106770833333333
+    }
+  },
+  {
+    "kind": "Q_5s",
+    "switch_weight": 0.5,
+    "seed": 47,
+    "validation": {
+      "in_band_pct": 97.74739583333331,
+      "mae_c": 0.07975722978606244,
+      "lamp_changes": 16.3515625,
+      "fan_changes": 12.9765625,
+      "longest_in_band_s": 489.84375,
+      "recovery_penalized_s": 9.482421875,
+      "invalid_fraction": 0.0,
+      "unseen_fraction": 0.0,
+      "guard_fraction": 0.0009114583333333333,
+      "max_temperature_c": 37.704176916182305,
+      "min_temperature_c": 37.214769614511354,
+      "hot_pct": 0.5924479166666669,
+      "cold_pct": 1.6601562500000002
+    }
+  },
+  {
+    "kind": "Q_5s",
+    "switch_weight": 1.0,
+    "seed": 11,
+    "validation": {
+      "in_band_pct": 98.05989583333336,
+      "mae_c": 0.07315864299128681,
+      "lamp_changes": 9.8046875,
+      "fan_changes": 6.4921875,
+      "longest_in_band_s": 479.921875,
+      "recovery_penalized_s": 10.322265625000002,
+      "invalid_fraction": 0.0,
+      "unseen_fraction": 0.0,
+      "guard_fraction": 0.0,
+      "max_temperature_c": 37.696109117169264,
+      "min_temperature_c": 37.225807567498684,
+      "hot_pct": 0.5208333333333333,
+      "cold_pct": 1.4192708333333337
+    }
+  },
+  {
+    "kind": "Q_5s",
+    "switch_weight": 1.0,
+    "seed": 29,
+    "validation": {
+      "in_band_pct": 97.76692708333329,
+      "mae_c": 0.0703564469182868,
+      "lamp_changes": 8.6953125,
+      "fan_changes": 3.0703125,
+      "longest_in_band_s": 477.65625,
+      "recovery_penalized_s": 9.863932291666666,
+      "invalid_fraction": 0.0,
+      "unseen_fraction": 0.0,
+      "guard_fraction": 0.0,
+      "max_temperature_c": 37.700402438594324,
+      "min_temperature_c": 37.22773975546878,
+      "hot_pct": 0.6510416666666665,
+      "cold_pct": 1.5820312500000007
+    }
+  },
+  {
+    "kind": "Q_5s",
+    "switch_weight": 1.0,
+    "seed": 47,
+    "validation": {
+      "in_band_pct": 98.15755208333331,
+      "mae_c": 0.06610651132819052,
+      "lamp_changes": 8.390625,
+      "fan_changes": 3.9921875,
+      "longest_in_band_s": 507.0703125,
+      "recovery_penalized_s": 11.015625,
+      "invalid_fraction": 0.0,
+      "unseen_fraction": 0.0,
+      "guard_fraction": 0.0,
+      "max_temperature_c": 37.690652418684486,
+      "min_temperature_c": 37.24496517000263,
+      "hot_pct": 0.5533854166666665,
+      "cold_pct": 1.2890624999999998
+    }
+  },
+  {
+    "kind": "Q_5s",
+    "switch_weight": 2.0,
+    "seed": 11,
+    "validation": {
+      "in_band_pct": 95.93098958333339,
+      "mae_c": 0.09045054459891931,
+      "lamp_changes": 4.9765625,
+      "fan_changes": 2.5703125,
+      "longest_in_band_s": 337.65625,
+      "recovery_penalized_s": 15.955078125000002,
+      "invalid_fraction": 0.0,
+      "unseen_fraction": 0.0,
+      "guard_fraction": 0.00078125,
+      "max_temperature_c": 37.762229986330325,
+      "min_temperature_c": 37.226614243348834,
+      "hot_pct": 2.630208333333335,
+      "cold_pct": 1.438802083333334
+    }
+  },
+  {
+    "kind": "Q_5s",
+    "switch_weight": 2.0,
+    "seed": 29,
+    "validation": {
+      "in_band_pct": 96.52343749999997,
+      "mae_c": 0.08717950068548513,
+      "lamp_changes": 4.9140625,
+      "fan_changes": 3.875,
+      "longest_in_band_s": 340.78125,
+      "recovery_penalized_s": 11.998418898809526,
+      "invalid_fraction": 0.0,
+      "unseen_fraction": 0.0,
+      "guard_fraction": 0.0008463541666666667,
+      "max_temperature_c": 37.75240992655707,
+      "min_temperature_c": 37.22458235420854,
+      "hot_pct": 1.7838541666666672,
+      "cold_pct": 1.692708333333334
+    }
+  },
+  {
+    "kind": "Q_5s",
+    "switch_weight": 2.0,
+    "seed": 47,
+    "validation": {
+      "in_band_pct": 96.14583333333336,
+      "mae_c": 0.08828578797324191,
+      "lamp_changes": 4.8359375,
+      "fan_changes": 2.40625,
+      "longest_in_band_s": 342.6171875,
+      "recovery_penalized_s": 12.544921875,
+      "invalid_fraction": 0.0,
+      "unseen_fraction": 0.0,
+      "guard_fraction": 0.0008463541666666667,
+      "max_temperature_c": 37.7584346964833,
+      "min_temperature_c": 37.22884209223803,
+      "hot_pct": 2.4609375,
+      "cold_pct": 1.3932291666666676
+    }
+  },
+  {
+    "kind": "SMDP_inside30_outside10",
+    "switch_weight": 0.25,
+    "seed": 11,
+    "validation": {
+      "in_band_pct": 97.20052083333334,
+      "mae_c": 0.0697197387606149,
+      "lamp_changes": 9.21875,
+      "fan_changes": 8.765625,
+      "longest_in_band_s": 502.3046875,
+      "decisions": 22.703125,
+      "unseen_decision_fraction": 0.0,
+      "guard_fraction": 0.0,
+      "invalid_fraction": 0.0,
+      "pair_changes": 13.78125
+    }
+  },
+  {
+    "kind": "SMDP_inside30_outside10",
+    "switch_weight": 0.25,
+    "seed": 29,
+    "validation": {
+      "in_band_pct": 97.25260416666666,
+      "mae_c": 0.06984178259285137,
+      "lamp_changes": 9.15625,
+      "fan_changes": 8.7421875,
+      "longest_in_band_s": 503.5546875,
+      "decisions": 22.640625,
+      "unseen_decision_fraction": 0.0,
+      "guard_fraction": 0.0,
+      "invalid_fraction": 0.0,
+      "pair_changes": 13.7734375
+    }
+  },
+  {
+    "kind": "SMDP_inside30_outside10",
+    "switch_weight": 0.25,
+    "seed": 47,
+    "validation": {
+      "in_band_pct": 97.25911458333331,
+      "mae_c": 0.0696066375981051,
+      "lamp_changes": 9.171875,
+      "fan_changes": 8.65625,
+      "longest_in_band_s": 501.9921875,
+      "decisions": 22.625,
+      "unseen_decision_fraction": 0.0,
+      "guard_fraction": 0.0,
+      "invalid_fraction": 0.0,
+      "pair_changes": 13.71875
+    }
+  },
+  {
+    "kind": "SMDP_inside30_outside10",
+    "switch_weight": 0.5,
+    "seed": 11,
+    "validation": {
+      "in_band_pct": 97.27213541666664,
+      "mae_c": 0.06922919695216427,
+      "lamp_changes": 9.2734375,
+      "fan_changes": 8.875,
+      "longest_in_band_s": 492.421875,
+      "decisions": 22.6640625,
+      "unseen_decision_fraction": 0.0,
+      "guard_fraction": 0.0,
+      "invalid_fraction": 0.0,
+      "pair_changes": 13.8359375
+    }
+  },
+  {
+    "kind": "SMDP_inside30_outside10",
+    "switch_weight": 0.5,
+    "seed": 29,
+    "validation": {
+      "in_band_pct": 97.15494791666666,
+      "mae_c": 0.06987435890535618,
+      "lamp_changes": 9.1171875,
+      "fan_changes": 8.8046875,
+      "longest_in_band_s": 499.2578125,
+      "decisions": 22.7265625,
+      "unseen_decision_fraction": 0.0,
+      "guard_fraction": 0.0007161458333333333,
+      "invalid_fraction": 0.0,
+      "pair_changes": 13.6875
+    }
+  },
+  {
+    "kind": "SMDP_inside30_outside10",
+    "switch_weight": 0.5,
+    "seed": 47,
+    "validation": {
+      "in_band_pct": 97.25260416666664,
+      "mae_c": 0.06979510298772405,
+      "lamp_changes": 9.453125,
+      "fan_changes": 8.8515625,
+      "longest_in_band_s": 485.859375,
+      "decisions": 22.75,
+      "unseen_decision_fraction": 0.0,
+      "guard_fraction": 0.0,
+      "invalid_fraction": 0.0,
+      "pair_changes": 13.9453125
+    }
+  },
+  {
+    "kind": "SMDP_inside30_outside10",
+    "switch_weight": 1.0,
+    "seed": 11,
+    "validation": {
+      "in_band_pct": 97.21354166666661,
+      "mae_c": 0.07518407833831517,
+      "lamp_changes": 7.59375,
+      "fan_changes": 6.328125,
+      "longest_in_band_s": 454.7265625,
+      "decisions": 22.9140625,
+      "unseen_decision_fraction": 0.0,
+      "guard_fraction": 0.0,
+      "invalid_fraction": 0.0,
+      "pair_changes": 10.3828125
+    }
+  },
+  {
+    "kind": "SMDP_inside30_outside10",
+    "switch_weight": 1.0,
+    "seed": 29,
+    "validation": {
+      "in_band_pct": 97.33723958333331,
+      "mae_c": 0.07095100465634982,
+      "lamp_changes": 8.6796875,
+      "fan_changes": 7.96875,
+      "longest_in_band_s": 485.8203125,
+      "decisions": 22.796875,
+      "unseen_decision_fraction": 0.0,
+      "guard_fraction": 0.0008463541666666667,
+      "invalid_fraction": 0.0,
+      "pair_changes": 12.8984375
+    }
+  },
+  {
+    "kind": "SMDP_inside30_outside10",
+    "switch_weight": 1.0,
+    "seed": 47,
+    "validation": {
+      "in_band_pct": 97.2395833333333,
+      "mae_c": 0.07073016976516505,
+      "lamp_changes": 8.59375,
+      "fan_changes": 8.15625,
+      "longest_in_band_s": 494.0234375,
+      "decisions": 22.765625,
+      "unseen_decision_fraction": 0.0,
+      "guard_fraction": 0.0,
+      "invalid_fraction": 0.0,
+      "pair_changes": 13.015625
+    }
+  },
+  {
+    "kind": "SMDP_inside30_outside10",
+    "switch_weight": 2.0,
+    "seed": 11,
+    "validation": {
+      "in_band_pct": 96.65364583333331,
+      "mae_c": 0.07949035675036421,
+      "lamp_changes": 6.9140625,
+      "fan_changes": 6.2265625,
+      "longest_in_band_s": 419.375,
+      "decisions": 23.3203125,
+      "unseen_decision_fraction": 0.0,
+      "guard_fraction": 0.0,
+      "invalid_fraction": 0.0,
+      "pair_changes": 10.0546875
+    }
+  },
+  {
+    "kind": "SMDP_inside30_outside10",
+    "switch_weight": 2.0,
+    "seed": 29,
+    "validation": {
+      "in_band_pct": 95.48828124999993,
+      "mae_c": 0.08947372166440364,
+      "lamp_changes": 5.4453125,
+      "fan_changes": 4.765625,
+      "longest_in_band_s": 337.734375,
+      "decisions": 24.5,
+      "unseen_decision_fraction": 0.0,
+      "guard_fraction": 0.0,
+      "invalid_fraction": 0.0,
+      "pair_changes": 7.9453125
+    }
+  },
+  {
+    "kind": "SMDP_inside30_outside10",
+    "switch_weight": 2.0,
+    "seed": 47,
+    "validation": {
+      "in_band_pct": 95.77473958333331,
+      "mae_c": 0.08717238605170717,
+      "lamp_changes": 5.515625,
+      "fan_changes": 4.6640625,
+      "longest_in_band_s": 337.2265625,
+      "decisions": 24.3828125,
+      "unseen_decision_fraction": 0.0,
+      "guard_fraction": 0.0,
+      "invalid_fraction": 0.0,
+      "pair_changes": 8.0625
+    }
+  }
+]

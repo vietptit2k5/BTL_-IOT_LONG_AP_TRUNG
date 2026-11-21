@@ -1,0 +1,103 @@
+{
+  "version": 2,
+  "target_c": 37.5,
+  "band_c": 0.5,
+  "dt_s": 5.0,
+  "horizon_s": 600.0,
+  "checkpoints": [
+    500,
+    1500,
+    4000
+  ],
+  "state_count": 162,
+  "actions": [
+    [
+      0.0,
+      0.75
+    ],
+    [
+      0.0,
+      1.0
+    ],
+    [
+      0.25,
+      0.75
+    ],
+    [
+      0.25,
+      1.0
+    ],
+    [
+      0.5,
+      0.75
+    ],
+    [
+      0.5,
+      1.0
+    ],
+    [
+      0.75,
+      0.75
+    ],
+    [
+      0.75,
+      1.0
+    ],
+    [
+      1.0,
+      0.75
+    ]
+  ],
+  "state_spec": "9 error x 3 trend x 3 heater-memory x 2 soft-guard; no previous-action term",
+  "train_seeds": [
+    11,
+    29,
+    47
+  ],
+  "check_seeds": [
+    73,
+    101
+  ],
+  "validation_scenarios": 32,
+  "validation_scenario_seed": 140,
+  "check_scenarios": 64,
+  "check_scenario_seed": 211217,
+  "criteria": "invalid=0; mean in band>=90%; worst seed>=80%; guard steps<=1%; fallback<=1%",
+  "soft_guard": {
+    "off_c": 38.0,
+    "resume_c": 37.0,
+    "trigger_penalty": 10
+  },
+  "reward": "-|T-target|/band - hot*(max(0,T-target-band)/band)^2 - duty*(H+F)/2 - 10*guard_trigger",
+  "switching_weight": 0,
+  "algorithms": [
+    "q-learning",
+    "expected-sarsa"
+  ],
+  "grid": [
+    {
+      "hot": 3.0,
+      "duty": 0.0
+    },
+    {
+      "hot": 3.0,
+      "duty": 0.05
+    },
+    {
+      "hot": 10.0,
+      "duty": 0.0
+    },
+    {
+      "hot": 10.0,
+      "duty": 0.05
+    }
+  ],
+  "evidence": "DEVELOPMENT_SIMULATION_ON_ALREADY_REVIEWED_RUN; not independent hardware validation",
+  "sources": [
+    {
+      "path": "Du_lieu_khao_sat\\20261117_070909_628598\\du_lieu.csv",
+      "sha256": "7ed00d0151a9d84d4c0d201e26b65f8a63ca9cc0ed0362250364a6d3fac9de14"
+    }
+  ],
+  "deploy_allowed": false
+}

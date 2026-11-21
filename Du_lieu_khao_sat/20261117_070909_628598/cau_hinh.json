@@ -1,0 +1,204 @@
+{
+  "command": "do",
+  "giay": 5400.0,
+  "gioi_han_phut": 90.0,
+  "moi_to_hop": 120.0,
+  "lap": 2,
+  "muc_bong": [
+    0,
+    25,
+    50,
+    75,
+    100
+  ],
+  "muc_quat": [
+    75,
+    100
+  ],
+  "thu_tu": 31,
+  "sensor": null,
+  "tan_so_quat": 100,
+  "khong_oled": false,
+  "oled_dia_chi": null,
+  "oled_cao": 64,
+  "dry_run": false,
+  "muc_tieu": 37.5,
+  "dung_sai": 0.5,
+  "episodes": 250,
+  "chi_do": false,
+  "out": null,
+  "schedule": {
+    "completed_schedule": true,
+    "warm_target_reached": false,
+    "soft_guard_count": 5,
+    "initial_temperature_c": 32.437,
+    "nominal_seconds": 2760.0,
+    "wall_time_limit_s": 5400.0,
+    "seconds_per_combination": 120.0,
+    "repeats": 2,
+    "phases": [
+      {
+        "name": "nen_ban_dau",
+        "seconds": 60,
+        "lamp": 0,
+        "fan": 100,
+        "warm": false
+      },
+      {
+        "name": "lam_am_co_gioi_han",
+        "seconds": 180,
+        "lamp": 75,
+        "fan": 100,
+        "warm": true
+      },
+      {
+        "name": "thu_1_bong_50_quat_75",
+        "seconds": 120.0,
+        "lamp": 50,
+        "fan": 75,
+        "warm": false
+      },
+      {
+        "name": "thu_1_bong_25_quat_75",
+        "seconds": 120.0,
+        "lamp": 25,
+        "fan": 75,
+        "warm": false
+      },
+      {
+        "name": "thu_1_bong_50_quat_100",
+        "seconds": 120.0,
+        "lamp": 50,
+        "fan": 100,
+        "warm": false
+      },
+      {
+        "name": "thu_1_bong_100_quat_100",
+        "seconds": 120.0,
+        "lamp": 100,
+        "fan": 100,
+        "warm": false
+      },
+      {
+        "name": "thu_1_bong_100_quat_75",
+        "seconds": 120.0,
+        "lamp": 100,
+        "fan": 75,
+        "warm": false
+      },
+      {
+        "name": "thu_1_bong_25_quat_100",
+        "seconds": 120.0,
+        "lamp": 25,
+        "fan": 100,
+        "warm": false
+      },
+      {
+        "name": "thu_1_bong_75_quat_75",
+        "seconds": 120.0,
+        "lamp": 75,
+        "fan": 75,
+        "warm": false
+      },
+      {
+        "name": "thu_1_bong_0_quat_100",
+        "seconds": 120.0,
+        "lamp": 0,
+        "fan": 100,
+        "warm": false
+      },
+      {
+        "name": "thu_1_bong_75_quat_100",
+        "seconds": 120.0,
+        "lamp": 75,
+        "fan": 100,
+        "warm": false
+      },
+      {
+        "name": "thu_1_bong_0_quat_75",
+        "seconds": 120.0,
+        "lamp": 0,
+        "fan": 75,
+        "warm": false
+      },
+      {
+        "name": "thu_2_bong_75_quat_75",
+        "seconds": 120.0,
+        "lamp": 75,
+        "fan": 75,
+        "warm": false
+      },
+      {
+        "name": "thu_2_bong_75_quat_100",
+        "seconds": 120.0,
+        "lamp": 75,
+        "fan": 100,
+        "warm": false
+      },
+      {
+        "name": "thu_2_bong_100_quat_100",
+        "seconds": 120.0,
+        "lamp": 100,
+        "fan": 100,
+        "warm": false
+      },
+      {
+        "name": "thu_2_bong_50_quat_75",
+        "seconds": 120.0,
+        "lamp": 50,
+        "fan": 75,
+        "warm": false
+      },
+      {
+        "name": "thu_2_bong_0_quat_75",
+        "seconds": 120.0,
+        "lamp": 0,
+        "fan": 75,
+        "warm": false
+      },
+      {
+        "name": "thu_2_bong_50_quat_100",
+        "seconds": 120.0,
+        "lamp": 50,
+        "fan": 100,
+        "warm": false
+      },
+      {
+        "name": "thu_2_bong_0_quat_100",
+        "seconds": 120.0,
+        "lamp": 0,
+        "fan": 100,
+        "warm": false
+      },
+      {
+        "name": "thu_2_bong_25_quat_75",
+        "seconds": 120.0,
+        "lamp": 25,
+        "fan": 75,
+        "warm": false
+      },
+      {
+        "name": "thu_2_bong_25_quat_100",
+        "seconds": 120.0,
+        "lamp": 25,
+        "fan": 100,
+        "warm": false
+      },
+      {
+        "name": "thu_2_bong_100_quat_75",
+        "seconds": 120.0,
+        "lamp": 100,
+        "fan": 75,
+        "warm": false
+      },
+      {
+        "name": "ngung_suoi_cuoi",
+        "seconds": 120,
+        "lamp": 0,
+        "fan": 100,
+        "warm": false
+      }
+    ]
+  },
+  "hardware_program_exit_code": 0
+}

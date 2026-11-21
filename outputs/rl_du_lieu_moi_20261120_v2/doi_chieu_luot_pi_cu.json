@@ -1,0 +1,10 @@
+{
+  "source": "Du_lieu_giu_nhiet\\ket_qua_giu_nhiet\\20261117_092305_477345\\du_lieu.csv",
+  "sha256": "2642c2f3d71416bb1d424b277e202c5a8a2e82dcdc1a52ee2194b32d213eb1b2",
+  "covered_s": 600.0179999999999,
+  "in_band_pct": 97.67656970290892,
+  "mae_c": 0.05682272865147249,
+  "lamp_changes": 88,
+  "fan_changes": 52,
+  "pair_changes": 88
+}

@@ -1,0 +1,158 @@
+{
+  "status": "SIMULATION_ONLY",
+  "deploy_allowed": false,
+  "biological_tolerance_validated": false,
+  "results": [
+    {
+      "stage": {
+        "id": 0,
+        "days": [
+          1,
+          10
+        ],
+        "target_c": 37.8,
+        "lower_c": 37.6,
+        "upper_c": 38.0,
+        "source_temperature_c": [
+          37.8,
+          38.0
+        ],
+        "guard_overlap": true
+      },
+      "candidate": {
+        "in_band_pct": 95.12152777777776,
+        "mae_c": 0.08073667659092,
+        "lamp_changes": 32.328125,
+        "fan_changes": 7.3125,
+        "longest_in_band_s": 521.015625,
+        "recovery_penalized_s": 17.016927083333332,
+        "invalid_fraction": 0.0,
+        "unseen_fraction": 0.0,
+        "guard_fraction": 0.020182291666666675,
+        "max_temperature_c": 37.978270486160795,
+        "min_temperature_c": 37.3238179833785,
+        "hot_pct": 0.36892361111111116,
+        "cold_pct": 4.509548611111112
+      },
+      "deadband_reference": {
+        "in_band_pct": 27.569444444444446,
+        "mae_c": 0.43433436916141294,
+        "lamp_changes": 9.395833333333334,
+        "fan_changes": 8.994791666666666,
+        "longest_in_band_s": 34.401041666666664,
+        "recovery_penalized_s": 83.5717294135263,
+        "invalid_fraction": 0.0,
+        "unseen_fraction": 0.0,
+        "guard_fraction": 0.46649305555555526,
+        "max_temperature_c": 38.22277071435391,
+        "min_temperature_c": 36.76715215609,
+        "hot_pct": 19.236111111111125,
+        "cold_pct": 53.19444444444441
+      },
+      "simulation_gate_passed": false
+    },
+    {
+      "stage": {
+        "id": 1,
+        "days": [
+          11,
+          17
+        ],
+        "target_c": 37.5,
+        "lower_c": 37.3,
+        "upper_c": 37.7,
+        "source_temperature_c": [
+          37.5,
+          37.5
+        ],
+        "guard_overlap": false
+      },
+      "candidate": {
+        "in_band_pct": 97.41753472222223,
+        "mae_c": 0.07056198804222867,
+        "lamp_changes": 6.010416666666667,
+        "fan_changes": 7.088541666666667,
+        "longest_in_band_s": 454.296875,
+        "recovery_penalized_s": 15.168836805555552,
+        "invalid_fraction": 0.0,
+        "unseen_fraction": 0.0,
+        "guard_fraction": 0.0,
+        "max_temperature_c": 37.699807466096,
+        "min_temperature_c": 37.216121085579935,
+        "hot_pct": 0.5729166666666666,
+        "cold_pct": 2.009548611111111
+      },
+      "deadband_reference": {
+        "in_band_pct": 46.91406250000002,
+        "mae_c": 0.2049029641847537,
+        "lamp_changes": 13.984375,
+        "fan_changes": 13.614583333333334,
+        "longest_in_band_s": 37.03125,
+        "recovery_penalized_s": 45.53259158928966,
+        "invalid_fraction": 0.0,
+        "unseen_fraction": 0.0,
+        "guard_fraction": 0.002126736111111111,
+        "max_temperature_c": 37.908285065314914,
+        "min_temperature_c": 37.051078157855834,
+        "hot_pct": 25.069444444444446,
+        "cold_pct": 28.01649305555557
+      },
+      "simulation_gate_passed": true
+    },
+    {
+      "stage": {
+        "id": 2,
+        "days": [
+          18,
+          21
+        ],
+        "target_c": 37.2,
+        "lower_c": 37.0,
+        "upper_c": 37.4,
+        "source_temperature_c": [
+          37.2,
+          37.2
+        ],
+        "guard_overlap": false
+      },
+      "candidate": {
+        "in_band_pct": 97.9123263888889,
+        "mae_c": 0.06717890964975172,
+        "lamp_changes": 6.0625,
+        "fan_changes": 9.307291666666666,
+        "longest_in_band_s": 489.84375,
+        "recovery_penalized_s": 17.31857638888889,
+        "invalid_fraction": 0.0,
+        "unseen_fraction": 0.0,
+        "guard_fraction": 0.0,
+        "max_temperature_c": 37.407193978209904,
+        "min_temperature_c": 36.93290312505788,
+        "hot_pct": 0.7248263888888892,
+        "cold_pct": 1.3628472222222225
+      },
+      "deadband_reference": {
+        "in_band_pct": 46.60590277777779,
+        "mae_c": 0.20447068302596985,
+        "lamp_changes": 14.145833333333334,
+        "fan_changes": 13.817708333333334,
+        "longest_in_band_s": 31.223958333333332,
+        "recovery_penalized_s": 42.18119299639289,
+        "invalid_fraction": 0.0,
+        "unseen_fraction": 0.0,
+        "guard_fraction": 0.0,
+        "max_temperature_c": 37.61001889367928,
+        "min_temperature_c": 36.76386499816347,
+        "hot_pct": 26.35416666666666,
+        "cold_pct": 27.039930555555557
+      },
+      "simulation_gate_passed": true
+    }
+  ],
+  "all_stages_simulation_gate_passed": false,
+  "limitations": [
+    "One old empty-box model; no independent hardware trial",
+    "Stage1 engineering band extends below published37.8..38.0 and touches guard38",
+    "Stages2/3 tolerances are engineering choices, not source recommendations",
+    "Embryo heat generation and changed egg thermal mass not identified"
+  ]
+}

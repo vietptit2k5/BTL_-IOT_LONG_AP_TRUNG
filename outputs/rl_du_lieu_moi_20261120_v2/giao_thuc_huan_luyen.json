@@ -1,0 +1,25 @@
+{
+  "episodes": 64000,
+  "seeds": [
+    11,
+    29,
+    47
+  ],
+  "switch_weights": [
+    0.25,
+    0.5,
+    1.0,
+    2.0
+  ],
+  "recovery_weight": 4.0,
+  "decision_versions": [
+    "Q_5s",
+    "SMDP_inside30_outside10"
+  ],
+  "validation_seed": 205001,
+  "test_seed": 205101,
+  "model_sha256": "bae51fbc0549f03b89197c9d63affac061314c1e651d90c6465e290722116160",
+  "goal": "37.3..37.7C, center37.5, minimize real action changes; no mandatory deadband lock",
+  "acceptance": "model passes; test occupancy>=95%; zero invalid/unseen; guard<=1%; 20% fewer pair changes than old Q with occupancy loss<=0.5pp",
+  "experimental_pilot_only": true
+}

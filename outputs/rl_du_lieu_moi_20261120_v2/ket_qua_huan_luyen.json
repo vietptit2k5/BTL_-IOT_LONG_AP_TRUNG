@@ -1,0 +1,72 @@
+{
+  "status": "ELIGIBLE_MONITORED_EMPTY_BOX_PILOT",
+  "candidate": {
+    "in_band_pct": 98.05121527777771,
+    "mae_c": 0.0660533174382524,
+    "lamp_changes": 8.260416666666666,
+    "fan_changes": 4.28125,
+    "longest_in_band_s": 502.4739583333333,
+    "recovery_penalized_s": 11.7109375,
+    "invalid_fraction": 0.0,
+    "unseen_fraction": 0.0,
+    "guard_fraction": 0.0,
+    "max_temperature_c": 37.68796377162578,
+    "min_temperature_c": 37.236348778920096,
+    "hot_pct": 0.546875,
+    "cold_pct": 1.401909722222223,
+    "pair_changes": 11.0625
+  },
+  "old_q_on_new_model": {
+    "in_band_pct": 97.26996527777777,
+    "mae_c": 0.11455565360320769,
+    "lamp_changes": 67.96354166666667,
+    "fan_changes": 54.5625,
+    "longest_in_band_s": 407.890625,
+    "recovery_penalized_s": 12.81324404761905,
+    "invalid_fraction": 0.0,
+    "unseen_fraction": 0.0,
+    "guard_fraction": 0.00047743055555555554,
+    "max_temperature_c": 37.76001264360425,
+    "min_temperature_c": 37.30882945458015,
+    "hot_pct": 1.9921874999999991,
+    "cold_pct": 0.7378472222222222,
+    "pair_changes": 68.61458333333333
+  },
+  "relay_on_new_model": {
+    "in_band_pct": 50.09114583333331,
+    "mae_c": 0.1933563145527676,
+    "lamp_changes": 14.104166666666666,
+    "fan_changes": 13.619791666666666,
+    "longest_in_band_s": 48.671875,
+    "recovery_penalized_s": 39.65835201146552,
+    "invalid_fraction": 0.0,
+    "unseen_fraction": 0.0,
+    "guard_fraction": 0.0012152777777777778,
+    "max_temperature_c": 37.90407757388015,
+    "min_temperature_c": 37.10499993712268,
+    "hot_pct": 28.28559027777779,
+    "cold_pct": 21.623263888888882,
+    "pair_changes": 14.119791666666666
+  },
+  "evidence": "SIMULATION from actual Nov20 measurements; not hardware validation",
+  "selection": {
+    "kind": "Q_5s",
+    "switch_weight": 1.0,
+    "seed": 47,
+    "validation": {
+      "in_band_pct": 98.15755208333331,
+      "mae_c": 0.06610651132819052,
+      "lamp_changes": 8.390625,
+      "fan_changes": 3.9921875,
+      "longest_in_band_s": 507.0703125,
+      "recovery_penalized_s": 11.015625,
+      "invalid_fraction": 0.0,
+      "unseen_fraction": 0.0,
+      "guard_fraction": 0.0,
+      "max_temperature_c": 37.690652418684486,
+      "min_temperature_c": 37.24496517000263,
+      "hot_pct": 0.5533854166666665,
+      "cold_pct": 1.2890624999999998
+    }
+  }
+}

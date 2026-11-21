@@ -1,0 +1,4 @@
+# Script bash chạy trên Raspberry Pi phải xuống dòng kiểu LF (CRLF gây lỗi "set: pipefail").
+# KHÔNG áp dụng cho *.json: các gói Q-table được kiểm tra SHA-256, đổi xuống dòng sẽ làm sai mã.
+[*.sh]
+end_of_line = lf

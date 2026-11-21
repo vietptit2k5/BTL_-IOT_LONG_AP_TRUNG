@@ -1,0 +1,199 @@
+{
+  "profile": {
+    "kind": "NEAR_TARGET_RESPONSE_V1",
+    "completed": true,
+    "order": [
+      [
+        50,
+        75
+      ],
+      [
+        50,
+        100
+      ],
+      [
+        25,
+        75
+      ],
+      [
+        25,
+        100
+      ],
+      [
+        75,
+        75
+      ],
+      [
+        75,
+        100
+      ],
+      [
+        0,
+        75
+      ],
+      [
+        0,
+        100
+      ],
+      [
+        100,
+        75
+      ],
+      [
+        100,
+        100
+      ]
+    ],
+    "records": [
+      {
+        "trial": 1,
+        "lamp": 50,
+        "fan": 75,
+        "start_temperature_c": 37.437,
+        "start_slope_c_per_min": 0.08223799472538891,
+        "start_heat_memory": 0.44650471326412783,
+        "actual_probe_s": 109.03244406400006,
+        "end_reason": "upper_37_9c",
+        "full_duration": false
+      },
+      {
+        "trial": 2,
+        "lamp": 50,
+        "fan": 100,
+        "start_temperature_c": 37.625,
+        "start_slope_c_per_min": -0.015240174789073467,
+        "start_heat_memory": 0.4469940130926201,
+        "actual_probe_s": 1200.007310521,
+        "end_reason": "duration",
+        "full_duration": true
+      },
+      {
+        "trial": 3,
+        "lamp": 25,
+        "fan": 75,
+        "start_temperature_c": 37.562,
+        "start_slope_c_per_min": -0.0990526060438493,
+        "start_heat_memory": 0.4549288567742854,
+        "actual_probe_s": 129.00822417200015,
+        "end_reason": "lower_36_5c",
+        "full_duration": false
+      },
+      {
+        "trial": 4,
+        "lamp": 25,
+        "fan": 100,
+        "start_temperature_c": 37.625,
+        "start_slope_c_per_min": -0.08535606288584247,
+        "start_heat_memory": 0.4083859281724548,
+        "actual_probe_s": 101.0066659640006,
+        "end_reason": "lower_36_5c",
+        "full_duration": false
+      },
+      {
+        "trial": 5,
+        "lamp": 75,
+        "fan": 75,
+        "start_temperature_c": 37.625,
+        "start_slope_c_per_min": -0.06253166889663929,
+        "start_heat_memory": 0.4312783780518715,
+        "actual_probe_s": 26.983225327000582,
+        "end_reason": "upper_37_9c",
+        "full_duration": false
+      },
+      {
+        "trial": 6,
+        "lamp": 75,
+        "fan": 100,
+        "start_temperature_c": 37.625,
+        "start_slope_c_per_min": -0.057198206402393766,
+        "start_heat_memory": 0.43261436325341046,
+        "actual_probe_s": 30.991971886999636,
+        "end_reason": "upper_37_9c",
+        "full_duration": false
+      },
+      {
+        "trial": 7,
+        "lamp": 0,
+        "fan": 75,
+        "start_temperature_c": 37.625,
+        "start_slope_c_per_min": -0.052978809711386486,
+        "start_heat_memory": 0.41520713032835915,
+        "actual_probe_s": 58.013427857999886,
+        "end_reason": "lower_36_5c",
+        "full_duration": false
+      },
+      {
+        "trial": 8,
+        "lamp": 0,
+        "fan": 100,
+        "start_temperature_c": 37.562,
+        "start_slope_c_per_min": -0.07398919829835865,
+        "start_heat_memory": 0.415707995264121,
+        "actual_probe_s": 52.009934726998836,
+        "end_reason": "lower_36_5c",
+        "full_duration": false
+      },
+      {
+        "trial": 9,
+        "lamp": 100,
+        "fan": 75,
+        "start_temperature_c": 37.625,
+        "start_slope_c_per_min": 0.005058394912147482,
+        "start_heat_memory": 0.41122185715843673,
+        "actual_probe_s": 19.964768141000604,
+        "end_reason": "upper_37_9c",
+        "full_duration": false
+      },
+      {
+        "trial": 10,
+        "lamp": 100,
+        "fan": 100,
+        "start_temperature_c": 37.625,
+        "start_slope_c_per_min": -0.007560123218811757,
+        "start_heat_memory": 0.4279036241884423,
+        "actual_probe_s": 19.971490190000623,
+        "end_reason": "upper_37_9c",
+        "full_duration": false
+      }
+    ],
+    "dwell_s": 1200,
+    "prepare_limit_s": 600,
+    "post_s": 300,
+    "warm_limit_s": 900,
+    "single_target_full_matrix": true,
+    "limit_s": 21902,
+    "initial_target_c": 37.5,
+    "initial_band_c": 0.125,
+    "probe_lower_c": 36.5,
+    "probe_upper_c": 37.9,
+    "initial_slope_limit_c_per_min": 0.12,
+    "heat_memory_tau_s": 25,
+    "memory_tolerance": 0.1,
+    "reference_memory": 0.44650471326412783,
+    "soft_guard_c": [
+      38,
+      37
+    ],
+    "hard_cutoff_c": 38.5,
+    "evidence": "One-probe empty-box identification; history matching is approximate, not equal wall temperatures."
+  },
+  "dht11": false,
+  "hardware_program_exit_code": 0,
+  "stage_reference": {
+    "id": 1,
+    "days": [
+      11,
+      17
+    ],
+    "target_c": 37.5,
+    "lower_c": 37.3,
+    "upper_c": 37.7,
+    "source_temperature_c": [
+      37.5,
+      37.5
+    ],
+    "guard_overlap": false
+  },
+  "purpose": "REAL_HARDWARE_RESPONSE_COLLECTION_NOT_RL_VALIDATION",
+  "biological_tolerance_validated": false
+}

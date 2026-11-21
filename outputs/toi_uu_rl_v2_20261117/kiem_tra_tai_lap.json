@@ -1,0 +1,20 @@
+{
+  "source_csv_hash_unchanged": true,
+  "shipped_reference_matches_frozen_validation_choice": true,
+  "candidate_policy_replay_max_difference": 0,
+  "replayed_seeds": [
+    11,
+    29,
+    47
+  ],
+  "replayed_cases_per_seed": 64,
+  "deploy_allowed": false,
+  "hardware_test_run_by_agent": false,
+  "source_snapshot_after_tests": {
+    "chinh_sach_nhiet.py": "cd1a2b81f376f95e1172c37d57e3818be3c84646ac0b54f7a6512a7174adc7c6",
+    "toi_uu_rl_offline.py": "f7956dcf7c69c6969fedce521ae4cf13ae886759da91315b254aa664e8b18742",
+    "kiem_tra_giu_nhiet.py": "c8ac44b897fdff8b8dc8508da8828db6ba55606f9323dec541a5fcb0254f062b",
+    "doi_chung_kiem_tra.json": "cdcd35f678789dad944573f5f6be9205a208dad23ff95f6f245cb342fe5b19a0",
+    "do_nhiet_hop.py": "6ea622bd771f8f2561f32601dd11d1fc0c00657b890d7cd6ba7cedc316b3c945"
+  }
+}

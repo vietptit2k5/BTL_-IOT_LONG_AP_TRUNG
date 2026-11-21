@@ -1,0 +1,200 @@
+{
+  "status": "REJECTED_NOT_FOR_HARDWARE",
+  "evidence": "frozen model with residual block resampling; NOT new hardware observations",
+  "cases": 64,
+  "seed": 171730,
+  "trials": [
+    {
+      "config": {
+        "lamp_hold_s": 15,
+        "fan_hold_s": 30,
+        "stable_band_c": 0.1,
+        "stable_trend_c_per_min": 0.15,
+        "trend_window_s": 20,
+        "max_lamp_step": 0.25
+      },
+      "mean_mae_c": 0.30128326834170566,
+      "mean_in_band_pct": 81.94010416666667,
+      "mean_changes": 33.40625,
+      "mean_fan_changes": 14.890625,
+      "mean_longest_joint_hold_s": 54.140625,
+      "mean_guard_rate": 0.09361979166666667
+    },
+    {
+      "config": {
+        "lamp_hold_s": 15,
+        "fan_hold_s": 30,
+        "stable_band_c": 0.15,
+        "stable_trend_c_per_min": 0.15,
+        "trend_window_s": 20,
+        "max_lamp_step": 0.25
+      },
+      "mean_mae_c": 0.30090873004490043,
+      "mean_in_band_pct": 82.00520833333333,
+      "mean_changes": 33.21875,
+      "mean_fan_changes": 14.890625,
+      "mean_longest_joint_hold_s": 54.296875,
+      "mean_guard_rate": 0.09348958333333333
+    },
+    {
+      "config": {
+        "lamp_hold_s": 15,
+        "fan_hold_s": 60,
+        "stable_band_c": 0.1,
+        "stable_trend_c_per_min": 0.15,
+        "trend_window_s": 20,
+        "max_lamp_step": 0.25
+      },
+      "mean_mae_c": 0.30672854877439454,
+      "mean_in_band_pct": 80.75520833333333,
+      "mean_changes": 30.328125,
+      "mean_fan_changes": 9.03125,
+      "mean_longest_joint_hold_s": 59.6875,
+      "mean_guard_rate": 0.17981770833333333
+    },
+    {
+      "config": {
+        "lamp_hold_s": 15,
+        "fan_hold_s": 60,
+        "stable_band_c": 0.15,
+        "stable_trend_c_per_min": 0.15,
+        "trend_window_s": 20,
+        "max_lamp_step": 0.25
+      },
+      "mean_mae_c": 0.3073307116644762,
+      "mean_in_band_pct": 80.69010416666667,
+      "mean_changes": 30.109375,
+      "mean_fan_changes": 8.953125,
+      "mean_longest_joint_hold_s": 60,
+      "mean_guard_rate": 0.17955729166666667
+    },
+    {
+      "config": {
+        "lamp_hold_s": 20,
+        "fan_hold_s": 30,
+        "stable_band_c": 0.1,
+        "stable_trend_c_per_min": 0.15,
+        "trend_window_s": 20,
+        "max_lamp_step": 0.25
+      },
+      "mean_mae_c": 0.3417408326664545,
+      "mean_in_band_pct": 76.94010416666667,
+      "mean_changes": 29.46875,
+      "mean_fan_changes": 15.25,
+      "mean_longest_joint_hold_s": 51.875,
+      "mean_guard_rate": 0.095703125
+    },
+    {
+      "config": {
+        "lamp_hold_s": 20,
+        "fan_hold_s": 30,
+        "stable_band_c": 0.15,
+        "stable_trend_c_per_min": 0.15,
+        "trend_window_s": 20,
+        "max_lamp_step": 0.25
+      },
+      "mean_mae_c": 0.3404730495051946,
+      "mean_in_band_pct": 77.20052083333333,
+      "mean_changes": 29.671875,
+      "mean_fan_changes": 15.265625,
+      "mean_longest_joint_hold_s": 51.25,
+      "mean_guard_rate": 0.08736979166666667
+    },
+    {
+      "config": {
+        "lamp_hold_s": 20,
+        "fan_hold_s": 60,
+        "stable_band_c": 0.1,
+        "stable_trend_c_per_min": 0.15,
+        "trend_window_s": 20,
+        "max_lamp_step": 0.25
+      },
+      "mean_mae_c": 0.31771571729960413,
+      "mean_in_band_pct": 80.5859375,
+      "mean_changes": 26.875,
+      "mean_fan_changes": 8.96875,
+      "mean_longest_joint_hold_s": 58.046875,
+      "mean_guard_rate": 0.17200520833333333
+    },
+    {
+      "config": {
+        "lamp_hold_s": 20,
+        "fan_hold_s": 60,
+        "stable_band_c": 0.15,
+        "stable_trend_c_per_min": 0.15,
+        "trend_window_s": 20,
+        "max_lamp_step": 0.25
+      },
+      "mean_mae_c": 0.3173176188258364,
+      "mean_in_band_pct": 80.69010416666667,
+      "mean_changes": 26.859375,
+      "mean_fan_changes": 8.96875,
+      "mean_longest_joint_hold_s": 58.046875,
+      "mean_guard_rate": 0.17096354166666666
+    },
+    {
+      "config": {
+        "lamp_hold_s": 30,
+        "fan_hold_s": 30,
+        "stable_band_c": 0.1,
+        "stable_trend_c_per_min": 0.15,
+        "trend_window_s": 20,
+        "max_lamp_step": 0.25
+      },
+      "mean_mae_c": 0.3589333793721061,
+      "mean_in_band_pct": 76.22395833333333,
+      "mean_changes": 21.84375,
+      "mean_fan_changes": 13.796875,
+      "mean_longest_joint_hold_s": 58.203125,
+      "mean_guard_rate": 0.16901041666666666
+    },
+    {
+      "config": {
+        "lamp_hold_s": 30,
+        "fan_hold_s": 30,
+        "stable_band_c": 0.15,
+        "stable_trend_c_per_min": 0.15,
+        "trend_window_s": 20,
+        "max_lamp_step": 0.25
+      },
+      "mean_mae_c": 0.3603069042626751,
+      "mean_in_band_pct": 76.1328125,
+      "mean_changes": 21.796875,
+      "mean_fan_changes": 13.78125,
+      "mean_longest_joint_hold_s": 57.96875,
+      "mean_guard_rate": 0.16848958333333333
+    },
+    {
+      "config": {
+        "lamp_hold_s": 30,
+        "fan_hold_s": 60,
+        "stable_band_c": 0.1,
+        "stable_trend_c_per_min": 0.15,
+        "trend_window_s": 20,
+        "max_lamp_step": 0.25
+      },
+      "mean_mae_c": 0.36672087222145533,
+      "mean_in_band_pct": 73.05989583333333,
+      "mean_changes": 21.484375,
+      "mean_fan_changes": 8.859375,
+      "mean_longest_joint_hold_s": 57.65625,
+      "mean_guard_rate": 0.19427083333333334
+    },
+    {
+      "config": {
+        "lamp_hold_s": 30,
+        "fan_hold_s": 60,
+        "stable_band_c": 0.15,
+        "stable_trend_c_per_min": 0.15,
+        "trend_window_s": 20,
+        "max_lamp_step": 0.25
+      },
+      "mean_mae_c": 0.36651011271260875,
+      "mean_in_band_pct": 73.03385416666667,
+      "mean_changes": 21.4375,
+      "mean_fan_changes": 8.84375,
+      "mean_longest_joint_hold_s": 57.734375,
+      "mean_guard_rate": 0.19557291666666668
+    }
+  ]
+}

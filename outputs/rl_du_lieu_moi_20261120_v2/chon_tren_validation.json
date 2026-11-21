@@ -1,0 +1,20 @@
+{
+  "kind": "Q_5s",
+  "switch_weight": 1.0,
+  "seed": 47,
+  "validation": {
+    "in_band_pct": 98.15755208333331,
+    "mae_c": 0.06610651132819052,
+    "lamp_changes": 8.390625,
+    "fan_changes": 3.9921875,
+    "longest_in_band_s": 507.0703125,
+    "recovery_penalized_s": 11.015625,
+    "invalid_fraction": 0.0,
+    "unseen_fraction": 0.0,
+    "guard_fraction": 0.0,
+    "max_temperature_c": 37.690652418684486,
+    "min_temperature_c": 37.24496517000263,
+    "hot_pct": 0.5533854166666665,
+    "cold_pct": 1.2890624999999998
+  }
+}

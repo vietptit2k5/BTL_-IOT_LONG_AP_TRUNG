@@ -1,0 +1,42 @@
+# ---- Bí mật: KHÔNG BAO GIỜ đẩy lên git
+firebase_bi_mat.json
+**/firebase_bi_mat.json
+.pi-access/
+*_ed25519
+*_ed25519.pub
+
+# ---- Riêng tư / bản quyền / lưu trữ
+tai_lieu/rieng_tu/
+_LUU_TRU_FILE_THUA/
+tmp/
+
+# ---- File Office của phần giữa kỳ (báo cáo, slide đã nộp)
+GIUA_KY_Quat_Taxi/**/*.pptx
+GIUA_KY_Quat_Taxi/**/*.pdf
+GIUA_KY_Quat_Taxi/**/*.docx
+GIUA_KY_Quat_Taxi/**/*.zip
+
+# ---- Sinh ra khi chạy (trên Pi hoặc laptop)
+__pycache__/
+*.pyc
+*.nbi
+*.nbc
+.cloud_bridge/
+Code_HopAp_Demo/ket_qua_ap_trung/
+Code_HopAp_Demo/ket_qua_rl_moi/
+Code_HopAp_Demo/ket_qua_giu_nhiet/
+Code_HopAp_Demo/logs/
+Code_HopAp_Demo/.venv/
+trang_thai_me_ap*.json
+do_am_moi_nhat.json
+*.tmp
+
+# ---- App / Firebase CLI
+App_HopAp/.firebase/
+firebase-debug.log
+node_modules/
+
+# ---- Hệ điều hành / editor
+Thumbs.db
+.DS_Store
+~$*

@@ -1,0 +1,7 @@
+{
+  "q_exact": true,
+  "visits_exact": true,
+  "max_q_difference": 0.0,
+  "episodes": 64000,
+  "seed": 47
+}

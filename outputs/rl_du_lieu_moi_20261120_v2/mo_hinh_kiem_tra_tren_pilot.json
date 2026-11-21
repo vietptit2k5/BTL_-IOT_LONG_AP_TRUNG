@@ -1,0 +1,25 @@
+{
+  "5s": {
+    "samples": 119,
+    "rmse_c": 0.03262794256004507,
+    "persistence_rmse_c": 0.037327017898086484,
+    "endpoint_rmse_c": 0.03262794256004507
+  },
+  "30s": {
+    "samples": 114,
+    "rmse_c": 0.07132066633894353,
+    "persistence_rmse_c": 0.09574393253542954,
+    "endpoint_rmse_c": 0.10412417212570063
+  },
+  "60s": {
+    "samples": 108,
+    "rmse_c": 0.12676958211400174,
+    "persistence_rmse_c": 0.1578076509358393,
+    "endpoint_rmse_c": 0.18739356007026184
+  },
+  "whole_hold_open_loop": {
+    "seconds": 595,
+    "rmse_c": 0.6179990737158712,
+    "final_bias_c": 1.126827648864925
+  }
+}

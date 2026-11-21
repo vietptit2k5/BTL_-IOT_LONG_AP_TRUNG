@@ -1,0 +1,49 @@
+{
+  "status": "REJECTED_SIMULATION_TRADEOFF",
+  "candidate": {
+    "in_band_pct": 96.12847222222223,
+    "mae_c": 0.08004933598391192,
+    "lamp_changes": 5.75,
+    "fan_changes": 8.083333333333334,
+    "longest_in_band_s": 419.6614583333333,
+    "decisions": 23.9375,
+    "unseen_decision_fraction": 0.0,
+    "guard_fraction": 0.0,
+    "invalid_fraction": 0.0,
+    "pair_changes": 11.229166666666666
+  },
+  "reference_5s": {
+    "in_band_pct": 97.20920138888891,
+    "mae_c": 0.07125989027327732,
+    "lamp_changes": 6.395833333333333,
+    "fan_changes": 6.953125,
+    "longest_in_band_s": 439.7916666666667,
+    "recovery_penalized_s": 12.960069444444448,
+    "invalid_fraction": 0.0,
+    "unseen_fraction": 0.0,
+    "guard_fraction": 0.0,
+    "max_temperature_c": 37.70388229626236,
+    "min_temperature_c": 37.20985344606673,
+    "hot_pct": 0.6640624999999997,
+    "cold_pct": 2.1267361111111103,
+    "pair_changes": 12.03125
+  },
+  "selected": {
+    "seed": 29,
+    "switch_weight": 0.5,
+    "validation": {
+      "in_band_pct": 96.15885416666673,
+      "mae_c": 0.08163497975961449,
+      "lamp_changes": 5.3984375,
+      "fan_changes": 8.1328125,
+      "longest_in_band_s": 427.03125,
+      "decisions": 23.8203125,
+      "unseen_decision_fraction": 0.0,
+      "guard_fraction": 0.0,
+      "invalid_fraction": 0.0,
+      "pair_changes": 11.09375
+    }
+  },
+  "deploy_allowed": false,
+  "conclusions": "Compare band occupancy AND action changes. Nominal30s alone does not prove quality or hardware effectiveness."
+}

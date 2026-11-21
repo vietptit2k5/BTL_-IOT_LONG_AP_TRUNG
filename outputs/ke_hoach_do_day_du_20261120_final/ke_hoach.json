@@ -1,0 +1,250 @@
+{
+  "purpose": "PLAN_ONLY_NOT_MEASURED_DATA",
+  "runs": [
+    {
+      "batch": 1,
+      "repeat": 1,
+      "stage": 2,
+      "target_c": 37.5,
+      "lamp_pct": 0,
+      "fan_order": [
+        75,
+        100
+      ],
+      "seconds_per_combination": 1200,
+      "post_seconds": 300,
+      "limit_s": 5102,
+      "command": ".venv/bin/python do_dap_ung_bo_sung.py do --giai-doan 2 --do-dai --muc-bong 0",
+      "executed": false
+    },
+    {
+      "batch": 2,
+      "repeat": 1,
+      "stage": 2,
+      "target_c": 37.5,
+      "lamp_pct": 25,
+      "fan_order": [
+        75,
+        100
+      ],
+      "seconds_per_combination": 1200,
+      "post_seconds": 300,
+      "limit_s": 5102,
+      "command": ".venv/bin/python do_dap_ung_bo_sung.py do --giai-doan 2 --do-dai --muc-bong 25",
+      "executed": false
+    },
+    {
+      "batch": 3,
+      "repeat": 1,
+      "stage": 2,
+      "target_c": 37.5,
+      "lamp_pct": 50,
+      "fan_order": [
+        75,
+        100
+      ],
+      "seconds_per_combination": 1200,
+      "post_seconds": 300,
+      "limit_s": 5102,
+      "command": ".venv/bin/python do_dap_ung_bo_sung.py do --giai-doan 2 --do-dai --muc-bong 50",
+      "executed": false
+    },
+    {
+      "batch": 4,
+      "repeat": 1,
+      "stage": 2,
+      "target_c": 37.5,
+      "lamp_pct": 75,
+      "fan_order": [
+        75,
+        100
+      ],
+      "seconds_per_combination": 1200,
+      "post_seconds": 300,
+      "limit_s": 5102,
+      "command": ".venv/bin/python do_dap_ung_bo_sung.py do --giai-doan 2 --do-dai --muc-bong 75",
+      "executed": false
+    },
+    {
+      "batch": 5,
+      "repeat": 1,
+      "stage": 2,
+      "target_c": 37.5,
+      "lamp_pct": 100,
+      "fan_order": [
+        75,
+        100
+      ],
+      "seconds_per_combination": 1200,
+      "post_seconds": 300,
+      "limit_s": 5102,
+      "command": ".venv/bin/python do_dap_ung_bo_sung.py do --giai-doan 2 --do-dai --muc-bong 100",
+      "executed": false
+    },
+    {
+      "batch": 6,
+      "repeat": 1,
+      "stage": 3,
+      "target_c": 37.2,
+      "lamp_pct": 0,
+      "fan_order": [
+        75,
+        100
+      ],
+      "seconds_per_combination": 1200,
+      "post_seconds": 300,
+      "limit_s": 5102,
+      "command": ".venv/bin/python do_dap_ung_bo_sung.py do --giai-doan 3 --do-dai --muc-bong 0",
+      "executed": false
+    },
+    {
+      "batch": 7,
+      "repeat": 1,
+      "stage": 3,
+      "target_c": 37.2,
+      "lamp_pct": 25,
+      "fan_order": [
+        75,
+        100
+      ],
+      "seconds_per_combination": 1200,
+      "post_seconds": 300,
+      "limit_s": 5102,
+      "command": ".venv/bin/python do_dap_ung_bo_sung.py do --giai-doan 3 --do-dai --muc-bong 25",
+      "executed": false
+    },
+    {
+      "batch": 8,
+      "repeat": 1,
+      "stage": 3,
+      "target_c": 37.2,
+      "lamp_pct": 50,
+      "fan_order": [
+        75,
+        100
+      ],
+      "seconds_per_combination": 1200,
+      "post_seconds": 300,
+      "limit_s": 5102,
+      "command": ".venv/bin/python do_dap_ung_bo_sung.py do --giai-doan 3 --do-dai --muc-bong 50",
+      "executed": false
+    },
+    {
+      "batch": 9,
+      "repeat": 1,
+      "stage": 3,
+      "target_c": 37.2,
+      "lamp_pct": 75,
+      "fan_order": [
+        75,
+        100
+      ],
+      "seconds_per_combination": 1200,
+      "post_seconds": 300,
+      "limit_s": 5102,
+      "command": ".venv/bin/python do_dap_ung_bo_sung.py do --giai-doan 3 --do-dai --muc-bong 75",
+      "executed": false
+    },
+    {
+      "batch": 10,
+      "repeat": 1,
+      "stage": 3,
+      "target_c": 37.2,
+      "lamp_pct": 100,
+      "fan_order": [
+        75,
+        100
+      ],
+      "seconds_per_combination": 1200,
+      "post_seconds": 300,
+      "limit_s": 5102,
+      "command": ".venv/bin/python do_dap_ung_bo_sung.py do --giai-doan 3 --do-dai --muc-bong 100",
+      "executed": false
+    },
+    {
+      "batch": 11,
+      "repeat": 1,
+      "stage": 1,
+      "target_c": 37.8,
+      "lamp_pct": 0,
+      "fan_order": [
+        75,
+        100
+      ],
+      "seconds_per_combination": 1200,
+      "post_seconds": 300,
+      "limit_s": 5102,
+      "command": ".venv/bin/python do_dap_ung_bo_sung.py do --giai-doan 1 --do-dai --muc-bong 0",
+      "executed": false
+    },
+    {
+      "batch": 12,
+      "repeat": 1,
+      "stage": 1,
+      "target_c": 37.8,
+      "lamp_pct": 25,
+      "fan_order": [
+        75,
+        100
+      ],
+      "seconds_per_combination": 1200,
+      "post_seconds": 300,
+      "limit_s": 5102,
+      "command": ".venv/bin/python do_dap_ung_bo_sung.py do --giai-doan 1 --do-dai --muc-bong 25",
+      "executed": false
+    },
+    {
+      "batch": 13,
+      "repeat": 1,
+      "stage": 1,
+      "target_c": 37.8,
+      "lamp_pct": 50,
+      "fan_order": [
+        75,
+        100
+      ],
+      "seconds_per_combination": 1200,
+      "post_seconds": 300,
+      "limit_s": 5102,
+      "command": ".venv/bin/python do_dap_ung_bo_sung.py do --giai-doan 1 --do-dai --muc-bong 50",
+      "executed": false
+    },
+    {
+      "batch": 14,
+      "repeat": 1,
+      "stage": 1,
+      "target_c": 37.8,
+      "lamp_pct": 75,
+      "fan_order": [
+        75,
+        100
+      ],
+      "seconds_per_combination": 1200,
+      "post_seconds": 300,
+      "limit_s": 5102,
+      "command": ".venv/bin/python do_dap_ung_bo_sung.py do --giai-doan 1 --do-dai --muc-bong 75",
+      "executed": false
+    },
+    {
+      "batch": 15,
+      "repeat": 1,
+      "stage": 1,
+      "target_c": 37.8,
+      "lamp_pct": 100,
+      "fan_order": [
+        75,
+        100
+      ],
+      "seconds_per_combination": 1200,
+      "post_seconds": 300,
+      "limit_s": 5102,
+      "command": ".venv/bin/python do_dap_ung_bo_sung.py do --giai-doan 1 --do-dai --muc-bong 100",
+      "executed": false
+    }
+  ],
+  "combinations_per_repeat": 30,
+  "total_combinations": 30,
+  "max_total_session_s": 76680,
+  "extra_cooldown_and_manual_setup_not_included": true,
+  "note": "Each batch starts empty box <=30C with direct supervision; never execute all commands unattended."
+}

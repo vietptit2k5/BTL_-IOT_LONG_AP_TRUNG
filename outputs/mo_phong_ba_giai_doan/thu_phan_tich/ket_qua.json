@@ -1,0 +1,226 @@
+[
+  {
+    "ten": "MO_PHONG_demo_rl",
+    "csv": "outputs\\mo_phong_ba_giai_doan\\csv_MO_PHONG\\MO_PHONG_demo_rl\\du_lieu.csv",
+    "bo_dieu_khien": "Q-learning 3 giai đoạn",
+    "mo_phong": true,
+    "ket_thuc": true,
+    "loi": [],
+    "so_mau_dieu_khien": 360,
+    "doan_theo_ngay": [
+      {
+        "ngay": 5,
+        "giai_doan": 1,
+        "muc_tieu_c": 37.8,
+        "vung_c": [
+          37.6,
+          38.0
+        ],
+        "bat_dau_s": 415.0,
+        "thoi_luong_s": 600.0,
+        "vao_vung_sau_s": 10.0,
+        "doi_muc_moi_10_phut": 17.0,
+        "bao_ve_s": 0,
+        "bong_tb_pct": 45.6,
+        "trong_vung_pct": 99.15,
+        "mae_c": 0.0619,
+        "do_lech_chuan_c": 0.0762,
+        "nhiet_min_c": 37.582,
+        "nhiet_max_c": 37.971
+      },
+      {
+        "ngay": 12,
+        "giai_doan": 2,
+        "muc_tieu_c": 37.5,
+        "vung_c": [
+          37.3,
+          37.7
+        ],
+        "bat_dau_s": 1015.0,
+        "thoi_luong_s": 600.0,
+        "vao_vung_sau_s": 10.0,
+        "doi_muc_moi_10_phut": 16.0,
+        "bao_ve_s": 0,
+        "bong_tb_pct": 47.7,
+        "trong_vung_pct": 99.15,
+        "mae_c": 0.0803,
+        "do_lech_chuan_c": 0.0816,
+        "nhiet_min_c": 37.286,
+        "nhiet_max_c": 37.663
+      },
+      {
+        "ngay": 19,
+        "giai_doan": 3,
+        "muc_tieu_c": 37.2,
+        "vung_c": [
+          37.0,
+          37.4
+        ],
+        "bat_dau_s": 1615.0,
+        "thoi_luong_s": 596.0,
+        "vao_vung_sau_s": 0.0,
+        "doi_muc_moi_10_phut": 10.1,
+        "bao_ve_s": 0,
+        "bong_tb_pct": 46.9,
+        "trong_vung_pct": 100.0,
+        "mae_c": 0.0471,
+        "do_lech_chuan_c": 0.0567,
+        "nhiet_min_c": 37.084,
+        "nhiet_max_c": 37.34
+      }
+    ],
+    "theo_giai_doan": {
+      "1": {
+        "muc_tieu_c": 37.8,
+        "vung_c": [
+          37.6,
+          38.0
+        ],
+        "thoi_luong_s": 600.0,
+        "trong_vung_pct": 99.15,
+        "mae_c": 0.0619,
+        "do_lech_chuan_c": 0.0762,
+        "doi_muc_moi_10_phut": 17.0,
+        "bao_ve_s": 0
+      },
+      "2": {
+        "muc_tieu_c": 37.5,
+        "vung_c": [
+          37.3,
+          37.7
+        ],
+        "thoi_luong_s": 600.0,
+        "trong_vung_pct": 99.15,
+        "mae_c": 0.0803,
+        "do_lech_chuan_c": 0.0816,
+        "doi_muc_moi_10_phut": 16.0,
+        "bao_ve_s": 0
+      },
+      "3": {
+        "muc_tieu_c": 37.2,
+        "vung_c": [
+          37.0,
+          37.4
+        ],
+        "thoi_luong_s": 596.0,
+        "trong_vung_pct": 100.0,
+        "mae_c": 0.0471,
+        "do_lech_chuan_c": 0.0567,
+        "doi_muc_moi_10_phut": 10.1,
+        "bao_ve_s": 0
+      }
+    }
+  },
+  {
+    "ten": "MO_PHONG_demo_thermostat",
+    "csv": "outputs\\mo_phong_ba_giai_doan\\csv_MO_PHONG\\MO_PHONG_demo_thermostat\\du_lieu.csv",
+    "bo_dieu_khien": "Thermostat 3 giai đoạn",
+    "mo_phong": true,
+    "ket_thuc": true,
+    "loi": [],
+    "so_mau_dieu_khien": 360,
+    "doan_theo_ngay": [
+      {
+        "ngay": 5,
+        "giai_doan": 1,
+        "muc_tieu_c": 37.8,
+        "vung_c": [
+          37.6,
+          38.0
+        ],
+        "bat_dau_s": 415.0,
+        "thoi_luong_s": 600.0,
+        "vao_vung_sau_s": 10.0,
+        "doi_muc_moi_10_phut": 50.0,
+        "bao_ve_s": 0,
+        "bong_tb_pct": 44.2,
+        "trong_vung_pct": 88.98,
+        "mae_c": 0.1138,
+        "do_lech_chuan_c": 0.1303,
+        "nhiet_min_c": 37.584,
+        "nhiet_max_c": 38.102
+      },
+      {
+        "ngay": 12,
+        "giai_doan": 2,
+        "muc_tieu_c": 37.5,
+        "vung_c": [
+          37.3,
+          37.7
+        ],
+        "bat_dau_s": 1015.0,
+        "thoi_luong_s": 600.0,
+        "vao_vung_sau_s": 20.0,
+        "doi_muc_moi_10_phut": 55.0,
+        "bao_ve_s": 0,
+        "bong_tb_pct": 42.3,
+        "trong_vung_pct": 86.21,
+        "mae_c": 0.1173,
+        "do_lech_chuan_c": 0.1348,
+        "nhiet_min_c": 37.219,
+        "nhiet_max_c": 37.75
+      },
+      {
+        "ngay": 19,
+        "giai_doan": 3,
+        "muc_tieu_c": 37.2,
+        "vung_c": [
+          37.0,
+          37.4
+        ],
+        "bat_dau_s": 1615.0,
+        "thoi_luong_s": 596.0,
+        "vao_vung_sau_s": 0.0,
+        "doi_muc_moi_10_phut": 57.4,
+        "bao_ve_s": 0,
+        "bong_tb_pct": 42.9,
+        "trong_vung_pct": 89.93,
+        "mae_c": 0.1101,
+        "do_lech_chuan_c": 0.1267,
+        "nhiet_min_c": 36.991,
+        "nhiet_max_c": 37.461
+      }
+    ],
+    "theo_giai_doan": {
+      "1": {
+        "muc_tieu_c": 37.8,
+        "vung_c": [
+          37.6,
+          38.0
+        ],
+        "thoi_luong_s": 600.0,
+        "trong_vung_pct": 88.98,
+        "mae_c": 0.1138,
+        "do_lech_chuan_c": 0.1303,
+        "doi_muc_moi_10_phut": 50.0,
+        "bao_ve_s": 0
+      },
+      "2": {
+        "muc_tieu_c": 37.5,
+        "vung_c": [
+          37.3,
+          37.7
+        ],
+        "thoi_luong_s": 600.0,
+        "trong_vung_pct": 86.21,
+        "mae_c": 0.1173,
+        "do_lech_chuan_c": 0.1348,
+        "doi_muc_moi_10_phut": 55.0,
+        "bao_ve_s": 0
+      },
+      "3": {
+        "muc_tieu_c": 37.2,
+        "vung_c": [
+          37.0,
+          37.4
+        ],
+        "thoi_luong_s": 596.0,
+        "trong_vung_pct": 89.93,
+        "mae_c": 0.1101,
+        "do_lech_chuan_c": 0.1267,
+        "doi_muc_moi_10_phut": 57.4,
+        "bao_ve_s": 0
+      }
+    }
+  }
+]

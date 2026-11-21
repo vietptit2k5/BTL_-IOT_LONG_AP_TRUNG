@@ -1,0 +1,17 @@
+{
+  "status": "COMPLETED_PHYSICAL_PILOT",
+  "source_sha256": "abdd0258399a89be595338a01ba032b0b29ec017457f1eb6992cacf71124c8f0",
+  "covered_s": 600.034,
+  "hold_span_s": 600.034,
+  "in_band_pct": 93.82784975518054,
+  "mae_c": 0.10895930063963122,
+  "min_c": 37.0,
+  "max_c": 37.625,
+  "lamp_changes": 8,
+  "fan_changes": 7,
+  "pair_changes": 11,
+  "longest_in_band_s": 286.00800000000004,
+  "soft_guard_count": 0,
+  "errors": [],
+  "note": "Physical single-probe empty-box pilot; warm-up/post-cooling excluded, guard included. Initial command into hold excluded from change counts. No matched simultaneous baseline."
+}

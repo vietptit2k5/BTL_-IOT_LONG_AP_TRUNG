@@ -1,0 +1,17 @@
+{
+  "name": "Hộp Ấp Nhóm 13",
+  "short_name": "Hộp ấp",
+  "description": "Theo dõi hộp ấp nhiệt độ điều khiển bằng Q-learning (IoT Level-2).",
+  "lang": "vi",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#12100e",
+  "theme_color": "#1c1917",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

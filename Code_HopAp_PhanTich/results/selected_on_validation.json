@@ -1,0 +1,188 @@
+{
+  "evidence": "ASSUMED SIMULATION ONLY; not fitted to this box; no hatch claims",
+  "validation_seed": 440,
+  "selected": [
+    {
+      "name": "thermostat",
+      "band": 0.05,
+      "validation": {
+        "mae_after_300s_C": 0.6158126396438124,
+        "in_band_after_300s_pct": 48.0,
+        "hot_area_C_min": 5.659077713743647,
+        "max_T_C": 39.01978466708892,
+        "estimated_energy_Wh": 4.190625000000036,
+        "first_in_band_s": 24.2,
+        "guard_control_steps": 43.4,
+        "heater_change_sum": 50.3,
+        "fallback_steps": 0.0,
+        "rms_error_after_300s_C": 0.7387803685689512,
+        "MAE_sd_across_scenarios_C": 0.16130937103422055,
+        "worst_T_C": 39.97338301469749,
+        "guard_episode_fraction": 0.65,
+        "true_over_38_5_fraction": 0.8
+      }
+    },
+    {
+      "name": "pid",
+      "gains": [
+        0.3,
+        0.003,
+        2.0
+      ],
+      "validation": {
+        "mae_after_300s_C": 0.03855907707667325,
+        "in_band_after_300s_pct": 99.14,
+        "hot_area_C_min": 0.0188322350944063,
+        "max_T_C": 37.71807739104379,
+        "estimated_energy_Wh": 4.008472593131019,
+        "first_in_band_s": 81.35,
+        "guard_control_steps": 0.0,
+        "heater_change_sum": 6.378050818598139,
+        "fallback_steps": 0.0,
+        "rms_error_after_300s_C": 0.10303530421757907,
+        "MAE_sd_across_scenarios_C": 0.022004487331173175,
+        "worst_T_C": 38.431457435894956,
+        "guard_episode_fraction": 0.0,
+        "true_over_38_5_fraction": 0.0
+      }
+    },
+    {
+      "name": "T_only_joint",
+      "mode": 0,
+      "joint": true,
+      "whot": 3.0,
+      "wenergy": 0.1,
+      "seeds": [
+        11,
+        22,
+        33
+      ],
+      "episodes": 2500,
+      "validation": {
+        "mae_after_300s_C": 0.6661145106014922,
+        "in_band_after_300s_pct": 53.00444444444443,
+        "hot_area_C_min": 0.10779894639103811,
+        "max_T_C": 37.80320953772139,
+        "estimated_energy_Wh": 3.886245833333345,
+        "first_in_band_s": 296.65,
+        "guard_control_steps": 0.25,
+        "heater_change_sum": 29.9725,
+        "fallback_steps": 0.0,
+        "rms_error_after_300s_C": 0.7579244343980963,
+        "MAE_sd_across_scenarios_C": 0.446046256500803,
+        "worst_T_C": 39.42864349377483,
+        "guard_episode_fraction": 0.03333333333333333,
+        "true_over_38_5_fraction": 0.08333333333333333
+      }
+    },
+    {
+      "name": "T_trend_joint",
+      "mode": 1,
+      "joint": true,
+      "whot": 1.0,
+      "wenergy": 0.02,
+      "seeds": [
+        11,
+        22,
+        33
+      ],
+      "episodes": 2500,
+      "validation": {
+        "mae_after_300s_C": 0.36818074049664257,
+        "in_band_after_300s_pct": 73.37444444444445,
+        "hot_area_C_min": 0.2378112713633098,
+        "max_T_C": 38.101897316423916,
+        "estimated_energy_Wh": 4.079286805555561,
+        "first_in_band_s": 41.8,
+        "guard_control_steps": 0.38333333333333336,
+        "heater_change_sum": 62.92250000000001,
+        "fallback_steps": 0.0,
+        "rms_error_after_300s_C": 0.4484544876411673,
+        "MAE_sd_across_scenarios_C": 0.15474073658458393,
+        "worst_T_C": 39.10998117671601,
+        "guard_episode_fraction": 0.05,
+        "true_over_38_5_fraction": 0.13333333333333333
+      }
+    },
+    {
+      "name": "T_trend_memory_joint",
+      "mode": 2,
+      "joint": true,
+      "whot": 1.0,
+      "wenergy": 0.1,
+      "seeds": [
+        11,
+        22,
+        33
+      ],
+      "episodes": 2500,
+      "validation": {
+        "mae_after_300s_C": 0.309180930684576,
+        "in_band_after_300s_pct": 80.77777777777777,
+        "hot_area_C_min": 0.2001210752011638,
+        "max_T_C": 38.13792478899624,
+        "estimated_energy_Wh": 4.141862500000009,
+        "first_in_band_s": 31.65,
+        "guard_control_steps": 0.08333333333333333,
+        "heater_change_sum": 111.63583333333332,
+        "fallback_steps": 0.0,
+        "rms_error_after_300s_C": 0.38183061898412785,
+        "MAE_sd_across_scenarios_C": 0.1218336071519731,
+        "worst_T_C": 38.9809002638637,
+        "guard_episode_fraction": 0.016666666666666666,
+        "true_over_38_5_fraction": 0.1
+      }
+    },
+    {
+      "name": "T_trend_memory_heater_only",
+      "mode": 2,
+      "joint": false,
+      "whot": 3.0,
+      "wenergy": 0.1,
+      "seeds": [
+        11,
+        22,
+        33
+      ],
+      "episodes": 2500,
+      "validation": {
+        "mae_after_300s_C": 0.30348497805568775,
+        "in_band_after_300s_pct": 81.14888888888889,
+        "hot_area_C_min": 0.14530160320489635,
+        "max_T_C": 38.026662289336414,
+        "estimated_energy_Wh": 3.9811597222222264,
+        "first_in_band_s": 31.733333333333334,
+        "guard_control_steps": 0.0,
+        "heater_change_sum": 74.2975,
+        "fallback_steps": 0.0,
+        "rms_error_after_300s_C": 0.371850437236875,
+        "MAE_sd_across_scenarios_C": 0.11864236430624021,
+        "worst_T_C": 38.618025638635444,
+        "guard_episode_fraction": 0.0,
+        "true_over_38_5_fraction": 0.03333333333333333
+      }
+    }
+  ],
+  "action_heat": [
+    0.0,
+    0.35,
+    1.0
+  ],
+  "action_fan": [
+    0.5,
+    0.75,
+    1.0
+  ],
+  "state_error_edges": [
+    -3.0,
+    -1.5,
+    -0.6,
+    -0.2,
+    0.2,
+    0.5,
+    0.8,
+    1.0
+  ],
+  "target": 37.5,
+  "guard_C_SIM_ONLY": 38.5
+}

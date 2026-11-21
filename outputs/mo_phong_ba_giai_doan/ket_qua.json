@@ -1,0 +1,258 @@
+{
+  "giu_ngay_05_gd1": {
+    "rl": {
+      "doan": [
+        {
+          "ngay": 5,
+          "giai_doan": 1,
+          "muc_tieu_c": 37.8,
+          "thoi_luong_s": 1800.0,
+          "vao_vung_sau_s": 13.75,
+          "trong_vung_pct_sau_khi_vao": 99.28618352745656,
+          "mae_sau_khi_vao_c": 0.06295442000063607,
+          "doi_muc_moi_10_phut": 9.2,
+          "buoc_bao_ve": 0.0
+        }
+      ],
+      "so_lan_dung": 0,
+      "ly_do_dung": [],
+      "du_phong_lam_mat": 0
+    },
+    "thermostat": {
+      "doan": [
+        {
+          "ngay": 5,
+          "giai_doan": 1,
+          "muc_tieu_c": 37.8,
+          "thoi_luong_s": 1800.0,
+          "vao_vung_sau_s": 14.0,
+          "trong_vung_pct_sau_khi_vao": 89.8519240098274,
+          "mae_sau_khi_vao_c": 0.11446214574449745,
+          "doi_muc_moi_10_phut": 54.46666666666666,
+          "buoc_bao_ve": 0.0
+        }
+      ],
+      "so_lan_dung": 0,
+      "ly_do_dung": [],
+      "du_phong_lam_mat": 0
+    }
+  },
+  "giu_ngay_14_gd2": {
+    "rl": {
+      "doan": [
+        {
+          "ngay": 14,
+          "giai_doan": 2,
+          "muc_tieu_c": 37.5,
+          "thoi_luong_s": 1800.0,
+          "vao_vung_sau_s": 13.75,
+          "trong_vung_pct_sau_khi_vao": 99.53828458757805,
+          "mae_sau_khi_vao_c": 0.06062043733785346,
+          "doi_muc_moi_10_phut": 9.683333333333334,
+          "buoc_bao_ve": 0.0
+        }
+      ],
+      "so_lan_dung": 0,
+      "ly_do_dung": [],
+      "du_phong_lam_mat": 0
+    },
+    "thermostat": {
+      "doan": [
+        {
+          "ngay": 14,
+          "giai_doan": 2,
+          "muc_tieu_c": 37.5,
+          "thoi_luong_s": 1800.0,
+          "vao_vung_sau_s": 14.0,
+          "trong_vung_pct_sau_khi_vao": 89.62656494700005,
+          "mae_sau_khi_vao_c": 0.11450701828503751,
+          "doi_muc_moi_10_phut": 55.78333333333334,
+          "buoc_bao_ve": 0.0
+        }
+      ],
+      "so_lan_dung": 0,
+      "ly_do_dung": [],
+      "du_phong_lam_mat": 0
+    }
+  },
+  "giu_ngay_19_gd3": {
+    "rl": {
+      "doan": [
+        {
+          "ngay": 19,
+          "giai_doan": 3,
+          "muc_tieu_c": 37.2,
+          "thoi_luong_s": 1800.0,
+          "vao_vung_sau_s": 12.75,
+          "trong_vung_pct_sau_khi_vao": 99.74821213401562,
+          "mae_sau_khi_vao_c": 0.05712984734502641,
+          "doi_muc_moi_10_phut": 11.366666666666667,
+          "buoc_bao_ve": 0.0
+        }
+      ],
+      "so_lan_dung": 0,
+      "ly_do_dung": [],
+      "du_phong_lam_mat": 0
+    },
+    "thermostat": {
+      "doan": [
+        {
+          "ngay": 19,
+          "giai_doan": 3,
+          "muc_tieu_c": 37.2,
+          "thoi_luong_s": 1800.0,
+          "vao_vung_sau_s": 13.0,
+          "trong_vung_pct_sau_khi_vao": 90.40260238173481,
+          "mae_sau_khi_vao_c": 0.11356439764330169,
+          "doi_muc_moi_10_phut": 55.43333333333334,
+          "buoc_bao_ve": 0.0
+        }
+      ],
+      "so_lan_dung": 0,
+      "ly_do_dung": [],
+      "du_phong_lam_mat": 0
+    }
+  },
+  "demo_5_12_19": {
+    "rl": {
+      "doan": [
+        {
+          "ngay": 5,
+          "giai_doan": 1,
+          "muc_tieu_c": 37.8,
+          "thoi_luong_s": 600.0,
+          "vao_vung_sau_s": 13.75,
+          "trong_vung_pct_sau_khi_vao": 99.36114732724903,
+          "mae_sau_khi_vao_c": 0.06432154402556586,
+          "doi_muc_moi_10_phut": 11.6,
+          "buoc_bao_ve": 0.0
+        },
+        {
+          "ngay": 12,
+          "giai_doan": 2,
+          "muc_tieu_c": 37.5,
+          "thoi_luong_s": 600.0,
+          "vao_vung_sau_s": 9.0,
+          "trong_vung_pct_sau_khi_vao": 99.44690556720771,
+          "mae_sau_khi_vao_c": 0.06095802228790117,
+          "doi_muc_moi_10_phut": 11.75,
+          "buoc_bao_ve": 0.0
+        },
+        {
+          "ngay": 19,
+          "giai_doan": 3,
+          "muc_tieu_c": 37.2,
+          "thoi_luong_s": 600.0,
+          "vao_vung_sau_s": 9.0,
+          "trong_vung_pct_sau_khi_vao": 99.40560170253418,
+          "mae_sau_khi_vao_c": 0.05723589332173873,
+          "doi_muc_moi_10_phut": 12.4,
+          "buoc_bao_ve": 0.0
+        }
+      ],
+      "so_lan_dung": 0,
+      "ly_do_dung": [],
+      "du_phong_lam_mat": 0
+    },
+    "thermostat": {
+      "doan": [
+        {
+          "ngay": 5,
+          "giai_doan": 1,
+          "muc_tieu_c": 37.8,
+          "thoi_luong_s": 600.0,
+          "vao_vung_sau_s": 14.0,
+          "trong_vung_pct_sau_khi_vao": 89.75771403737505,
+          "mae_sau_khi_vao_c": 0.11466897091910075,
+          "doi_muc_moi_10_phut": 52.9,
+          "buoc_bao_ve": 0.0
+        },
+        {
+          "ngay": 12,
+          "giai_doan": 2,
+          "muc_tieu_c": 37.5,
+          "thoi_luong_s": 600.0,
+          "vao_vung_sau_s": 13.25,
+          "trong_vung_pct_sau_khi_vao": 89.9941612551901,
+          "mae_sau_khi_vao_c": 0.11480539490813521,
+          "doi_muc_moi_10_phut": 53.5,
+          "buoc_bao_ve": 0.0
+        },
+        {
+          "ngay": 19,
+          "giai_doan": 3,
+          "muc_tieu_c": 37.2,
+          "thoi_luong_s": 600.0,
+          "vao_vung_sau_s": 15.25,
+          "trong_vung_pct_sau_khi_vao": 90.03288529970848,
+          "mae_sau_khi_vao_c": 0.11526665768104549,
+          "doi_muc_moi_10_phut": 54.45,
+          "buoc_bao_ve": 0.0
+        }
+      ],
+      "so_lan_dung": 0,
+      "ly_do_dung": [],
+      "du_phong_lam_mat": 0
+    }
+  },
+  "nhay_nguoc_19_5": {
+    "rl": {
+      "doan": [
+        {
+          "ngay": 19,
+          "giai_doan": 3,
+          "muc_tieu_c": 37.2,
+          "thoi_luong_s": 600.0,
+          "vao_vung_sau_s": 12.75,
+          "trong_vung_pct_sau_khi_vao": 99.83014631319716,
+          "mae_sau_khi_vao_c": 0.05781605728557103,
+          "doi_muc_moi_10_phut": 12.7,
+          "buoc_bao_ve": 0.0
+        },
+        {
+          "ngay": 5,
+          "giai_doan": 1,
+          "muc_tieu_c": 37.8,
+          "thoi_luong_s": 1200.0,
+          "vao_vung_sau_s": 25.75,
+          "trong_vung_pct_sau_khi_vao": 99.2755832135866,
+          "mae_sau_khi_vao_c": 0.06608186762745373,
+          "doi_muc_moi_10_phut": 9.275,
+          "buoc_bao_ve": 0.0
+        }
+      ],
+      "so_lan_dung": 0,
+      "ly_do_dung": [],
+      "du_phong_lam_mat": 0
+    },
+    "thermostat": {
+      "doan": [
+        {
+          "ngay": 19,
+          "giai_doan": 3,
+          "muc_tieu_c": 37.2,
+          "thoi_luong_s": 600.0,
+          "vao_vung_sau_s": 13.0,
+          "trong_vung_pct_sau_khi_vao": 89.64146023468058,
+          "mae_sau_khi_vao_c": 0.11474347047574254,
+          "doi_muc_moi_10_phut": 53.0,
+          "buoc_bao_ve": 0.0
+        },
+        {
+          "ngay": 5,
+          "giai_doan": 1,
+          "muc_tieu_c": 37.8,
+          "thoi_luong_s": 1200.0,
+          "vao_vung_sau_s": 28.25,
+          "trong_vung_pct_sau_khi_vao": 88.84410446573042,
+          "mae_sau_khi_vao_c": 0.11549412454470087,
+          "doi_muc_moi_10_phut": 55.5,
+          "buoc_bao_ve": 0.0
+        }
+      ],
+      "so_lan_dung": 0,
+      "ly_do_dung": [],
+      "du_phong_lam_mat": 0
+    }
+  }
+}

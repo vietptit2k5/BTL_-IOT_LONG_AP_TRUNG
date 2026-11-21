@@ -1,0 +1,561 @@
+{
+  "status": "MEASURED_PAIR_COMPARISON_ONLY",
+  "baseline": {
+    "path": "Du_lieu_giu_nhiet\\20261117_084602_831190\\du_lieu.csv",
+    "sha256": "e5a3d6dcc0a1683bc8fe1704a654db3af2f7aeb6e6f17a6b1dae36e74a8dee93",
+    "controller": "doi-chung",
+    "started_vietnam_from_log": "2026-11-17T15:46:03.911000+07:00",
+    "ended_vietnam_from_log": "2026-11-17T16:01:39.092000+07:00",
+    "summary": {
+      "status": "COMPLETED_HARDWARE_HOLD_TEST",
+      "source": "Du_lieu_giu_nhiet\\20261117_084602_831190\\du_lieu.csv",
+      "source_sha256": "e5a3d6dcc0a1683bc8fe1704a654db3af2f7aeb6e6f17a6b1dae36e74a8dee93",
+      "controller": "doi-chung",
+      "target_c": 37.5,
+      "band_c": 0.5,
+      "hold_span_s": 600.009,
+      "covered_s": 600.009,
+      "coverage_pct": 100.0,
+      "mae_c": 0.1213842942355866,
+      "in_band_pct": 100.0,
+      "above_band_s": 0.0,
+      "below_band_s": 0.0,
+      "min_c": 37.0,
+      "max_c": 37.75,
+      "soft_guard_count": 0,
+      "errors": [],
+      "note": "Measured single-probe temperature; warm-up/post-cooling excluded; guard time included. No energy/RH/hatch claim."
+    },
+    "temperature": {
+      "covered_s": 600.009,
+      "mae_c": 0.1213842942355866,
+      "rmse_c": 0.1489597812042582,
+      "mean_c": 37.46736927779417,
+      "bias_c": -0.03263072220583041,
+      "std_c": 0.14534184664007166,
+      "min_c": 37.0,
+      "max_c": 37.75,
+      "peak_to_peak_c": 0.75,
+      "in_band_015_pct": 66.66933329333393,
+      "in_band_025_pct": 97.50287079027149,
+      "in_band_050_pct": 100.0
+    },
+    "commands": {
+      "mean_lamp_duty_pct": 53.87606685899713,
+      "mean_fan_duty_pct": 85.6855063840709,
+      "setpoint_changes": 53,
+      "lamp_setpoint_changes": 43,
+      "fan_setpoint_changes": 38,
+      "total_lamp_variation_percentage_points": 2350.0,
+      "total_fan_variation_percentage_points": 950.0,
+      "action_seconds": {
+        "100/75": 176.14800000000025,
+        "75/100": 196.15099999999995,
+        "0/100": 60.30499999999995,
+        "0/75": 167.40499999999986
+      },
+      "note": "Applied duty commands; counts are setpoint changes, not PWM pulses, RPM or measured energy."
+    },
+    "sensors": [
+      "28-000000ca6c1f"
+    ],
+    "frequencies": [
+      100.0
+    ],
+    "profile": {
+      "completed": true,
+      "soft_guard_count": 0,
+      "requested_hold_seconds": 600,
+      "warm_timeout_s": 600,
+      "initial_temperature_c": 26.437,
+      "hold_initial_temperature_c": 37.0,
+      "warm_elapsed_s": 325.0026073299996,
+      "control_period_s": 5,
+      "soft_guard_off_c": 38,
+      "soft_guard_resume_c": 37,
+      "hard_cutoff_c": 40,
+      "note": "Guard intervals remain part of the hold test; no RL deployment."
+    },
+    "hold_start_s": 326.081,
+    "hold_end_s": 926.09,
+    "max_sample_gap_s": 1.0330000000000084,
+    "max_measurement_age_s": 0.053,
+    "reference": {
+      "purpose": "REFERENCE_CONTROLLER_ONLY",
+      "protocol_version": 2,
+      "target_c": 37.5,
+      "band_c": 0.5,
+      "fan_pwm_hz": 100,
+      "configuration": {
+        "kind": "thermostat",
+        "band": 0.1,
+        "fan_mode": "trend"
+      },
+      "actions": [
+        [
+          0.0,
+          0.75
+        ],
+        [
+          0.0,
+          1.0
+        ],
+        [
+          0.25,
+          0.75
+        ],
+        [
+          0.25,
+          1.0
+        ],
+        [
+          0.5,
+          0.75
+        ],
+        [
+          0.5,
+          1.0
+        ],
+        [
+          0.75,
+          0.75
+        ],
+        [
+          0.75,
+          1.0
+        ],
+        [
+          1.0,
+          0.75
+        ]
+      ],
+      "selection": "Frozen from validation simulations, before robustness checks",
+      "source_run": "20261117_070909_628598",
+      "source_csv_sha256": "7ed00d0151a9d84d4c0d201e26b65f8a63ca9cc0ed0362250364a6d3fac9de14",
+      "note": "Reference thermostat only; not a Q-table and not evidence of hardware performance. Soft guard 38 to 37 C is applied independently."
+    },
+    "per_minute": [
+      {
+        "minute": 1,
+        "covered_s": 60.0,
+        "mae_c": 0.17899719999999963,
+        "rmse_c": 0.2234458911384736,
+        "mean_c": 37.462446633333336,
+        "bias_c": -0.03755336666666409,
+        "std_c": 0.2202675893513737,
+        "min_c": 37.0,
+        "max_c": 37.75,
+        "peak_to_peak_c": 0.75,
+        "in_band_015_pct": 46.666666666666664,
+        "in_band_025_pct": 83.35333333333332,
+        "in_band_050_pct": 100.0
+      },
+      {
+        "minute": 2,
+        "covered_s": 60.0,
+        "mae_c": 0.10839675000000051,
+        "rmse_c": 0.12459230239732644,
+        "mean_c": 37.45805595,
+        "bias_c": -0.0419440499999979,
+        "std_c": 0.11731981284618648,
+        "min_c": 37.312,
+        "max_c": 37.687,
+        "peak_to_peak_c": 0.375,
+        "in_band_015_pct": 75.05333333333341,
+        "in_band_025_pct": 100.0,
+        "in_band_050_pct": 100.0
+      },
+      {
+        "minute": 3,
+        "covered_s": 60.0,
+        "mae_c": 0.11060826666666723,
+        "rmse_c": 0.12937345425807759,
+        "mean_c": 37.44972283333333,
+        "bias_c": -0.05027716666666748,
+        "std_c": 0.11920443439167436,
+        "min_c": 37.25,
+        "max_c": 37.625,
+        "peak_to_peak_c": 0.375,
+        "in_band_015_pct": 71.61666666666672,
+        "in_band_025_pct": 100.0,
+        "in_band_050_pct": 100.0
+      },
+      {
+        "minute": 4,
+        "covered_s": 60.0,
+        "mae_c": 0.12497703333333329,
+        "rmse_c": 0.15350639878085437,
+        "mean_c": 37.481050233333335,
+        "bias_c": -0.01894976666666537,
+        "std_c": 0.1523322710719745,
+        "min_c": 37.187,
+        "max_c": 37.687,
+        "peak_to_peak_c": 0.5,
+        "in_band_015_pct": 58.361666666666565,
+        "in_band_025_pct": 96.63999999999987,
+        "in_band_050_pct": 100.0
+      },
+      {
+        "minute": 5,
+        "covered_s": 60.0,
+        "mae_c": 0.10838305000000016,
+        "rmse_c": 0.12509492029388497,
+        "mean_c": 37.47265725,
+        "bias_c": -0.027342750000002525,
+        "std_c": 0.12207011553107855,
+        "min_c": 37.312,
+        "max_c": 37.687,
+        "peak_to_peak_c": 0.375,
+        "in_band_015_pct": 73.32666666666664,
+        "in_band_025_pct": 100.0,
+        "in_band_050_pct": 100.0
+      },
+      {
+        "minute": 6,
+        "covered_s": 60.0,
+        "mae_c": 0.11688121666666691,
+        "rmse_c": 0.13850941646689618,
+        "mean_c": 37.43095185,
+        "bias_c": -0.06904815000000042,
+        "std_c": 0.12007169288211719,
+        "min_c": 37.25,
+        "max_c": 37.625,
+        "peak_to_peak_c": 0.375,
+        "in_band_015_pct": 69.97166666666658,
+        "in_band_025_pct": 100.0,
+        "in_band_050_pct": 100.0
+      },
+      {
+        "minute": 7,
+        "covered_s": 60.0,
+        "mae_c": 0.12062939999999997,
+        "rmse_c": 0.1468006165972518,
+        "mean_c": 37.49372043333333,
+        "bias_c": -0.006279566666670178,
+        "std_c": 0.14666624722754787,
+        "min_c": 37.187,
+        "max_c": 37.687,
+        "peak_to_peak_c": 0.5,
+        "in_band_015_pct": 66.73333333333328,
+        "in_band_025_pct": 98.34000000000002,
+        "in_band_050_pct": 100.0
+      },
+      {
+        "minute": 8,
+        "covered_s": 60.0,
+        "mae_c": 0.10732731666666678,
+        "rmse_c": 0.12838260246881833,
+        "mean_c": 37.502821016666665,
+        "bias_c": 0.0028210166666653436,
+        "std_c": 0.12835160490478115,
+        "min_c": 37.25,
+        "max_c": 37.75,
+        "peak_to_peak_c": 0.5,
+        "in_band_015_pct": 69.97500000000004,
+        "in_band_025_pct": 100.0,
+        "in_band_050_pct": 100.0
+      },
+      {
+        "minute": 9,
+        "covered_s": 60.0,
+        "mae_c": 0.133413533333333,
+        "rmse_c": 0.15940878896723318,
+        "mean_c": 37.48078433333333,
+        "bias_c": -0.01921566666666763,
+        "std_c": 0.15824639065253718,
+        "min_c": 37.187,
+        "max_c": 37.75,
+        "peak_to_peak_c": 0.5630000000000024,
+        "in_band_015_pct": 61.648333333333575,
+        "in_band_025_pct": 96.69500000000009,
+        "in_band_050_pct": 100.0
+      },
+      {
+        "minute": 10,
+        "covered_s": 60.009000000000015,
+        "mae_c": 0.10423174857104818,
+        "rmse_c": 0.13364328280018853,
+        "mean_c": 37.441486127080935,
+        "bias_c": -0.058513872919064625,
+        "std_c": 0.1201526267445823,
+        "min_c": 37.25,
+        "max_c": 37.625,
+        "peak_to_peak_c": 0.375,
+        "in_band_015_pct": 73.33899915012745,
+        "in_band_025_pct": 100.0,
+        "in_band_050_pct": 100.0
+      }
+    ]
+  },
+  "rl": {
+    "path": "Du_lieu_giu_nhiet\\ket_qua_giu_nhiet\\20261117_092305_477345\\du_lieu.csv",
+    "sha256": "2642c2f3d71416bb1d424b277e202c5a8a2e82dcdc1a52ee2194b32d213eb1b2",
+    "controller": "thu-rl",
+    "started_vietnam_from_log": "2026-11-17T16:23:06.490000+07:00",
+    "ended_vietnam_from_log": "2026-11-17T16:38:26.752000+07:00",
+    "summary": {
+      "status": "COMPLETED_HARDWARE_HOLD_TEST",
+      "source": "Du_lieu_giu_nhiet\\ket_qua_giu_nhiet\\20261117_092305_477345\\du_lieu.csv",
+      "source_sha256": "2642c2f3d71416bb1d424b277e202c5a8a2e82dcdc1a52ee2194b32d213eb1b2",
+      "controller": "thu-rl",
+      "target_c": 37.5,
+      "band_c": 0.5,
+      "hold_span_s": 600.018,
+      "covered_s": 600.0179999999999,
+      "coverage_pct": 99.99999999999997,
+      "mae_c": 0.05682272865147249,
+      "in_band_pct": 100.0,
+      "above_band_s": 0.0,
+      "below_band_s": 0.0,
+      "min_c": 37.0,
+      "max_c": 37.687,
+      "soft_guard_count": 0,
+      "errors": [],
+      "note": "Measured single-probe temperature; warm-up/post-cooling excluded; guard time included. No energy/RH/hatch claim."
+    },
+    "temperature": {
+      "covered_s": 600.018,
+      "mae_c": 0.05682272865147264,
+      "rmse_c": 0.08993450819083272,
+      "mean_c": 37.535848771203526,
+      "bias_c": 0.03584877120352559,
+      "std_c": 0.08248079392636787,
+      "min_c": 37.0,
+      "max_c": 37.687,
+      "peak_to_peak_c": 0.6869999999999976,
+      "in_band_015_pct": 94.84565463036107,
+      "in_band_025_pct": 98.00722644987314,
+      "in_band_050_pct": 100.0
+    },
+    "commands": {
+      "mean_lamp_duty_pct": 50.558191587585696,
+      "mean_fan_duty_pct": 81.26189547646904,
+      "setpoint_changes": 88,
+      "lamp_setpoint_changes": 88,
+      "fan_setpoint_changes": 52,
+      "total_lamp_variation_percentage_points": 2700.0,
+      "total_fan_variation_percentage_points": 1300.0,
+      "action_seconds": {
+        "75/75": 148.63699999999994,
+        "100/75": 15.050999999999988,
+        "25/100": 135.23799999999994,
+        "50/75": 286.0400000000002,
+        "0/100": 15.052000000000021
+      },
+      "note": "Applied duty commands; counts are setpoint changes, not PWM pulses, RPM or measured energy."
+    },
+    "sensors": [
+      "28-000000ca6c1f"
+    ],
+    "frequencies": [
+      100.0
+    ],
+    "profile": {
+      "completed": true,
+      "soft_guard_count": 0,
+      "requested_hold_seconds": 600,
+      "warm_timeout_s": 600,
+      "initial_temperature_c": 27.5,
+      "hold_initial_temperature_c": 37.0,
+      "warm_elapsed_s": 310.08773270500024,
+      "control_period_s": 5,
+      "soft_guard_off_c": 38,
+      "soft_guard_resume_c": 37,
+      "hard_cutoff_c": 40,
+      "pilot": {
+        "seed": 11,
+        "package_sha256": "bd5caa79ebff4c7ee066dc96fec3fd462639b119faca5f9efd73d0397910fc7a",
+        "decisions": 120,
+        "visited_states": [
+          64,
+          70,
+          74,
+          80,
+          86,
+          88,
+          98,
+          104
+        ],
+        "q_updates": 0,
+        "heater_memory": 0.5125432973908286,
+        "observer_source": "applied PWM command, not measured heater power",
+        "automatic_deploy_allowed": false
+      },
+      "note": "Guard intervals remain part of the hold test; supervised experiment only, no online learning."
+    },
+    "hold_start_s": 311.098,
+    "hold_end_s": 911.116,
+    "max_sample_gap_s": 1.0340000000001055,
+    "max_measurement_age_s": 0.052,
+    "reference": null,
+    "per_minute": [
+      {
+        "minute": 1,
+        "covered_s": 60.0,
+        "mae_c": 0.19331969999999993,
+        "rmse_c": 0.2274493408798247,
+        "mean_c": 37.48357383333334,
+        "bias_c": -0.016426166666661857,
+        "std_c": 0.22685542469887196,
+        "min_c": 37.0,
+        "max_c": 37.687,
+        "peak_to_peak_c": 0.6869999999999976,
+        "in_band_015_pct": 50.108333333333135,
+        "in_band_025_pct": 80.07166666666669,
+        "in_band_050_pct": 100.0
+      },
+      {
+        "minute": 2,
+        "covered_s": 60.0,
+        "mae_c": 0.08835711666666525,
+        "rmse_c": 0.0950219798257215,
+        "mean_c": 37.588357116666664,
+        "bias_c": 0.08835711666666413,
+        "std_c": 0.03495992826584642,
+        "min_c": 37.5,
+        "max_c": 37.687,
+        "peak_to_peak_c": 0.1869999999999976,
+        "in_band_015_pct": 98.34666666666664,
+        "in_band_025_pct": 100.0,
+        "in_band_050_pct": 100.0
+      },
+      {
+        "minute": 3,
+        "covered_s": 60.0,
+        "mae_c": 0.07774548333333163,
+        "rmse_c": 0.08316340070407448,
+        "mean_c": 37.57774548333334,
+        "bias_c": 0.07774548333333797,
+        "std_c": 0.029526107734225773,
+        "min_c": 37.5,
+        "max_c": 37.625,
+        "peak_to_peak_c": 0.125,
+        "in_band_015_pct": 100.0,
+        "in_band_025_pct": 100.0,
+        "in_band_050_pct": 100.0
+      },
+      {
+        "minute": 4,
+        "covered_s": 59.99999999999994,
+        "mae_c": 0.03317293333333198,
+        "rmse_c": 0.048122857008561996,
+        "mean_c": 37.53317293333333,
+        "bias_c": 0.03317293333333282,
+        "std_c": 0.03486209776718574,
+        "min_c": 37.5,
+        "max_c": 37.625,
+        "peak_to_peak_c": 0.125,
+        "in_band_015_pct": 100.0,
+        "in_band_025_pct": 100.0,
+        "in_band_050_pct": 100.0
+      },
+      {
+        "minute": 5,
+        "covered_s": 60.0,
+        "mae_c": 0.021772333333332665,
+        "rmse_c": 0.03674077662035158,
+        "mean_c": 37.52177233333334,
+        "bias_c": 0.021772333333338167,
+        "std_c": 0.029594765886704098,
+        "min_c": 37.5,
+        "max_c": 37.562,
+        "peak_to_peak_c": 0.06199999999999761,
+        "in_band_015_pct": 100.0,
+        "in_band_025_pct": 100.0,
+        "in_band_050_pct": 100.0
+      },
+      {
+        "minute": 6,
+        "covered_s": 60.0,
+        "mae_c": 0.02584779999999937,
+        "rmse_c": 0.0400320321742464,
+        "mean_c": 37.525847799999994,
+        "bias_c": 0.02584779999999398,
+        "std_c": 0.030568854004688034,
+        "min_c": 37.5,
+        "max_c": 37.562,
+        "peak_to_peak_c": 0.06199999999999761,
+        "in_band_015_pct": 100.0,
+        "in_band_025_pct": 100.0,
+        "in_band_050_pct": 100.0
+      },
+      {
+        "minute": 7,
+        "covered_s": 60.0,
+        "mae_c": 0.02475349999999909,
+        "rmse_c": 0.03917546426017035,
+        "mean_c": 37.524753499999996,
+        "bias_c": 0.024753499999995654,
+        "std_c": 0.030364143948906738,
+        "min_c": 37.5,
+        "max_c": 37.562,
+        "peak_to_peak_c": 0.06199999999999761,
+        "in_band_015_pct": 100.0,
+        "in_band_025_pct": 100.0,
+        "in_band_050_pct": 100.0
+      },
+      {
+        "minute": 8,
+        "covered_s": 60.0,
+        "mae_c": 0.02480929999999871,
+        "rmse_c": 0.03921959459249752,
+        "mean_c": 37.5248093,
+        "bias_c": 0.024809300000001144,
+        "std_c": 0.030375569682063983,
+        "min_c": 37.5,
+        "max_c": 37.562,
+        "peak_to_peak_c": 0.06199999999999761,
+        "in_band_015_pct": 100.0,
+        "in_band_025_pct": 100.0,
+        "in_band_050_pct": 100.0
+      },
+      {
+        "minute": 9,
+        "covered_s": 60.0,
+        "mae_c": 0.04028553333333165,
+        "rmse_c": 0.04997702538833686,
+        "mean_c": 37.54028553333333,
+        "bias_c": 0.04028553333333207,
+        "std_c": 0.02957666091220391,
+        "min_c": 37.5,
+        "max_c": 37.562,
+        "peak_to_peak_c": 0.06199999999999761,
+        "in_band_015_pct": 100.0,
+        "in_band_025_pct": 100.0,
+        "in_band_050_pct": 100.0
+      },
+      {
+        "minute": 10,
+        "covered_s": 60.01800000000003,
+        "mae_c": 0.03816918257855811,
+        "rmse_c": 0.04864657562326984,
+        "mean_c": 37.53816918257856,
+        "bias_c": 0.038169182578556615,
+        "std_c": 0.030159622364267225,
+        "min_c": 37.5,
+        "max_c": 37.562,
+        "peak_to_peak_c": 0.06199999999999761,
+        "in_band_015_pct": 100.0,
+        "in_band_025_pct": 100.0,
+        "in_band_050_pct": 100.0
+      }
+    ]
+  },
+  "differences": {
+    "mae_reduction_pct": 53.187742278099634,
+    "std_reduction_pct": 43.25048440410596,
+    "in_band_015_gain_percentage_points": 28.176321337027133,
+    "mean_lamp_duty_change_percentage_points": -3.317875271411431,
+    "mean_fan_duty_change_percentage_points": -4.423610907601869,
+    "setpoint_change_count_difference": 35
+  },
+  "unchanged_layout_confirmed_by_user": true,
+  "frozen_policy_identity_verified": true,
+  "replication": {
+    "thermostat_runs": 1,
+    "rl_runs": 1,
+    "room_temperature_measured": false
+  },
+  "inference": "Observed improvement in this pair only; order, thermal history and unmeasured room conditions remain confounders.",
+  "automatic_deploy_allowed": false
+}

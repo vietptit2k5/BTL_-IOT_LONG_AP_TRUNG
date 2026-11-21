@@ -1,0 +1,2287 @@
+{
+  "status": "SIMULATION_CANDIDATE_ONLY",
+  "protocol": {
+    "version": 2,
+    "target_c": 37.5,
+    "band_c": 0.5,
+    "dt_s": 5.0,
+    "horizon_s": 600.0,
+    "checkpoints": [
+      500,
+      1500,
+      4000
+    ],
+    "state_count": 162,
+    "actions": [
+      [
+        0.0,
+        0.75
+      ],
+      [
+        0.0,
+        1.0
+      ],
+      [
+        0.25,
+        0.75
+      ],
+      [
+        0.25,
+        1.0
+      ],
+      [
+        0.5,
+        0.75
+      ],
+      [
+        0.5,
+        1.0
+      ],
+      [
+        0.75,
+        0.75
+      ],
+      [
+        0.75,
+        1.0
+      ],
+      [
+        1.0,
+        0.75
+      ]
+    ],
+    "state_spec": "9 error x 3 trend x 3 heater-memory x 2 soft-guard; no previous-action term",
+    "train_seeds": [
+      11,
+      29,
+      47
+    ],
+    "check_seeds": [
+      73,
+      101
+    ],
+    "validation_scenarios": 32,
+    "validation_scenario_seed": 140,
+    "check_scenarios": 64,
+    "check_scenario_seed": 211217,
+    "criteria": "invalid=0; mean in band>=90%; worst seed>=80%; guard steps<=1%; fallback<=1%",
+    "soft_guard": {
+      "off_c": 38.0,
+      "resume_c": 37.0,
+      "trigger_penalty": 10
+    },
+    "reward": "-|T-target|/band - hot*(max(0,T-target-band)/band)^2 - duty*(H+F)/2 - 10*guard_trigger",
+    "switching_weight": 0,
+    "algorithms": [
+      "q-learning",
+      "expected-sarsa"
+    ],
+    "grid": [
+      {
+        "hot": 3.0,
+        "duty": 0.0
+      },
+      {
+        "hot": 3.0,
+        "duty": 0.05
+      },
+      {
+        "hot": 10.0,
+        "duty": 0.0
+      },
+      {
+        "hot": 10.0,
+        "duty": 0.05
+      }
+    ],
+    "evidence": "DEVELOPMENT_SIMULATION_ON_ALREADY_REVIEWED_RUN; not independent hardware validation",
+    "sources": [
+      {
+        "path": "Du_lieu_khao_sat\\20261117_070909_628598\\du_lieu.csv",
+        "sha256": "7ed00d0151a9d84d4c0d201e26b65f8a63ca9cc0ed0362250364a6d3fac9de14"
+      }
+    ],
+    "deploy_allowed": false
+  },
+  "model": {
+    "observed_temperature_range_c": [
+      31.5,
+      38.125
+    ],
+    "actions": [
+      [
+        0.0,
+        0.75
+      ],
+      [
+        0.0,
+        1.0
+      ],
+      [
+        0.25,
+        0.75
+      ],
+      [
+        0.25,
+        1.0
+      ],
+      [
+        0.5,
+        0.75
+      ],
+      [
+        0.5,
+        1.0
+      ],
+      [
+        0.75,
+        0.75
+      ],
+      [
+        0.75,
+        1.0
+      ],
+      [
+        1.0,
+        0.75
+      ]
+    ],
+    "action_observation_support": [
+      {
+        "lamp_pct": 0.0,
+        "fan_pct": 75.0,
+        "required_continuous_s": 120.0,
+        "longest_observed_s": 119.01299999999992,
+        "qualified": true
+      },
+      {
+        "lamp_pct": 0.0,
+        "fan_pct": 100.0,
+        "required_continuous_s": 120.0,
+        "longest_observed_s": 119.00799999999981,
+        "qualified": true
+      },
+      {
+        "lamp_pct": 25.0,
+        "fan_pct": 75.0,
+        "required_continuous_s": 120.0,
+        "longest_observed_s": 119.03999999999996,
+        "qualified": true
+      },
+      {
+        "lamp_pct": 25.0,
+        "fan_pct": 100.0,
+        "required_continuous_s": 120.0,
+        "longest_observed_s": 119.04000000000019,
+        "qualified": true
+      },
+      {
+        "lamp_pct": 50.0,
+        "fan_pct": 75.0,
+        "required_continuous_s": 120.0,
+        "longest_observed_s": 119.04600000000028,
+        "qualified": true
+      },
+      {
+        "lamp_pct": 50.0,
+        "fan_pct": 100.0,
+        "required_continuous_s": 120.0,
+        "longest_observed_s": 119.0389999999993,
+        "qualified": true
+      },
+      {
+        "lamp_pct": 75.0,
+        "fan_pct": 75.0,
+        "required_continuous_s": 120.0,
+        "longest_observed_s": 119.00800000000004,
+        "qualified": true
+      },
+      {
+        "lamp_pct": 75.0,
+        "fan_pct": 100.0,
+        "required_continuous_s": 120.0,
+        "longest_observed_s": 119.00700000000006,
+        "qualified": true
+      },
+      {
+        "lamp_pct": 100.0,
+        "fan_pct": 75.0,
+        "required_continuous_s": 120.0,
+        "longest_observed_s": 119.04100000000017,
+        "qualified": true
+      },
+      {
+        "lamp_pct": 100.0,
+        "fan_pct": 100.0,
+        "required_continuous_s": 120.0,
+        "longest_observed_s": 76.98900000000003,
+        "qualified": false
+      }
+    ],
+    "model_domain_margin_c": 0.25,
+    "candidates": [
+      {
+        "tau_s": 0.0,
+        "coefficients": [
+          -0.05204175442664276,
+          -0.003258211198415071,
+          0.4920780357776622,
+          0.1223838548617912,
+          -0.05952856691892954,
+          0.07482153831467415
+        ],
+        "qr_diagonal_ratio": 1.8415236542034719,
+        "validation": {
+          "one_step_rmse_c": 0.04228449532386695,
+          "rollout_30s_rmse_c": 0.12163114825974644,
+          "persistence_30s_rmse_c": 0.307176770273033
+        },
+        "train_steps": 364,
+        "validation_steps": 119,
+        "test_steps": 120
+      },
+      {
+        "tau_s": 10.0,
+        "coefficients": [
+          -0.09576593936597036,
+          -0.007277982209154172,
+          0.1686614256028459,
+          0.22270824205247602,
+          -0.09645131364468157,
+          0.11712306675419215
+        ],
+        "qr_diagonal_ratio": 1.9403756973877178,
+        "validation": {
+          "one_step_rmse_c": 0.038239584371966,
+          "rollout_30s_rmse_c": 0.10987715989754741,
+          "persistence_30s_rmse_c": 0.307176770273033
+        },
+        "train_steps": 364,
+        "validation_steps": 119,
+        "test_steps": 120
+      },
+      {
+        "tau_s": 25.0,
+        "coefficients": [
+          -0.1653616355369684,
+          -0.02058371984111048,
+          -0.14229669206737797,
+          0.38099842574852033,
+          -0.13249781186979606,
+          0.07633251368288317
+        ],
+        "qr_diagonal_ratio": 2.4112716948535717,
+        "validation": {
+          "one_step_rmse_c": 0.03443030589127666,
+          "rollout_30s_rmse_c": 0.07445879878716888,
+          "persistence_30s_rmse_c": 0.307176770273033
+        },
+        "train_steps": 364,
+        "validation_steps": 119,
+        "test_steps": 120
+      }
+    ],
+    "selected": {
+      "tau_s": 25.0,
+      "coefficients": [
+        -0.1653616355369684,
+        -0.02058371984111048,
+        -0.14229669206737797,
+        0.38099842574852033,
+        -0.13249781186979606,
+        0.07633251368288317
+      ],
+      "qr_diagonal_ratio": 2.4112716948535717,
+      "validation": {
+        "one_step_rmse_c": 0.03443030589127666,
+        "rollout_30s_rmse_c": 0.07445879878716888,
+        "persistence_30s_rmse_c": 0.307176770273033
+      },
+      "train_steps": 364,
+      "validation_steps": 119,
+      "test_steps": 120,
+      "test": {
+        "one_step_rmse_c": 0.0327746552379125,
+        "rollout_30s_rmse_c": 0.07250638665812537,
+        "persistence_30s_rmse_c": 0.4292009952501475
+      },
+      "model": {
+        "coefficients": [
+          -0.1653616355369684,
+          -0.02058371984111048,
+          -0.14229669206737797,
+          0.38099842574852033,
+          -0.13249781186979606,
+          0.07633251368288317
+        ],
+        "center": 35.93146794159731,
+        "fan_center": 0.875,
+        "tau": 25.0,
+        "low": 31.25,
+        "high": 38.375,
+        "noise_sd": 0.03622211620849173
+      }
+    }
+  },
+  "selected": {
+    "algorithm": "q-learning",
+    "episodes": 4000,
+    "weights": {
+      "hot": 10.0,
+      "duty": 0.05
+    },
+    "validation": {
+      "mae_c": 0.09434618196523593,
+      "observed_mae_c": 0.09434618196523593,
+      "in_band_pct": 97.06597222222223,
+      "invalid_fraction": 0.0,
+      "guard_rate": 0.0,
+      "guard_count": 0,
+      "fallback_rate": 0.0,
+      "mean_duty_proxy": 0.6456488715277778,
+      "mean_change": 0.19498697916666666,
+      "hot_area_c_min": 0.0,
+      "max_temperature_c": 37.95037137443956,
+      "worst_seed_in_band_pct": 96.953125,
+      "eligible": true
+    },
+    "validation_by_seed": [
+      {
+        "seed": 11,
+        "metrics": {
+          "mae_c": 0.09511619558776578,
+          "observed_mae_c": 0.09511619558776578,
+          "in_band_pct": 96.953125,
+          "invalid_fraction": 0.0,
+          "guard_rate": 0.0,
+          "guard_count": 0,
+          "fallback_rate": 0.0,
+          "mean_duty_proxy": 0.64609375,
+          "mean_change": 0.20494791666666667,
+          "hot_area_c_min": 0.0,
+          "max_temperature_c": 37.903142538751815
+        }
+      },
+      {
+        "seed": 29,
+        "metrics": {
+          "mae_c": 0.09251086010679883,
+          "observed_mae_c": 0.09251086010679883,
+          "in_band_pct": 97.109375,
+          "invalid_fraction": 0.0,
+          "guard_rate": 0.0,
+          "guard_count": 0,
+          "fallback_rate": 0.0,
+          "mean_duty_proxy": 0.64521484375,
+          "mean_change": 0.20625,
+          "hot_area_c_min": 0.0,
+          "max_temperature_c": 37.86551465651424
+        }
+      },
+      {
+        "seed": 47,
+        "metrics": {
+          "mae_c": 0.09541149020114319,
+          "observed_mae_c": 0.09541149020114319,
+          "in_band_pct": 97.13541666666667,
+          "invalid_fraction": 0.0,
+          "guard_rate": 0.0,
+          "guard_count": 0,
+          "fallback_rate": 0.0,
+          "mean_duty_proxy": 0.6456380208333333,
+          "mean_change": 0.17376302083333334,
+          "hot_area_c_min": 0.0,
+          "max_temperature_c": 37.95037137443956
+        }
+      }
+    ]
+  },
+  "trials": [
+    {
+      "algorithm": "q-learning",
+      "episodes": 500,
+      "weights": {
+        "hot": 3.0,
+        "duty": 0.0
+      },
+      "validation": {
+        "mae_c": 0.1874617937803686,
+        "observed_mae_c": 0.1874617937803686,
+        "in_band_pct": 92.37847222222223,
+        "invalid_fraction": 0.0,
+        "guard_rate": 0.027083333333333334,
+        "guard_count": 0.2916666666666667,
+        "fallback_rate": 8.680555555555556e-05,
+        "mean_duty_proxy": 0.7064887152777778,
+        "mean_change": 0.42758246527777777,
+        "hot_area_c_min": 0.004237021680399664,
+        "max_temperature_c": 38.22626938874582,
+        "worst_seed_in_band_pct": 88.203125,
+        "eligible": false
+      },
+      "validation_by_seed": [
+        {
+          "seed": 11,
+          "metrics": {
+            "mae_c": 0.23474446016325445,
+            "observed_mae_c": 0.23474446016325445,
+            "in_band_pct": 88.203125,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.05651041666666667,
+            "guard_count": 0.625,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6969401041666666,
+            "mean_change": 0.46067708333333335,
+            "hot_area_c_min": 0.005183081268681537,
+            "max_temperature_c": 38.138731774681794
+          }
+        },
+        {
+          "seed": 29,
+          "metrics": {
+            "mae_c": 0.1932338293282415,
+            "observed_mae_c": 0.1932338293282415,
+            "in_band_pct": 92.60416666666667,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.024739583333333336,
+            "guard_count": 0.25,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6898763020833334,
+            "mean_change": 0.4908203125,
+            "hot_area_c_min": 0.007527983772517455,
+            "max_temperature_c": 38.22626938874582
+          }
+        },
+        {
+          "seed": 47,
+          "metrics": {
+            "mae_c": 0.1344070918496098,
+            "observed_mae_c": 0.1344070918496098,
+            "in_band_pct": 96.328125,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.00026041666666666666,
+            "mean_duty_proxy": 0.7326497395833333,
+            "mean_change": 0.33125,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.95037137443956
+          }
+        }
+      ]
+    },
+    {
+      "algorithm": "q-learning",
+      "episodes": 1500,
+      "weights": {
+        "hot": 3.0,
+        "duty": 0.0
+      },
+      "validation": {
+        "mae_c": 0.6088775229470528,
+        "observed_mae_c": 0.6088775229470528,
+        "in_band_pct": 80.24305555555556,
+        "invalid_fraction": 0.0,
+        "guard_rate": 0.0,
+        "guard_count": 0,
+        "fallback_rate": 0.0,
+        "mean_duty_proxy": 0.6388671875,
+        "mean_change": 0.19724392361111112,
+        "hot_area_c_min": 0.0,
+        "max_temperature_c": 37.963792343587606,
+        "worst_seed_in_band_pct": 70.72916666666667,
+        "eligible": false
+      },
+      "validation_by_seed": [
+        {
+          "seed": 11,
+          "metrics": {
+            "mae_c": 0.955588699916986,
+            "observed_mae_c": 0.955588699916986,
+            "in_band_pct": 70.72916666666667,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6401692708333333,
+            "mean_change": 0.2029296875,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.86551465651424
+          }
+        },
+        {
+          "seed": 29,
+          "metrics": {
+            "mae_c": 0.10778627830438378,
+            "observed_mae_c": 0.10778627830438378,
+            "in_band_pct": 95.65104166666667,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6474283854166667,
+            "mean_change": 0.209375,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.963792343587606
+          }
+        },
+        {
+          "seed": 47,
+          "metrics": {
+            "mae_c": 0.7632575906197886,
+            "observed_mae_c": 0.7632575906197886,
+            "in_band_pct": 74.34895833333333,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.62900390625,
+            "mean_change": 0.17942708333333335,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.86551465651424
+          }
+        }
+      ]
+    },
+    {
+      "algorithm": "q-learning",
+      "episodes": 4000,
+      "weights": {
+        "hot": 3.0,
+        "duty": 0.0
+      },
+      "validation": {
+        "mae_c": 0.09437737261657335,
+        "observed_mae_c": 0.09437737261657335,
+        "in_band_pct": 97.10069444444444,
+        "invalid_fraction": 0.0,
+        "guard_rate": 0.0,
+        "guard_count": 0,
+        "fallback_rate": 0.0,
+        "mean_duty_proxy": 0.6457248263888888,
+        "mean_change": 0.2039279513888889,
+        "hot_area_c_min": 0.0,
+        "max_temperature_c": 37.91251848669449,
+        "worst_seed_in_band_pct": 97.03125,
+        "eligible": true
+      },
+      "validation_by_seed": [
+        {
+          "seed": 11,
+          "metrics": {
+            "mae_c": 0.09411186519502748,
+            "observed_mae_c": 0.09411186519502748,
+            "in_band_pct": 97.13541666666667,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.64638671875,
+            "mean_change": 0.2013671875,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.91251848669449
+          }
+        },
+        {
+          "seed": 29,
+          "metrics": {
+            "mae_c": 0.09422562323115483,
+            "observed_mae_c": 0.09422562323115483,
+            "in_band_pct": 97.03125,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6451497395833333,
+            "mean_change": 0.20520833333333333,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.86551465651424
+          }
+        },
+        {
+          "seed": 47,
+          "metrics": {
+            "mae_c": 0.09479462942353772,
+            "observed_mae_c": 0.09479462942353772,
+            "in_band_pct": 97.13541666666667,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6456380208333333,
+            "mean_change": 0.20520833333333333,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.86551465651424
+          }
+        }
+      ]
+    },
+    {
+      "algorithm": "q-learning",
+      "episodes": 500,
+      "weights": {
+        "hot": 3.0,
+        "duty": 0.05
+      },
+      "validation": {
+        "mae_c": 0.690705102519704,
+        "observed_mae_c": 0.6566168156619624,
+        "in_band_pct": 81.19791666666667,
+        "invalid_fraction": 0.0625,
+        "guard_rate": 0.0,
+        "guard_count": 0,
+        "fallback_rate": 0.0,
+        "mean_duty_proxy": 0.6337890625,
+        "mean_change": 0.33413628472222223,
+        "hot_area_c_min": 0.0,
+        "max_temperature_c": 37.903142538751815,
+        "worst_seed_in_band_pct": 70.96354166666667,
+        "eligible": false
+      },
+      "validation_by_seed": [
+        {
+          "seed": 11,
+          "metrics": {
+            "mae_c": 1.0140283893230282,
+            "observed_mae_c": 0.9117635287498037,
+            "in_band_pct": 76.27604166666667,
+            "invalid_fraction": 0.1875,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6049479166666667,
+            "mean_change": 0.35397135416666664,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.86551465651424
+          }
+        },
+        {
+          "seed": 29,
+          "metrics": {
+            "mae_c": 0.9288569714729084,
+            "observed_mae_c": 0.9288569714729084,
+            "in_band_pct": 70.96354166666667,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.64130859375,
+            "mean_change": 0.4333984375,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.903142538751815
+          }
+        },
+        {
+          "seed": 47,
+          "metrics": {
+            "mae_c": 0.12922994676317526,
+            "observed_mae_c": 0.12922994676317526,
+            "in_band_pct": 96.35416666666667,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6551106770833334,
+            "mean_change": 0.2150390625,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.86551465651424
+          }
+        }
+      ]
+    },
+    {
+      "algorithm": "q-learning",
+      "episodes": 1500,
+      "weights": {
+        "hot": 3.0,
+        "duty": 0.05
+      },
+      "validation": {
+        "mae_c": 0.11901002784354464,
+        "observed_mae_c": 0.11901002784354464,
+        "in_band_pct": 94.93055555555556,
+        "invalid_fraction": 0.0,
+        "guard_rate": 0.0049479166666666664,
+        "guard_count": 0.052083333333333336,
+        "fallback_rate": 0.0,
+        "mean_duty_proxy": 0.6438802083333334,
+        "mean_change": 0.18211805555555555,
+        "hot_area_c_min": 0.0011114954558821093,
+        "max_temperature_c": 38.19484788263745,
+        "worst_seed_in_band_pct": 94.32291666666667,
+        "eligible": true
+      },
+      "validation_by_seed": [
+        {
+          "seed": 11,
+          "metrics": {
+            "mae_c": 0.11973651992084319,
+            "observed_mae_c": 0.11973651992084319,
+            "in_band_pct": 95.546875,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.64130859375,
+            "mean_change": 0.1767578125,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.95037137443956
+          }
+        },
+        {
+          "seed": 29,
+          "metrics": {
+            "mae_c": 0.12124710808603677,
+            "observed_mae_c": 0.12124710808603677,
+            "in_band_pct": 94.32291666666667,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.01484375,
+            "guard_count": 0.15625,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.64443359375,
+            "mean_change": 0.1828125,
+            "hot_area_c_min": 0.0033344863676463277,
+            "max_temperature_c": 38.19484788263745
+          }
+        },
+        {
+          "seed": 47,
+          "metrics": {
+            "mae_c": 0.11604645552375398,
+            "observed_mae_c": 0.11604645552375398,
+            "in_band_pct": 94.921875,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6458984375,
+            "mean_change": 0.18678385416666668,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.903142538751815
+          }
+        }
+      ]
+    },
+    {
+      "algorithm": "q-learning",
+      "episodes": 4000,
+      "weights": {
+        "hot": 3.0,
+        "duty": 0.05
+      },
+      "validation": {
+        "mae_c": 0.09638903012073409,
+        "observed_mae_c": 0.09638903012073409,
+        "in_band_pct": 96.92708333333334,
+        "invalid_fraction": 0.0,
+        "guard_rate": 0.0026041666666666665,
+        "guard_count": 0.03125,
+        "fallback_rate": 0.0,
+        "mean_duty_proxy": 0.6472764756944445,
+        "mean_change": 0.17575954861111112,
+        "hot_area_c_min": 5.3101754918084674e-05,
+        "max_temperature_c": 38.033015279676995,
+        "worst_seed_in_band_pct": 96.51041666666667,
+        "eligible": true
+      },
+      "validation_by_seed": [
+        {
+          "seed": 11,
+          "metrics": {
+            "mae_c": 0.09999515216484565,
+            "observed_mae_c": 0.09999515216484565,
+            "in_band_pct": 96.51041666666667,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0078125,
+            "guard_count": 0.09375,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6481770833333333,
+            "mean_change": 0.17858072916666667,
+            "hot_area_c_min": 0.00015930526475425402,
+            "max_temperature_c": 38.033015279676995
+          }
+        },
+        {
+          "seed": 29,
+          "metrics": {
+            "mae_c": 0.095063640790605,
+            "observed_mae_c": 0.095063640790605,
+            "in_band_pct": 97.13541666666667,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6472330729166667,
+            "mean_change": 0.17180989583333334,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.86551465651424
+          }
+        },
+        {
+          "seed": 47,
+          "metrics": {
+            "mae_c": 0.09410829740675163,
+            "observed_mae_c": 0.09410829740675163,
+            "in_band_pct": 97.13541666666667,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6464192708333333,
+            "mean_change": 0.17688802083333333,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.86551465651424
+          }
+        }
+      ]
+    },
+    {
+      "algorithm": "q-learning",
+      "episodes": 500,
+      "weights": {
+        "hot": 10.0,
+        "duty": 0.0
+      },
+      "validation": {
+        "mae_c": 0.17268640449123826,
+        "observed_mae_c": 0.17268640449123826,
+        "in_band_pct": 96.11979166666667,
+        "invalid_fraction": 0.0,
+        "guard_rate": 0.0,
+        "guard_count": 0,
+        "fallback_rate": 0.0,
+        "mean_duty_proxy": 0.7138020833333334,
+        "mean_change": 0.3541449652777778,
+        "hot_area_c_min": 0.0,
+        "max_temperature_c": 37.967499167691486,
+        "worst_seed_in_band_pct": 95.65104166666667,
+        "eligible": true
+      },
+      "validation_by_seed": [
+        {
+          "seed": 11,
+          "metrics": {
+            "mae_c": 0.1743552976196968,
+            "observed_mae_c": 0.1743552976196968,
+            "in_band_pct": 95.65104166666667,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6901692708333333,
+            "mean_change": 0.45481770833333335,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.903142538751815
+          }
+        },
+        {
+          "seed": 29,
+          "metrics": {
+            "mae_c": 0.14373208084167288,
+            "observed_mae_c": 0.14373208084167288,
+            "in_band_pct": 96.45833333333333,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6916341145833333,
+            "mean_change": 0.318359375,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.86551465651424
+          }
+        },
+        {
+          "seed": 47,
+          "metrics": {
+            "mae_c": 0.19997183501234508,
+            "observed_mae_c": 0.19997183501234508,
+            "in_band_pct": 96.25,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.7596028645833334,
+            "mean_change": 0.2892578125,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.967499167691486
+          }
+        }
+      ]
+    },
+    {
+      "algorithm": "q-learning",
+      "episodes": 1500,
+      "weights": {
+        "hot": 10.0,
+        "duty": 0.0
+      },
+      "validation": {
+        "mae_c": 0.33467528553293574,
+        "observed_mae_c": 0.3087676166219884,
+        "in_band_pct": 89.765625,
+        "invalid_fraction": 0.041666666666666664,
+        "guard_rate": 0.0,
+        "guard_count": 0,
+        "fallback_rate": 0.0,
+        "mean_duty_proxy": 0.6221245659722222,
+        "mean_change": 0.18862847222222223,
+        "hot_area_c_min": 0.0,
+        "max_temperature_c": 37.9815877753977,
+        "worst_seed_in_band_pct": 84.6875,
+        "eligible": false
+      },
+      "validation_by_seed": [
+        {
+          "seed": 11,
+          "metrics": {
+            "mae_c": 0.23611721159600566,
+            "observed_mae_c": 0.23611721159600566,
+            "in_band_pct": 88.515625,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6456380208333333,
+            "mean_change": 0.245703125,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.91251848669449
+          }
+        },
+        {
+          "seed": 29,
+          "metrics": {
+            "mae_c": 0.11048620962935793,
+            "observed_mae_c": 0.11048620962935793,
+            "in_band_pct": 96.09375,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6302408854166667,
+            "mean_change": 0.15520833333333334,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.86551465651424
+          }
+        },
+        {
+          "seed": 47,
+          "metrics": {
+            "mae_c": 0.6574224353734437,
+            "observed_mae_c": 0.5796994286406018,
+            "in_band_pct": 84.6875,
+            "invalid_fraction": 0.125,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.5904947916666666,
+            "mean_change": 0.16497395833333334,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.9815877753977
+          }
+        }
+      ]
+    },
+    {
+      "algorithm": "q-learning",
+      "episodes": 4000,
+      "weights": {
+        "hot": 10.0,
+        "duty": 0.0
+      },
+      "validation": {
+        "mae_c": 0.10098469927504254,
+        "observed_mae_c": 0.10098469927504254,
+        "in_band_pct": 97.01388888888889,
+        "invalid_fraction": 0.0,
+        "guard_rate": 0.0016493055555555556,
+        "guard_count": 0.020833333333333332,
+        "fallback_rate": 0.0,
+        "mean_duty_proxy": 0.6772243923611111,
+        "mean_change": 0.20078125,
+        "hot_area_c_min": 2.4488175398875962e-05,
+        "max_temperature_c": 38.02693784386435,
+        "worst_seed_in_band_pct": 96.77083333333333,
+        "eligible": true
+      },
+      "validation_by_seed": [
+        {
+          "seed": 11,
+          "metrics": {
+            "mae_c": 0.0939196472377204,
+            "observed_mae_c": 0.0939196472377204,
+            "in_band_pct": 97.13541666666667,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6594401041666667,
+            "mean_change": 0.20833333333333334,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.98357431172696
+          }
+        },
+        {
+          "seed": 29,
+          "metrics": {
+            "mae_c": 0.09997191712497827,
+            "observed_mae_c": 0.09997191712497827,
+            "in_band_pct": 96.77083333333333,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0049479166666666664,
+            "guard_count": 0.0625,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6298828125,
+            "mean_change": 0.14544270833333334,
+            "hot_area_c_min": 7.346452619662788e-05,
+            "max_temperature_c": 38.02693784386435
+          }
+        },
+        {
+          "seed": 47,
+          "metrics": {
+            "mae_c": 0.10906253346242896,
+            "observed_mae_c": 0.10906253346242896,
+            "in_band_pct": 97.13541666666667,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.7423502604166666,
+            "mean_change": 0.24856770833333333,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.86551465651424
+          }
+        }
+      ]
+    },
+    {
+      "algorithm": "q-learning",
+      "episodes": 500,
+      "weights": {
+        "hot": 10.0,
+        "duty": 0.05
+      },
+      "validation": {
+        "mae_c": 0.9034009804366683,
+        "observed_mae_c": 0.7892812987903861,
+        "in_band_pct": 71.90972222222223,
+        "invalid_fraction": 0.16666666666666666,
+        "guard_rate": 0.12161458333333333,
+        "guard_count": 1.3958333333333333,
+        "fallback_rate": 0.0,
+        "mean_duty_proxy": 0.6364149305555555,
+        "mean_change": 0.2484157986111111,
+        "hot_area_c_min": 0.016704345535832357,
+        "max_temperature_c": 38.19948384900195,
+        "worst_seed_in_band_pct": 49.088541666666664,
+        "eligible": false
+      },
+      "validation_by_seed": [
+        {
+          "seed": 11,
+          "metrics": {
+            "mae_c": 2.1768670623862265,
+            "observed_mae_c": 1.83450801744738,
+            "in_band_pct": 49.088541666666664,
+            "invalid_fraction": 0.5,
+            "guard_rate": 0.030729166666666665,
+            "guard_count": 0.34375,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.4991861979166667,
+            "mean_change": 0.2216796875,
+            "hot_area_c_min": 0.0028443433011527963,
+            "max_temperature_c": 38.138731774681794
+          }
+        },
+        {
+          "seed": 29,
+          "metrics": {
+            "mae_c": 0.16813667948634092,
+            "observed_mae_c": 0.16813667948634092,
+            "in_band_pct": 95.3125,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.7064453125,
+            "mean_change": 0.3621744791666667,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.86551465651424
+          }
+        },
+        {
+          "seed": 47,
+          "metrics": {
+            "mae_c": 0.36519919943743756,
+            "observed_mae_c": 0.36519919943743756,
+            "in_band_pct": 71.328125,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.3341145833333333,
+            "guard_count": 3.84375,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.70361328125,
+            "mean_change": 0.16139322916666665,
+            "hot_area_c_min": 0.04726869330634428,
+            "max_temperature_c": 38.19948384900195
+          }
+        }
+      ]
+    },
+    {
+      "algorithm": "q-learning",
+      "episodes": 1500,
+      "weights": {
+        "hot": 10.0,
+        "duty": 0.05
+      },
+      "validation": {
+        "mae_c": 0.44113818145877326,
+        "observed_mae_c": 0.39993086628068275,
+        "in_band_pct": 86.35416666666667,
+        "invalid_fraction": 0.0625,
+        "guard_rate": 0.003993055555555555,
+        "guard_count": 0.041666666666666664,
+        "fallback_rate": 0.0,
+        "mean_duty_proxy": 0.6131727430555556,
+        "mean_change": 0.1505859375,
+        "hot_area_c_min": 0.0005364318831349024,
+        "max_temperature_c": 38.138731774681794,
+        "worst_seed_in_band_pct": 74.84375,
+        "eligible": false
+      },
+      "validation_by_seed": [
+        {
+          "seed": 11,
+          "metrics": {
+            "mae_c": 0.9731342487976774,
+            "observed_mae_c": 0.8495123032634059,
+            "in_band_pct": 74.84375,
+            "invalid_fraction": 0.1875,
+            "guard_rate": 0.011979166666666666,
+            "guard_count": 0.125,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.5576497395833333,
+            "mean_change": 0.144140625,
+            "hot_area_c_min": 0.0016092956494047073,
+            "max_temperature_c": 38.138731774681794
+          }
+        },
+        {
+          "seed": 29,
+          "metrics": {
+            "mae_c": 0.21461333353397916,
+            "observed_mae_c": 0.21461333353397916,
+            "in_band_pct": 89.73958333333333,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6523763020833333,
+            "mean_change": 0.20462239583333333,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.91251848669449
+          }
+        },
+        {
+          "seed": 47,
+          "metrics": {
+            "mae_c": 0.1356669620446632,
+            "observed_mae_c": 0.1356669620446632,
+            "in_band_pct": 94.47916666666667,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6294921875,
+            "mean_change": 0.10299479166666667,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.903142538751815
+          }
+        }
+      ]
+    },
+    {
+      "algorithm": "q-learning",
+      "episodes": 4000,
+      "weights": {
+        "hot": 10.0,
+        "duty": 0.05
+      },
+      "validation": {
+        "mae_c": 0.09434618196523593,
+        "observed_mae_c": 0.09434618196523593,
+        "in_band_pct": 97.06597222222223,
+        "invalid_fraction": 0.0,
+        "guard_rate": 0.0,
+        "guard_count": 0,
+        "fallback_rate": 0.0,
+        "mean_duty_proxy": 0.6456488715277778,
+        "mean_change": 0.19498697916666666,
+        "hot_area_c_min": 0.0,
+        "max_temperature_c": 37.95037137443956,
+        "worst_seed_in_band_pct": 96.953125,
+        "eligible": true
+      },
+      "validation_by_seed": [
+        {
+          "seed": 11,
+          "metrics": {
+            "mae_c": 0.09511619558776578,
+            "observed_mae_c": 0.09511619558776578,
+            "in_band_pct": 96.953125,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.64609375,
+            "mean_change": 0.20494791666666667,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.903142538751815
+          }
+        },
+        {
+          "seed": 29,
+          "metrics": {
+            "mae_c": 0.09251086010679883,
+            "observed_mae_c": 0.09251086010679883,
+            "in_band_pct": 97.109375,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.64521484375,
+            "mean_change": 0.20625,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.86551465651424
+          }
+        },
+        {
+          "seed": 47,
+          "metrics": {
+            "mae_c": 0.09541149020114319,
+            "observed_mae_c": 0.09541149020114319,
+            "in_band_pct": 97.13541666666667,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6456380208333333,
+            "mean_change": 0.17376302083333334,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.95037137443956
+          }
+        }
+      ]
+    },
+    {
+      "algorithm": "expected-sarsa",
+      "episodes": 500,
+      "weights": {
+        "hot": 3.0,
+        "duty": 0.0
+      },
+      "validation": {
+        "mae_c": 0.122006229836135,
+        "observed_mae_c": 0.122006229836135,
+        "in_band_pct": 96.82291666666667,
+        "invalid_fraction": 0.0,
+        "guard_rate": 0.0,
+        "guard_count": 0,
+        "fallback_rate": 8.680555555555556e-05,
+        "mean_duty_proxy": 0.7241102430555556,
+        "mean_change": 0.26547309027777777,
+        "hot_area_c_min": 0.0,
+        "max_temperature_c": 37.903142538751815,
+        "worst_seed_in_band_pct": 96.74479166666667,
+        "eligible": true
+      },
+      "validation_by_seed": [
+        {
+          "seed": 11,
+          "metrics": {
+            "mae_c": 0.12716443408315736,
+            "observed_mae_c": 0.12716443408315736,
+            "in_band_pct": 96.74479166666667,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.00026041666666666666,
+            "mean_duty_proxy": 0.75888671875,
+            "mean_change": 0.27884114583333336,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.86551465651424
+          }
+        },
+        {
+          "seed": 29,
+          "metrics": {
+            "mae_c": 0.12175628572440499,
+            "observed_mae_c": 0.12175628572440499,
+            "in_band_pct": 96.97916666666667,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.7536458333333333,
+            "mean_change": 0.3348307291666667,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.903142538751815
+          }
+        },
+        {
+          "seed": 47,
+          "metrics": {
+            "mae_c": 0.11709796970084266,
+            "observed_mae_c": 0.11709796970084266,
+            "in_band_pct": 96.74479166666667,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6597981770833333,
+            "mean_change": 0.18274739583333333,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.88061905302055
+          }
+        }
+      ]
+    },
+    {
+      "algorithm": "expected-sarsa",
+      "episodes": 1500,
+      "weights": {
+        "hot": 3.0,
+        "duty": 0.0
+      },
+      "validation": {
+        "mae_c": 0.09741277921635713,
+        "observed_mae_c": 0.09741277921635713,
+        "in_band_pct": 97.11805555555556,
+        "invalid_fraction": 0.0,
+        "guard_rate": 0.0,
+        "guard_count": 0,
+        "fallback_rate": 0.0,
+        "mean_duty_proxy": 0.6372938368055555,
+        "mean_change": 0.16844618055555555,
+        "hot_area_c_min": 0.0,
+        "max_temperature_c": 37.91251848669449,
+        "worst_seed_in_band_pct": 97.109375,
+        "eligible": true
+      },
+      "validation_by_seed": [
+        {
+          "seed": 11,
+          "metrics": {
+            "mae_c": 0.09849565884425587,
+            "observed_mae_c": 0.09849565884425587,
+            "in_band_pct": 97.13541666666667,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.63291015625,
+            "mean_change": 0.16243489583333334,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.91251848669449
+          }
+        },
+        {
+          "seed": 29,
+          "metrics": {
+            "mae_c": 0.09866129724747899,
+            "observed_mae_c": 0.09866129724747899,
+            "in_band_pct": 97.109375,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6334635416666666,
+            "mean_change": 0.166015625,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.86551465651424
+          }
+        },
+        {
+          "seed": 47,
+          "metrics": {
+            "mae_c": 0.09508138155733653,
+            "observed_mae_c": 0.09508138155733653,
+            "in_band_pct": 97.109375,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6455078125,
+            "mean_change": 0.17688802083333333,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.86551465651424
+          }
+        }
+      ]
+    },
+    {
+      "algorithm": "expected-sarsa",
+      "episodes": 4000,
+      "weights": {
+        "hot": 3.0,
+        "duty": 0.0
+      },
+      "validation": {
+        "mae_c": 0.09681698423900555,
+        "observed_mae_c": 0.09681698423900555,
+        "in_band_pct": 97.11805555555556,
+        "invalid_fraction": 0.0,
+        "guard_rate": 0.0,
+        "guard_count": 0,
+        "fallback_rate": 0.0,
+        "mean_duty_proxy": 0.63720703125,
+        "mean_change": 0.16636284722222222,
+        "hot_area_c_min": 0.0,
+        "max_temperature_c": 37.91251848669449,
+        "worst_seed_in_band_pct": 97.109375,
+        "eligible": true
+      },
+      "validation_by_seed": [
+        {
+          "seed": 11,
+          "metrics": {
+            "mae_c": 0.09738026740123004,
+            "observed_mae_c": 0.09738026740123004,
+            "in_band_pct": 97.13541666666667,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6327473958333333,
+            "mean_change": 0.16009114583333334,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.86551465651424
+          }
+        },
+        {
+          "seed": 29,
+          "metrics": {
+            "mae_c": 0.09799194457856392,
+            "observed_mae_c": 0.09799194457856392,
+            "in_band_pct": 97.109375,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6335611979166667,
+            "mean_change": 0.162890625,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.91251848669449
+          }
+        },
+        {
+          "seed": 47,
+          "metrics": {
+            "mae_c": 0.09507874073722268,
+            "observed_mae_c": 0.09507874073722268,
+            "in_band_pct": 97.109375,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6453125,
+            "mean_change": 0.17610677083333334,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.86551465651424
+          }
+        }
+      ]
+    },
+    {
+      "algorithm": "expected-sarsa",
+      "episodes": 500,
+      "weights": {
+        "hot": 3.0,
+        "duty": 0.05
+      },
+      "validation": {
+        "mae_c": 0.635891881866894,
+        "observed_mae_c": 0.5738497188092112,
+        "in_band_pct": 85.24305555555556,
+        "invalid_fraction": 0.11458333333333333,
+        "guard_rate": 0.003645833333333333,
+        "guard_count": 0.041666666666666664,
+        "fallback_rate": 0.0,
+        "mean_duty_proxy": 0.6376410590277778,
+        "mean_change": 0.19229600694444446,
+        "hot_area_c_min": 0.00014887271128910529,
+        "max_temperature_c": 38.03380008995441,
+        "worst_seed_in_band_pct": 75.96354166666667,
+        "eligible": false
+      },
+      "validation_by_seed": [
+        {
+          "seed": 11,
+          "metrics": {
+            "mae_c": 1.1180864982975653,
+            "observed_mae_c": 0.9915181825425808,
+            "in_band_pct": 75.96354166666667,
+            "invalid_fraction": 0.21875,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6319010416666666,
+            "mean_change": 0.21067708333333335,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.9815877753977
+          }
+        },
+        {
+          "seed": 29,
+          "metrics": {
+            "mae_c": 0.11057937152997997,
+            "observed_mae_c": 0.11057937152997997,
+            "in_band_pct": 96.796875,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.66943359375,
+            "mean_change": 0.1896484375,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.86551465651424
+          }
+        },
+        {
+          "seed": 47,
+          "metrics": {
+            "mae_c": 0.6790097757731369,
+            "observed_mae_c": 0.6194516023550728,
+            "in_band_pct": 82.96875,
+            "invalid_fraction": 0.125,
+            "guard_rate": 0.0109375,
+            "guard_count": 0.125,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6115885416666667,
+            "mean_change": 0.1765625,
+            "hot_area_c_min": 0.00044661813386731586,
+            "max_temperature_c": 38.03380008995441
+          }
+        }
+      ]
+    },
+    {
+      "algorithm": "expected-sarsa",
+      "episodes": 1500,
+      "weights": {
+        "hot": 3.0,
+        "duty": 0.05
+      },
+      "validation": {
+        "mae_c": 0.10067282880322198,
+        "observed_mae_c": 0.10067282880322198,
+        "in_band_pct": 96.80555555555556,
+        "invalid_fraction": 0.0,
+        "guard_rate": 0.0,
+        "guard_count": 0,
+        "fallback_rate": 0.0,
+        "mean_duty_proxy": 0.6371202256944444,
+        "mean_change": 0.17710503472222222,
+        "hot_area_c_min": 0.0,
+        "max_temperature_c": 37.872803518185606,
+        "worst_seed_in_band_pct": 96.27604166666667,
+        "eligible": true
+      },
+      "validation_by_seed": [
+        {
+          "seed": 11,
+          "metrics": {
+            "mae_c": 0.0960722482323305,
+            "observed_mae_c": 0.0960722482323305,
+            "in_band_pct": 97.109375,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6322591145833333,
+            "mean_change": 0.16139322916666668,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.86551465651424
+          }
+        },
+        {
+          "seed": 29,
+          "metrics": {
+            "mae_c": 0.09833088521356062,
+            "observed_mae_c": 0.09833088521356062,
+            "in_band_pct": 97.03125,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.63232421875,
+            "mean_change": 0.16243489583333334,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.872803518185606
+          }
+        },
+        {
+          "seed": 47,
+          "metrics": {
+            "mae_c": 0.10761535296377484,
+            "observed_mae_c": 0.10761535296377484,
+            "in_band_pct": 96.27604166666667,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.64677734375,
+            "mean_change": 0.20748697916666667,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.86551465651424
+          }
+        }
+      ]
+    },
+    {
+      "algorithm": "expected-sarsa",
+      "episodes": 4000,
+      "weights": {
+        "hot": 3.0,
+        "duty": 0.05
+      },
+      "validation": {
+        "mae_c": 0.0959035959783353,
+        "observed_mae_c": 0.0959035959783353,
+        "in_band_pct": 96.99652777777777,
+        "invalid_fraction": 0.0,
+        "guard_rate": 0.0016493055555555556,
+        "guard_count": 0.020833333333333332,
+        "fallback_rate": 0.0,
+        "mean_duty_proxy": 0.6418619791666667,
+        "mean_change": 0.1759982638888889,
+        "hot_area_c_min": 4.324831736192259e-06,
+        "max_temperature_c": 38.00370967196494,
+        "worst_seed_in_band_pct": 96.77083333333333,
+        "eligible": true
+      },
+      "validation_by_seed": [
+        {
+          "seed": 11,
+          "metrics": {
+            "mae_c": 0.09925890483112719,
+            "observed_mae_c": 0.09925890483112719,
+            "in_band_pct": 96.77083333333333,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0049479166666666664,
+            "guard_count": 0.0625,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6334309895833333,
+            "mean_change": 0.15709635416666667,
+            "hot_area_c_min": 1.2974495208576778e-05,
+            "max_temperature_c": 38.00370967196494
+          }
+        },
+        {
+          "seed": 29,
+          "metrics": {
+            "mae_c": 0.09513061432235355,
+            "observed_mae_c": 0.09513061432235355,
+            "in_band_pct": 97.109375,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6322916666666667,
+            "mean_change": 0.15748697916666668,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.86551465651424
+          }
+        },
+        {
+          "seed": 47,
+          "metrics": {
+            "mae_c": 0.09332126878152516,
+            "observed_mae_c": 0.09332126878152516,
+            "in_band_pct": 97.109375,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.65986328125,
+            "mean_change": 0.21341145833333333,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.86551465651424
+          }
+        }
+      ]
+    },
+    {
+      "algorithm": "expected-sarsa",
+      "episodes": 500,
+      "weights": {
+        "hot": 10.0,
+        "duty": 0.0
+      },
+      "validation": {
+        "mae_c": 0.1480750517310814,
+        "observed_mae_c": 0.1480750517310814,
+        "in_band_pct": 95.32118055555556,
+        "invalid_fraction": 0.0,
+        "guard_rate": 0.0078125,
+        "guard_count": 0.08333333333333333,
+        "fallback_rate": 0.00026041666666666666,
+        "mean_duty_proxy": 0.7197699652777778,
+        "mean_change": 0.29815538194444446,
+        "hot_area_c_min": 0.0007332949972870632,
+        "max_temperature_c": 38.138731774681794,
+        "worst_seed_in_band_pct": 92.5,
+        "eligible": true
+      },
+      "validation_by_seed": [
+        {
+          "seed": 11,
+          "metrics": {
+            "mae_c": 0.13557232826862403,
+            "observed_mae_c": 0.13557232826862403,
+            "in_band_pct": 96.51041666666667,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.00026041666666666666,
+            "mean_duty_proxy": 0.7319010416666667,
+            "mean_change": 0.34173177083333334,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.86551465651424
+          }
+        },
+        {
+          "seed": 29,
+          "metrics": {
+            "mae_c": 0.1885901793811232,
+            "observed_mae_c": 0.1885901793811232,
+            "in_band_pct": 92.5,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0234375,
+            "guard_count": 0.25,
+            "fallback_rate": 0.0005208333333333333,
+            "mean_duty_proxy": 0.7022135416666667,
+            "mean_change": 0.3284505208333333,
+            "hot_area_c_min": 0.0021998849918611896,
+            "max_temperature_c": 38.138731774681794
+          }
+        },
+        {
+          "seed": 47,
+          "metrics": {
+            "mae_c": 0.12006264754349698,
+            "observed_mae_c": 0.12006264754349698,
+            "in_band_pct": 96.953125,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.7251953125,
+            "mean_change": 0.22428385416666666,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.903142538751815
+          }
+        }
+      ]
+    },
+    {
+      "algorithm": "expected-sarsa",
+      "episodes": 1500,
+      "weights": {
+        "hot": 10.0,
+        "duty": 0.0
+      },
+      "validation": {
+        "mae_c": 0.10102780562845638,
+        "observed_mae_c": 0.10102780562845638,
+        "in_band_pct": 96.61458333333334,
+        "invalid_fraction": 0.0,
+        "guard_rate": 0.005902777777777778,
+        "guard_count": 0.0625,
+        "fallback_rate": 0.0,
+        "mean_duty_proxy": 0.6346028645833334,
+        "mean_change": 0.16323784722222223,
+        "hot_area_c_min": 0.0009318225166997282,
+        "max_temperature_c": 38.138731774681794,
+        "worst_seed_in_band_pct": 95.57291666666667,
+        "eligible": true
+      },
+      "validation_by_seed": [
+        {
+          "seed": 11,
+          "metrics": {
+            "mae_c": 0.09746981005650142,
+            "observed_mae_c": 0.09746981005650142,
+            "in_band_pct": 97.13541666666667,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6343098958333333,
+            "mean_change": 0.16653645833333333,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.903142538751815
+          }
+        },
+        {
+          "seed": 29,
+          "metrics": {
+            "mae_c": 0.09737863766209119,
+            "observed_mae_c": 0.09737863766209119,
+            "in_band_pct": 97.13541666666667,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6330078125,
+            "mean_change": 0.162109375,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.86551465651424
+          }
+        },
+        {
+          "seed": 47,
+          "metrics": {
+            "mae_c": 0.10823496916677655,
+            "observed_mae_c": 0.10823496916677655,
+            "in_band_pct": 95.57291666666667,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.017708333333333333,
+            "guard_count": 0.1875,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6364908854166667,
+            "mean_change": 0.16106770833333334,
+            "hot_area_c_min": 0.0027954675500991844,
+            "max_temperature_c": 38.138731774681794
+          }
+        }
+      ]
+    },
+    {
+      "algorithm": "expected-sarsa",
+      "episodes": 4000,
+      "weights": {
+        "hot": 10.0,
+        "duty": 0.0
+      },
+      "validation": {
+        "mae_c": 0.09506638680071909,
+        "observed_mae_c": 0.09506638680071909,
+        "in_band_pct": 97.12673611111111,
+        "invalid_fraction": 0.0,
+        "guard_rate": 0.0,
+        "guard_count": 0,
+        "fallback_rate": 0.0,
+        "mean_duty_proxy": 0.6377712673611111,
+        "mean_change": 0.1640625,
+        "hot_area_c_min": 0.0,
+        "max_temperature_c": 37.91251848669449,
+        "worst_seed_in_band_pct": 97.109375,
+        "eligible": true
+      },
+      "validation_by_seed": [
+        {
+          "seed": 11,
+          "metrics": {
+            "mae_c": 0.09466864153205164,
+            "observed_mae_c": 0.09466864153205164,
+            "in_band_pct": 97.13541666666667,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.63408203125,
+            "mean_change": 0.15950520833333334,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.86551465651424
+          }
+        },
+        {
+          "seed": 29,
+          "metrics": {
+            "mae_c": 0.09688754172214491,
+            "observed_mae_c": 0.09688754172214491,
+            "in_band_pct": 97.13541666666667,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6328776041666666,
+            "mean_change": 0.15748697916666668,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.91251848669449
+          }
+        },
+        {
+          "seed": 47,
+          "metrics": {
+            "mae_c": 0.09364297714796073,
+            "observed_mae_c": 0.09364297714796073,
+            "in_band_pct": 97.109375,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6463541666666667,
+            "mean_change": 0.1751953125,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.86551465651424
+          }
+        }
+      ]
+    },
+    {
+      "algorithm": "expected-sarsa",
+      "episodes": 500,
+      "weights": {
+        "hot": 10.0,
+        "duty": 0.05
+      },
+      "validation": {
+        "mae_c": 0.5619661444135596,
+        "observed_mae_c": 0.5343825602715385,
+        "in_band_pct": 87.02256944444444,
+        "invalid_fraction": 0.0625,
+        "guard_rate": 0.0,
+        "guard_count": 0,
+        "fallback_rate": 0.0,
+        "mean_duty_proxy": 0.6541883680555556,
+        "mean_change": 0.38565538194444443,
+        "hot_area_c_min": 0.0,
+        "max_temperature_c": 37.963792343587606,
+        "worst_seed_in_band_pct": 79.42708333333333,
+        "eligible": false
+      },
+      "validation_by_seed": [
+        {
+          "seed": 11,
+          "metrics": {
+            "mae_c": 0.9882600542201246,
+            "observed_mae_c": 0.9055093017940613,
+            "in_band_pct": 79.42708333333333,
+            "invalid_fraction": 0.1875,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6037109375,
+            "mean_change": 0.4103515625,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.963792343587606
+          }
+        },
+        {
+          "seed": 29,
+          "metrics": {
+            "mae_c": 0.15888281939156357,
+            "observed_mae_c": 0.15888281939156357,
+            "in_band_pct": 95.65104166666667,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6722005208333334,
+            "mean_change": 0.27298177083333336,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.92164821974711
+          }
+        },
+        {
+          "seed": 47,
+          "metrics": {
+            "mae_c": 0.5387555596289908,
+            "observed_mae_c": 0.5387555596289908,
+            "in_band_pct": 85.98958333333333,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6866536458333333,
+            "mean_change": 0.4736328125,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.91251848669449
+          }
+        }
+      ]
+    },
+    {
+      "algorithm": "expected-sarsa",
+      "episodes": 1500,
+      "weights": {
+        "hot": 10.0,
+        "duty": 0.05
+      },
+      "validation": {
+        "mae_c": 0.09779407158984403,
+        "observed_mae_c": 0.09779407158984403,
+        "in_band_pct": 97.05729166666667,
+        "invalid_fraction": 0.0,
+        "guard_rate": 0.0,
+        "guard_count": 0,
+        "fallback_rate": 0.0,
+        "mean_duty_proxy": 0.6335828993055556,
+        "mean_change": 0.16184895833333335,
+        "hot_area_c_min": 0.0,
+        "max_temperature_c": 37.86551465651424,
+        "worst_seed_in_band_pct": 96.92708333333333,
+        "eligible": true
+      },
+      "validation_by_seed": [
+        {
+          "seed": 11,
+          "metrics": {
+            "mae_c": 0.09729815701941591,
+            "observed_mae_c": 0.09729815701941591,
+            "in_band_pct": 97.109375,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6328125,
+            "mean_change": 0.15807291666666667,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.86551465651424
+          }
+        },
+        {
+          "seed": 29,
+          "metrics": {
+            "mae_c": 0.09968663933531217,
+            "observed_mae_c": 0.09968663933531217,
+            "in_band_pct": 96.92708333333333,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6337890625,
+            "mean_change": 0.1640625,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.86551465651424
+          }
+        },
+        {
+          "seed": 47,
+          "metrics": {
+            "mae_c": 0.09639741841480401,
+            "observed_mae_c": 0.09639741841480401,
+            "in_band_pct": 97.13541666666667,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6341471354166667,
+            "mean_change": 0.16341145833333334,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.86551465651424
+          }
+        }
+      ]
+    },
+    {
+      "algorithm": "expected-sarsa",
+      "episodes": 4000,
+      "weights": {
+        "hot": 10.0,
+        "duty": 0.05
+      },
+      "validation": {
+        "mae_c": 0.09601595259726026,
+        "observed_mae_c": 0.09601595259726026,
+        "in_band_pct": 97.13541666666667,
+        "invalid_fraction": 0.0,
+        "guard_rate": 0.0,
+        "guard_count": 0,
+        "fallback_rate": 0.0,
+        "mean_duty_proxy": 0.633517795138889,
+        "mean_change": 0.15855034722222222,
+        "hot_area_c_min": 0.0,
+        "max_temperature_c": 37.86551465651424,
+        "worst_seed_in_band_pct": 97.13541666666667,
+        "eligible": true
+      },
+      "validation_by_seed": [
+        {
+          "seed": 11,
+          "metrics": {
+            "mae_c": 0.09636720876982106,
+            "observed_mae_c": 0.09636720876982106,
+            "in_band_pct": 97.13541666666667,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.63271484375,
+            "mean_change": 0.15546875,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.86551465651424
+          }
+        },
+        {
+          "seed": 29,
+          "metrics": {
+            "mae_c": 0.09524360764763384,
+            "observed_mae_c": 0.09524360764763384,
+            "in_band_pct": 97.13541666666667,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.63349609375,
+            "mean_change": 0.15703125,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.86551465651424
+          }
+        },
+        {
+          "seed": 47,
+          "metrics": {
+            "mae_c": 0.09643704137432588,
+            "observed_mae_c": 0.09643704137432588,
+            "in_band_pct": 97.13541666666667,
+            "invalid_fraction": 0.0,
+            "guard_rate": 0.0,
+            "guard_count": 0,
+            "fallback_rate": 0.0,
+            "mean_duty_proxy": 0.6343424479166667,
+            "mean_change": 0.16315104166666666,
+            "hot_area_c_min": 0.0,
+            "max_temperature_c": 37.86551465651424
+          }
+        }
+      ]
+    }
+  ],
+  "check_by_seed": [
+    {
+      "seed": 11,
+      "metrics": {
+        "mae_c": 0.09008489007473847,
+        "observed_mae_c": 0.09008489007473847,
+        "in_band_pct": 97.3046875,
+        "invalid_fraction": 0.0,
+        "guard_rate": 0.0055989583333333325,
+        "guard_count": 0.0625,
+        "fallback_rate": 0.0,
+        "mean_duty_proxy": 0.647509765625,
+        "mean_change": 0.1974609375,
+        "hot_area_c_min": 0.00025860431890698904,
+        "max_temperature_c": 38.08787732979807
+      }
+    },
+    {
+      "seed": 29,
+      "metrics": {
+        "mae_c": 0.08869420354504078,
+        "observed_mae_c": 0.08869420354504078,
+        "in_band_pct": 97.4609375,
+        "invalid_fraction": 0.0,
+        "guard_rate": 0.0055989583333333325,
+        "guard_count": 0.0625,
+        "fallback_rate": 0.0,
+        "mean_duty_proxy": 0.64560546875,
+        "mean_change": 0.19733072916666666,
+        "hot_area_c_min": 0.00025860431890698904,
+        "max_temperature_c": 38.08787732979807
+      }
+    },
+    {
+      "seed": 47,
+      "metrics": {
+        "mae_c": 0.08693353581746563,
+        "observed_mae_c": 0.08693353581746563,
+        "in_band_pct": 97.40885416666667,
+        "invalid_fraction": 0.0,
+        "guard_rate": 0.0055989583333333325,
+        "guard_count": 0.0625,
+        "fallback_rate": 0.0,
+        "mean_duty_proxy": 0.6451985677083333,
+        "mean_change": 0.16943359375,
+        "hot_area_c_min": 0.00025860431890698904,
+        "max_temperature_c": 38.08787732979807
+      }
+    }
+  ],
+  "additional_training_seeds": [
+    {
+      "seed": 73,
+      "metrics": {
+        "mae_c": 0.08720231746833038,
+        "observed_mae_c": 0.08720231746833038,
+        "in_band_pct": 97.44791666666667,
+        "invalid_fraction": 0.0,
+        "guard_rate": 0.0055989583333333325,
+        "guard_count": 0.0625,
+        "fallback_rate": 0.0,
+        "mean_duty_proxy": 0.6448079427083333,
+        "mean_change": 0.16868489583333332,
+        "hot_area_c_min": 0.00025860431890698904,
+        "max_temperature_c": 38.08787732979807
+      }
+    },
+    {
+      "seed": 101,
+      "metrics": {
+        "mae_c": 0.088188930088749,
+        "observed_mae_c": 0.088188930088749,
+        "in_band_pct": 97.44791666666667,
+        "invalid_fraction": 0.0,
+        "guard_rate": 0.0055989583333333325,
+        "guard_count": 0.0625,
+        "fallback_rate": 0.0,
+        "mean_duty_proxy": 0.6474283854166667,
+        "mean_change": 0.19964192708333334,
+        "hot_area_c_min": 0.00025860431890698904,
+        "max_temperature_c": 38.08787732979807
+      }
+    }
+  ],
+  "check_mean": {
+    "mae_c": 0.08822077539886485,
+    "observed_mae_c": 0.08822077539886485,
+    "in_band_pct": 97.4140625,
+    "invalid_fraction": 0.0,
+    "guard_rate": 0.0055989583333333325,
+    "guard_count": 0.0625,
+    "fallback_rate": 0.0,
+    "mean_duty_proxy": 0.6461100260416667,
+    "mean_change": 0.18651041666666665,
+    "hot_area_c_min": 0.00025860431890698904,
+    "max_temperature_c": 38.08787732979807,
+    "worst_seed_in_band_pct": 97.3046875,
+    "eligible": true
+  },
+  "baseline": {
+    "configuration": {
+      "kind": "thermostat",
+      "band": 0.1,
+      "fan_mode": "trend"
+    },
+    "validation": {
+      "mae_c": 0.1557148655555592,
+      "observed_mae_c": 0.1557148655555592,
+      "in_band_pct": 96.19791666666667,
+      "invalid_fraction": 0.0,
+      "guard_rate": 0.0,
+      "guard_count": 0,
+      "fallback_rate": 0.0,
+      "mean_duty_proxy": 0.6733072916666667,
+      "mean_change": 0.27024739583333335,
+      "hot_area_c_min": 0.0,
+      "max_temperature_c": 37.86551465651424
+    },
+    "check": {
+      "mae_c": 0.14910429451949064,
+      "observed_mae_c": 0.14910429451949064,
+      "in_band_pct": 96.61458333333333,
+      "invalid_fraction": 0.0,
+      "guard_rate": 0.0055989583333333325,
+      "guard_count": 0.0625,
+      "fallback_rate": 0.0,
+      "mean_duty_proxy": 0.6732096354166667,
+      "mean_change": 0.2698893229166667,
+      "hot_area_c_min": 0.00025860431890698904,
+      "max_temperature_c": 38.08787732979807
+    }
+  },
+  "better_than_baseline_on_new_simulation_cases": true,
+  "deploy_allowed": false
+}

@@ -1,0 +1,14 @@
+{
+  "algorithm": "q-learning",
+  "episodes": 4000,
+  "weights": {
+    "hot": 10.0,
+    "duty": 0.05
+  },
+  "selected_using": "validation only; frozen before robustness simulations",
+  "baseline": {
+    "kind": "thermostat",
+    "band": 0.1,
+    "fan_mode": "trend"
+  }
+}

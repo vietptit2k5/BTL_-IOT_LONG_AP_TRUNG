@@ -1,0 +1,65 @@
+[
+  {
+    "stage": 0,
+    "seed": 11,
+    "switch_weight": 0.5,
+    "recovery_weight": 4.0,
+    "validation": {
+      "in_band_pct": 95.01302083333334,
+      "mae_c": 0.08099652358086515,
+      "lamp_changes": 32.0078125,
+      "fan_changes": 7.2109375,
+      "longest_in_band_s": 510.625,
+      "recovery_penalized_s": 21.598307291666668,
+      "invalid_fraction": 0.0,
+      "unseen_fraction": 0.0,
+      "guard_fraction": 0.021289062500000008,
+      "max_temperature_c": 37.97581037534634,
+      "min_temperature_c": 37.325965788270004,
+      "hot_pct": 0.4492187500000001,
+      "cold_pct": 4.537760416666664
+    }
+  },
+  {
+    "stage": 1,
+    "seed": 29,
+    "switch_weight": 1.0,
+    "recovery_weight": 4.0,
+    "validation": {
+      "in_band_pct": 97.68880208333334,
+      "mae_c": 0.07069259397686711,
+      "lamp_changes": 5.7265625,
+      "fan_changes": 7.0,
+      "longest_in_band_s": 452.03125,
+      "recovery_penalized_s": 8.622395833333334,
+      "invalid_fraction": 0.0,
+      "unseen_fraction": 0.0,
+      "guard_fraction": 0.0,
+      "max_temperature_c": 37.702192828724726,
+      "min_temperature_c": 37.21999421915892,
+      "hot_pct": 0.49479166666666674,
+      "cold_pct": 1.8164062499999993
+    }
+  },
+  {
+    "stage": 2,
+    "seed": 47,
+    "switch_weight": 0.5,
+    "recovery_weight": 4.0,
+    "validation": {
+      "in_band_pct": 98.08593749999994,
+      "mae_c": 0.06555758014140009,
+      "lamp_changes": 5.3984375,
+      "fan_changes": 9.1640625,
+      "longest_in_band_s": 514.4921875,
+      "recovery_penalized_s": 12.340494791666666,
+      "invalid_fraction": 0.0,
+      "unseen_fraction": 0.0,
+      "guard_fraction": 0.0,
+      "max_temperature_c": 37.41361449706979,
+      "min_temperature_c": 36.93874229197601,
+      "hot_pct": 0.7031249999999997,
+      "cold_pct": 1.2109375000000004
+    }
+  }
+]

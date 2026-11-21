@@ -1,0 +1,13 @@
+{
+  "source": "Du_lieu_giu_nhiet/20261120_pilot_01/du_lieu.csv",
+  "initial_threshold_c": 37.0,
+  "peak": {
+    "after_handover_s": 116.96300000000002,
+    "temperature_c": 37.625
+  },
+  "minimum_after_peak": {
+    "after_handover_s": 299.971,
+    "temperature_c": 37.25
+  },
+  "upper_handover_physical_test_completed": false
+}

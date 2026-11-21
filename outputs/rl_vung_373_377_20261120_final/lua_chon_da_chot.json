@@ -1,0 +1,20 @@
+{
+  "switch_weight": 0.25,
+  "recovery_weight": 2.0,
+  "seed": 11,
+  "validation": {
+    "in_band_pct": 98.05989583333334,
+    "mae_c": 0.059508798169582225,
+    "lamp_changes": 19.6171875,
+    "fan_changes": 9.7890625,
+    "longest_in_band_s": 574.140625,
+    "recovery_penalized_s": 12.395833333333332,
+    "invalid_fraction": 0.0,
+    "unseen_fraction": 0.0,
+    "guard_fraction": 0.0013020833333333333,
+    "max_temperature_c": 37.71001193659804,
+    "min_temperature_c": 37.23417183588858,
+    "hot_pct": 0.6770833333333334,
+    "cold_pct": 1.2630208333333333
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "status": "COMPLETED_HARDWARE_HOLD_TEST",
+  "source": "/home/pi/Code_HopAp_Demo/ket_qua_giu_nhiet/20261117_092305_477345/du_lieu.csv",
+  "source_sha256": "2642c2f3d71416bb1d424b277e202c5a8a2e82dcdc1a52ee2194b32d213eb1b2",
+  "controller": "thu-rl",
+  "target_c": 37.5,
+  "band_c": 0.5,
+  "hold_span_s": 600.018,
+  "covered_s": 600.0179999999999,
+  "coverage_pct": 99.99999999999997,
+  "mae_c": 0.05682272865147249,
+  "in_band_pct": 100.0,
+  "above_band_s": 0.0,
+  "below_band_s": 0.0,
+  "min_c": 37.0,
+  "max_c": 37.687,
+  "soft_guard_count": 0,
+  "errors": [],
+  "note": "Measured single-probe temperature; warm-up/post-cooling excluded; guard time included. No energy/RH/hatch claim."
+}

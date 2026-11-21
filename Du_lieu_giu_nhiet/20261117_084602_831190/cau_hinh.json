@@ -1,0 +1,82 @@
+{
+  "command": "do",
+  "bo_dieu_khien": "doi-chung",
+  "cau_hinh_doi_chung": "/home/pi/Code_HopAp_Demo/doi_chung_kiem_tra.json",
+  "bong": 50,
+  "quat": 75,
+  "giay": 600,
+  "lam_am_toi_da": 600,
+  "sensor": null,
+  "khong_oled": false,
+  "dry_run": false,
+  "out": null,
+  "profile": {
+    "completed": true,
+    "soft_guard_count": 0,
+    "requested_hold_seconds": 600,
+    "warm_timeout_s": 600,
+    "initial_temperature_c": 26.437,
+    "hold_initial_temperature_c": 37.0,
+    "warm_elapsed_s": 325.0026073299996,
+    "control_period_s": 5,
+    "soft_guard_off_c": 38,
+    "soft_guard_resume_c": 37,
+    "hard_cutoff_c": 40,
+    "note": "Guard intervals remain part of the hold test; no RL deployment."
+  },
+  "reference": {
+    "purpose": "REFERENCE_CONTROLLER_ONLY",
+    "protocol_version": 2,
+    "target_c": 37.5,
+    "band_c": 0.5,
+    "fan_pwm_hz": 100,
+    "configuration": {
+      "kind": "thermostat",
+      "band": 0.1,
+      "fan_mode": "trend"
+    },
+    "actions": [
+      [
+        0.0,
+        0.75
+      ],
+      [
+        0.0,
+        1.0
+      ],
+      [
+        0.25,
+        0.75
+      ],
+      [
+        0.25,
+        1.0
+      ],
+      [
+        0.5,
+        0.75
+      ],
+      [
+        0.5,
+        1.0
+      ],
+      [
+        0.75,
+        0.75
+      ],
+      [
+        0.75,
+        1.0
+      ],
+      [
+        1.0,
+        0.75
+      ]
+    ],
+    "selection": "Frozen from validation simulations, before robustness checks",
+    "source_run": "20261117_070909_628598",
+    "source_csv_sha256": "7ed00d0151a9d84d4c0d201e26b65f8a63ca9cc0ed0362250364a6d3fac9de14",
+    "note": "Reference thermostat only; not a Q-table and not evidence of hardware performance. Soft guard 38 to 37 C is applied independently."
+  },
+  "hardware_program_exit_code": 0
+}
