@@ -106,10 +106,16 @@ export function trendInfo(v) {
 
 /** Tab điều hướng từ địa chỉ #/ten-tab. */
 export const TABS = ['tong-quan', 'dieu-khien', 'bieu-do', 'lich-su'];
-export function tabFromHash(hash) {
+export function tabFromHash(hash, allowed = TABS) {
   const t = String(hash || '').replace(/^#\/?/, '');
-  return TABS.includes(t) ? t : TABS[0];
+  return allowed.includes(t) ? t : allowed[0];
 }
+
+// ---- phân quyền: quyen/<uid> = 'dieu_khien' do người quản trị đặt trong Firebase Console.
+// Không có (hoặc chưa đọc được) thì chỉ xem; quy tắc Firebase cũng chặn lệnh của tài khoản chỉ xem.
+export const canControl = (role) => role === 'dieu_khien';
+export const roleLabel = (role) => (role === 'dieu_khien' ? 'Điều khiển' : role === null ? 'Đang kiểm tra…' : 'Chỉ xem');
+export const tabsFor = (role) => (canControl(role) ? TABS : TABS.filter((t) => t !== 'dieu-khien'));
 
 export function bandOf(obj) {
   const v = obj && obj.vung_c;
@@ -254,6 +260,9 @@ const COMMAND_RESULT = {
   BO_QUA_LENH_CU: 'Lệnh quá cũ nên Pi bỏ qua.',
   DA_AP_DUNG: 'Pi đã áp dụng lệnh chỉnh tay.',
   DA_TRA_VE: 'Đã trả quyền cho bộ điều khiển tự động.',
+  DANG_THU_NHIEU: 'Pi đã bắt đầu thử nhiễu.',
+  DA_HUY_THU: 'Đã hủy thử nhiễu; bộ điều khiển lấy lại quyền.',
+  KHONG_CO_THU_NHIEU: 'Không có phép thử nào đang chạy.',
 };
 
 /** Trạng thái lệnh me_ap / luot: đang chờ Pi, hoặc kết quả đã xử lý (kể cả lý do từ chối). */
@@ -266,7 +275,7 @@ export function commandStatus(cmd, idle = 'Chưa gửi lệnh.') {
   if (r.startsWith('DA_BAT_DAU')) text = 'Pi đã kiểm tra an toàn và bắt đầu lượt.';
   else if (r.startsWith('TU_CHOI:')) { text = `Pi từ chối: ${r.slice(8).trim()}.`; tone = 'warn'; }
   else if (r.startsWith('LOI_KHOI_DONG')) { text = `Lỗi khởi động: ${r.slice(14)}`; tone = 'bad'; }
-  else if (r === 'KHONG_HOP_LE' || r === 'BO_QUA_LENH_CU' || r === 'KHONG_CO_ME') tone = 'warn';
+  else if (['KHONG_HOP_LE', 'BO_QUA_LENH_CU', 'KHONG_CO_ME', 'KHONG_CO_THU_NHIEU'].includes(r)) tone = 'warn';
   return { text: `${fmtDateTime(cmd.xu_ly_ts)} · ${text}`, pending: false, tone };
 }
 
@@ -350,3 +359,195 @@ export function compareMetrics(a, b) {
     return { key: m.key, label: m.label, a: m.fmt(va), b: m.fmt(vb), win };
   });
 }
+
+// ------------------------------------------------------------------ "RL đang nghĩ gì" (nao_rl từ ap_trung.py)
+export const ACTION_PAIRS = [[0, 75], [0, 100], [25, 75], [25, 100], [50, 75], [50, 100], [75, 75], [75, 100], [100, 75]];
+export const actionLabel = (i) => (ACTION_PAIRS[i] ? `bóng ${ACTION_PAIRS[i][0]} %, quạt ${ACTION_PAIRS[i][1]} %` : '--');
+// Khớp rl_vung_on_dinh.state_id: 8 ngưỡng sai lệch → 9 nhóm; |dT5| ≤ 0,03 °C là đứng yên; 4 ngưỡng nhiệt tích.
+export const ERROR_BINS = ['thấp hơn mốc > 0,6 °C', 'thấp hơn 0,3–0,6 °C', 'thấp hơn 0,2–0,3 °C', 'thấp hơn 0,08–0,2 °C',
+  'sát mốc (±0,08 °C)', 'cao hơn 0,08–0,2 °C', 'cao hơn 0,2–0,3 °C', 'cao hơn 0,3–0,6 °C', 'cao hơn mốc > 0,6 °C'];
+export const TREND_BINS = ['đang giảm', 'gần như đứng yên', 'đang tăng'];
+export const MEMORY_BINS = ['gần như nguội', 'ít', 'vừa', 'nhiều', 'rất nhiều'];
+export const BRAIN_FRESH_MS = 20000;
+const signed = (v, d) => `${v >= 0 ? '+' : ''}${fmtNum(v, d)}`;
+
+export function brainView(nao, running, now) {
+  if (!running || !nao || !isNum(nao.ts) || now - nao.ts > BRAIN_FRESH_MS) {
+    return { kind: 'empty', badge: '--', tone: 'idle', text: 'Chưa có lượt đang chạy. Khi lượt ap_trung chạy, mỗi 5 giây ở đây hiện trạng thái RL nhìn thấy và lựa chọn của nó.' };
+  }
+  const mode = nao.che_do;
+  if (mode === 'q') {
+    const q = Array.isArray(nao.q) ? nao.q : [];
+    const known = q.filter(isNum);
+    const lo = Math.min(...known), hi = Math.max(...known);
+    const bars = ACTION_PAIRS.map((pair, i) => {
+      const v = q[i];
+      const ok = isNum(v);
+      return {
+        i, label: `${pair[0]}/${pair[1]}`, title: actionLabel(i), known: ok, value: ok ? fmtNum(v, 2) : 'chưa học',
+        width: ok ? (hi > lo ? 10 + (90 * (v - lo)) / (hi - lo) : 100) : 0,
+        chosen: i === nao.chon, best: ok && v === hi, visits: Array.isArray(nao.so_lan) ? nao.so_lan[i] : null,
+      };
+    });
+    const p = nao.thanh_phan || {};
+    const chips = [
+      { k: 'Sai lệch so với mốc', v: ERROR_BINS[p.sai_so] || '--' },
+      { k: 'Xu hướng 5 giây', v: `${TREND_BINS[p.xu_huong] || '--'}${isNum(nao.dT5) ? ` (${signed(nao.dT5, 3)} °C)` : ''}` },
+      { k: 'Nhiệt tích trong bóng', v: MEMORY_BINS[p.nho_nhiet] || '--' },
+      { k: 'Hành động trước', v: actionLabel(p.truoc) },
+    ];
+    const text = nao.ly_do === 'q_max'
+      ? `Chọn ${actionLabel(nao.chon)} vì có giá trị Q cao nhất (${fmtNum(q[nao.chon], 2)}) trong ${known.length}/9 hành động đã học ở trạng thái này.`
+      : 'Trạng thái này chưa gặp khi huấn luyện: dùng dự phòng an toàn bóng 0 %, quạt 100 % (không đoán).';
+    const shift = isNum(nao.muc_tieu_c) && Math.abs(nao.muc_tieu_c - DEFAULT_TARGET) > 1e-9 && isNum(nao.nhiet_dich_c)
+      ? `Q-table học ở mốc 37,5 °C. Với mốc ${fmtNum(nao.muc_tieu_c, 1)} °C, RL nhìn nhiệt đã dịch: `
+        + `${fmtNum(nao.nhiet_c, 2)} − (${fmtNum(nao.muc_tieu_c, 1)} − 37,5) = ${fmtNum(nao.nhiet_dich_c, 2)} °C.`
+      : `Trạng thái số ${isNum(nao.state) ? nao.state : '--'} trong 2430 trạng thái của Q-table.`;
+    return { kind: 'q', badge: 'Q-learning', tone: 'ok', chips, bars, text, shift };
+  }
+  const MODES = {
+    lam_am: ['Làm ấm', 'Đang làm ấm theo quy tắc (bóng 75 %, quạt 100 %). RL nhận điều khiển khi nhiệt tới mốc − 0,5 °C.'],
+    bao_ve: ['Bảo vệ', 'Bảo vệ quá nhiệt đang giữ quyền: tắt bóng, quạt 100 % tới khi nhiệt về 37,8 °C. RL tạm nghỉ.'],
+    phuc_hoi: ['Phục hồi', 'Nhiệt thấp hơn mốc quá 0,9 °C: làm ấm phục hồi theo quy tắc rồi trả lại cho RL.'],
+    tay: ['Chỉnh tay', `RL tạm nghỉ: đang chỉnh tay / thử nhiễu (bóng ${nao.bong} %, quạt ${nao.quat} %), còn ${nao.con_lai_s} s.`],
+    thermostat: ['Thermostat', `Lượt đối chứng: thermostat chọn ${actionLabel(nao.chon)} theo ngưỡng ±0,1 °C quanh mốc, không dùng Q-table.`],
+  };
+  const [badge, text] = MODES[mode] || [mode || '?', ''];
+  return { kind: 'mode', badge, tone: mode === 'bao_ve' ? 'bad' : mode === 'thermostat' ? 'idle' : 'warn', text };
+}
+
+// ------------------------------------------------------------------ thử nhiễu (thu_nhieu/<id> do bridge ghi)
+export const THU_KIEU = { lanh: 'làm lạnh (bóng 0 %, quạt 100 %)', nong: 'làm nóng (bóng 100 %, quạt 75 %)' };
+export const THU_ACTIVE = ['DANG_NHIEU', 'DANG_PHUC_HOI'];
+
+export function testList(node) {
+  if (!node || typeof node !== 'object') return [];
+  return Object.values(node).filter((t) => t && isNum(t.bat_dau_ts)).sort((a, b) => b.bat_dau_ts - a.bat_dau_ts);
+}
+
+export const activeTest = (list) => list.find((t) => THU_ACTIVE.includes(t.trang_thai)) || null;
+
+export function testResultText(t) {
+  if (!t) return '--';
+  const lech = `lệch tối đa ${fmtNum(t.lech_max_c, 2, ' °C')}`;
+  if (t.trang_thai === 'XONG') {
+    return t.ra_vung ? `Về vùng sau ${fmtDuration(t.ve_vung_s)}, ổn định sau ${fmtDuration(t.on_dinh_s)}; ${lech}`
+      : `Nhiệt không ra khỏi vùng; ${lech}`;
+  }
+  if (t.trang_thai === 'CHUA_VE_VUNG') return `Chưa ổn định lại sau 10 phút; ${lech}`;
+  if (t.trang_thai === 'HUY') return `Đã hủy (${t.ly_do || '?'})`;
+  return 'Đang chạy';
+}
+
+export function testProgress(t, now) {
+  if (!t) return { text: 'Chưa có phép thử nào.', tone: 'idle' };
+  const kieu = THU_KIEU[t.kieu] || t.kieu;
+  const dev = isNum(t.nhiet_c) && isNum(t.muc_tieu_c) ? ` · lệch hiện tại ${signed(t.nhiet_c - t.muc_tieu_c, 2)} °C` : '';
+  if (t.trang_thai === 'DANG_NHIEU') {
+    return { text: `Đang gây nhiễu ${kieu}: còn ${fmtDuration(Math.max(0, (t.het_han_ts - now) / 1000))}${dev}`, tone: 'warn', active: true };
+  }
+  if (t.trang_thai === 'DANG_PHUC_HOI') {
+    const since = fmtDuration(Math.max(0, (now - t.het_han_ts) / 1000));
+    const step = isNum(t.ve_vung_s) ? `đã về vùng sau ${fmtDuration(t.ve_vung_s)}, chờ ở yên 60 s` : 'chờ nhiệt về vùng';
+    return { text: `Hết nhiễu ${since} trước: ${step}${dev}`, tone: 'warn', active: true };
+  }
+  return { text: `Lần gần nhất (${t.bo_dieu_khien || '?'}): ${testResultText(t)}`, tone: t.trang_thai === 'XONG' ? 'ok' : 'idle', active: false };
+}
+
+export function canDisturb({ piOnline, running, live, active, manualActive, pending }) {
+  const hold = !!running && !!live && live.giai_doan === 'giu_nhiet';
+  return gate([
+    { label: 'Pi đang online', need: 'Pi online', ok: !!piOnline },
+    { label: 'Lượt ap_trung đang giữ nhiệt', need: 'lượt đang giữ nhiệt', ok: hold },
+    { label: 'Nhiệt đang trong vùng mục tiêu', need: 'nhiệt trong vùng', ok: hold && live.trong_vung === true },
+    { label: 'Không có phép thử khác / chỉnh tay', need: 'không có thử nhiễu hay chỉnh tay khác', ok: !active && !manualActive },
+    ...(pending ? [{ label: 'Lệnh trước đã xử lý xong', need: 'chờ lệnh trước xử lý xong', ok: false }] : []),
+  ]);
+}
+
+/** Trung bình theo bộ điều khiển và kiểu nhiễu (chỉ các lần XONG có ra khỏi vùng). */
+export function testSummary(list) {
+  const groups = new Map();
+  for (const t of list) {
+    if (t.trang_thai !== 'XONG' || !t.ra_vung || !isNum(t.ve_vung_s)) continue;
+    const key = `${t.bo_dieu_khien || '?'} · ${t.kieu === 'nong' ? 'nhiễu nóng' : 'nhiễu lạnh'}`;
+    const g = groups.get(key) || { key, n: 0, ve: 0, on: 0, lech: 0 };
+    g.n += 1; g.ve += t.ve_vung_s; g.on += isNum(t.on_dinh_s) ? t.on_dinh_s : 0; g.lech += t.lech_max_c || 0;
+    groups.set(key, g);
+  }
+  return [...groups.values()].map((g) => ({ key: g.key, n: g.n, ve: g.ve / g.n, on: g.on / g.n, lech: g.lech / g.n }));
+}
+
+// ------------------------------------------------------------------ sức khỏe thiết bị (suc_khoe do bridge ghi mỗi 30 s)
+export const HEALTH_STALE_MS = 90000;
+const TONE_RANK = { ok: 0, idle: 0, warn: 1, bad: 2 };
+
+export function fmtUptime(seconds) {
+  if (!isNum(seconds)) return '--';
+  const d = Math.floor(seconds / 86400), h = Math.floor((seconds % 86400) / 3600), m = Math.floor((seconds % 3600) / 60);
+  return d > 0 ? `${d} ngày ${h} giờ` : h > 0 ? `${h} giờ ${m} phút` : `${m} phút`;
+}
+
+export function wifiQuality(dbm) {
+  if (!isNum(dbm)) return { text: '--', tone: 'idle' };
+  if (dbm >= -60) return { text: `${dbm} dBm · mạnh`, tone: 'ok' };
+  if (dbm >= -70) return { text: `${dbm} dBm · khá`, tone: 'ok' };
+  if (dbm >= -80) return { text: `${dbm} dBm · yếu`, tone: 'warn' };
+  return { text: `${dbm} dBm · rất yếu`, tone: 'bad' };
+}
+
+const rateTone = (pct, good, fair) => (!isNum(pct) ? 'idle' : pct >= good ? 'ok' : pct >= fair ? 'warn' : 'bad');
+
+export function healthView(sk, doAm, now) {
+  if (!sk || !isNum(sk.ts) || now - sk.ts > HEALTH_STALE_MS) {
+    return { stale: true, badge: 'Chưa có dữ liệu', tone: 'idle', items: [],
+      note: 'Bridge chưa gửi thông tin thiết bị (Pi mất kết nối hoặc bridge cũ hơn 1.6).' };
+  }
+  const items = [];
+  const add = (k, v, tone = 'idle', hint = '') => items.push({ k, v, tone, hint });
+  add('Nhiệt CPU Pi', fmtNum(sk.cpu_c, 1, ' °C'), !isNum(sk.cpu_c) ? 'idle' : sk.cpu_c < 70 ? 'ok' : sk.cpu_c < 80 ? 'warn' : 'bad',
+    'Trên 80 °C Pi tự giảm xung');
+  const n = sk.nguon;
+  if (!n) add('Nguồn điện Pi', '--', 'idle', 'Không đọc được vcgencmd');
+  else if (n.yeu_hien_tai) add('Nguồn điện Pi', 'Điện áp thấp!', 'bad', 'Adapter 5 V của Pi yếu hoặc dây kém');
+  else if (n.tung_yeu) add('Nguồn điện Pi', 'Từng sụt áp', 'warn', 'Đã có lúc sụt áp từ khi khởi động');
+  else add('Nguồn điện Pi', 'Ổn định', 'ok', `Mã ${n.ma}`);
+  const w = wifiQuality(sk.wifi_dbm);
+  add('Wi-Fi', w.text, w.tone, sk.ip ? `IP ${sk.ip}` : '');
+  add('RAM', isNum(sk.ram_dung_pct) ? `${fmtNum(sk.ram_dung_pct, 0)} % đã dùng` : '--',
+    !isNum(sk.ram_dung_pct) ? 'idle' : sk.ram_dung_pct < 90 ? 'ok' : 'warn');
+  add('Thẻ nhớ', isNum(sk.the_nho_trong_gb) ? `còn ${fmtNum(sk.the_nho_trong_gb, 1)} GB` : '--',
+    !isNum(sk.the_nho_trong_gb) ? 'idle' : sk.the_nho_trong_gb >= 3 ? 'ok' : sk.the_nho_trong_gb >= 1 ? 'warn' : 'bad');
+  add('Pi chạy liên tục', fmtUptime(sk.uptime_s), 'idle', isNum(sk.tai_1phut) ? `Tải CPU ${fmtNum(sk.tai_1phut, 2)}` : '');
+  const ds = sk.ds18b20;
+  add('DS18B20 (nhiệt)', ds ? `${fmtNum(ds.ty_le_ok_pct, 1)} % đọc tốt` : 'chưa có lượt',
+    ds ? rateTone(ds.ty_le_ok_pct, 99, 95) : 'idle', ds ? `${ds.loi}/${ds.doc} lần lỗi trong lượt ${ds.dang_chay ? 'đang chạy' : 'gần nhất'}` : '');
+  const rh = doAm && isNum(doAm.ty_le_ok_pct) ? doAm.ty_le_ok_pct : null;
+  add('DHT11 (độ ẩm)', isNum(rh) ? `${fmtNum(rh, 0)} % đọc tốt` : '--', rateTone(rh, 70, 40), 'DHT11 hay lỗi lẻ tẻ; lấy số đọc tốt gần nhất');
+  const tg = sk.telegram || {};
+  if (!tg.bat) add('Telegram', 'Tắt', 'idle', 'Chưa có telegram_bi_mat.json trên Pi');
+  else if (tg.loi_cuoi) add('Telegram', 'Gửi lỗi', 'warn', tg.loi_cuoi);
+  else add('Telegram', `Bật · ${tg.so_chat} chat`, 'ok', isNum(tg.lan_cuoi_ok_ts) ? `Gửi tốt ${ago(tg.lan_cuoi_ok_ts, now)}` : 'Chưa phải gửi tin nào');
+  add('Bridge', `v${sk.bridge || '?'}`, 'idle', `chạy ${fmtUptime(sk.bridge_chay_s)}${sk.may ? ` trên ${sk.may}` : ''}`);
+  const worst = items.reduce((t, i) => (TONE_RANK[i.tone] > TONE_RANK[t] ? i.tone : t), 'ok');
+  return { stale: false, items, tone: worst, badge: worst === 'bad' ? 'Có vấn đề' : worst === 'warn' ? 'Cần chú ý' : 'Tốt',
+    note: `Cập nhật ${ago(sk.ts, now)} · mỗi 30 giây` };
+}
+
+// ------------------------------------------------------------------ tải dữ liệu lượt về (CSV)
+export function sessionCsv(meta, samples) {
+  const start = meta && isNum(meta.bat_dau_ts) ? meta.bat_dau_ts : null;
+  const esc = (v) => {
+    if (v === null || v === undefined) return '';
+    const t = String(v);
+    return /[",\r\n]/.test(t) ? `"${t.replace(/"/g, '""')}"` : t;
+  };
+  const head = ['thoi_gian_utc', 'giay_tu_dau', 'nhiet_c', 'do_am_pct', 'bong_pct', 'quat_pct', 'giai_doan', 'ngay_ap', 'giai_doan_ap'];
+  const lines = samplesToSeries(samples).map((s) => [
+    start === null ? '' : new Date(start + s.t * 1000).toISOString(), s.t, s.T,
+    isNum(s.RH) ? s.RH : '', isNum(s.L) ? s.L : '', isNum(s.F) ? s.F : '', s.g, s.n, s.k,
+  ].map(esc).join(','));
+  return `\ufeff${[head.join(','), ...lines].join('\r\n')}\r\n`;  // BOM: Excel đọc đúng tiếng Việt
+}
+
+export const csvFileName = (sid) => `hop_ap_${String(sid).replace(/[^\w.-]+/g, '_')}_mau5s.csv`;

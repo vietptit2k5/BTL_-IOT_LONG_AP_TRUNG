@@ -90,6 +90,11 @@ Bridge có thể bật trước hoặc sau chương trình điều khiển. Tắ
 | `hop_ap_01/commands/stop` | `{value, ts, by}`: app ghi `value: true`; Pi xử lý xong thì đặt lại `false` và ghi `ket_qua` |
 | `hop_ap_01/commands/tay` | Chỉnh tay: `{hanh_dong: 'dat', bong, quat, thoi_han_s}` hoặc `{hanh_dong: 'tra_ve'}`, kèm `ts`, `by`. Pi trả `ket_qua` (`DA_AP_DUNG` kèm `het_han_ms`, `DA_TRA_VE`, `TU_CHOI: …`, `KHONG_HOP_LE`). Xem mục 6b |
 | `hop_ap_01/trang_thai/bridge` | Nhịp sống của bridge, gửi mỗi 5 s. App dựa vào đây để biết Pi có online hay không |
+| `hop_ap_01/suc_khoe` | Sức khỏe thiết bị, gửi mỗi 30 s ([suc_khoe.py](suc_khoe.py), chỉ đọc). Gồm: `cpu_c`; `nguon` (cờ `vcgencmd get_throttled`: `yeu_hien_tai`, `tung_yeu`…); `wifi_dbm`, `ip`; `ram_dung_pct`; `the_nho_trong_gb`; `uptime_s`, `tai_1phut`; `ds18b20` (số lần đọc / lỗi trong lượt); `telegram` (bật, lần gửi tốt cuối, lỗi cuối); `bridge`, `bridge_chay_s` |
+| `hop_ap_01/nao_rl` | "RL đang nghĩ gì": `ap_trung.py` ghi `nao_rl.json` mỗi quyết định, bridge chuyển lên. Gồm `che_do` (q / thermostat / lam_am / bao_ve / tay / phuc_hoi); ở chế độ `q` có thêm `state` và `thanh_phan` (sai_so, xu_huong, nho_nhiet, truoc), `q` (9 giá trị, `null` = chưa học), `so_lan`, `chon`, `nhiet_dich_c` |
+| `hop_ap_01/thu_nhieu/<id>` | Một phép thử nhiễu: `kieu`, `thoi_han_s`, `trang_thai` (DANG_NHIEU / DANG_PHUC_HOI / XONG / CHUA_VE_VUNG / HUY), `ve_vung_s`, `on_dinh_s`, `lech_max_c`, `ra_vung`, `bao_ve`, `bo_dieu_khien`. Xem mục 6c |
+| `hop_ap_01/commands/thu_nhieu` | `{hanh_dong: 'bat_dau', kieu: 'lanh'|'nong', thoi_han_s: 60|120}` hoặc `{hanh_dong: 'huy'}`. Pi trả `DANG_THU_NHIEU`, `DA_HUY_THU`, `TU_CHOI: …` |
+| `quyen/<uid>` | `"dieu_khien"` nếu tài khoản được gửi lệnh (mọi `commands/*`); không có thì chỉ xem. Chỉ sửa trong Firebase console; mỗi tài khoản chỉ đọc được dòng của mình. Pi gửi phản hồi lệnh bằng UID riêng nên không cần dòng này |
 
 Khóa của mẫu, sự kiện và cảnh báo đều tính từ thời gian đo. Vì vậy gửi lại sau khi mất mạng sẽ **ghi đè đúng chỗ cũ, không tạo bản trùng**.
 
@@ -105,6 +110,7 @@ Khóa của mẫu, sự kiện và cảnh báo đều tính từ thời gian đo
 | `PI_KHONG_GHI` | CSV ngừng cập nhật quá 20 s mà chưa kết thúc | nguy hiểm |
 | `KET_THUC` | Lượt chạy kết thúc (dòng END) | thông tin |
 | `DUNG_TU_XA` | Đã xử lý lệnh dừng từ app, kèm kết quả | cảnh báo |
+| `THU_NHIEU` / `KET_QUA_THU_NHIEU` | Bắt đầu thử nhiễu / kết quả (về vùng sau…, ổn định sau…, lệch tối đa) | thông tin |
 | `CHINH_TAY` / `TRA_VE_RL` | Có người chỉnh tay bóng/quạt từ app / trả quyền lại cho RL | cảnh báo / thông tin |
 
 Mỗi loại cảnh báo được gửi tối đa 1 lần mỗi 5 phút (trừ `ON_DINH`, `KET_THUC`, `DUNG_TU_XA`). Đã kiểm tra trên 4 lượt đo thật (thermostat và Q1 ngày 17/11, Q2 ngày 20/11, đáp ứng 20/11): không có `NGHI_MO_NAP` hay báo lỗi giả. Ngưỡng mở nắp **chưa được thử với lần mở nắp thật**. Cần chỉnh lại sau phép thử mở nắp ở giai đoạn 2.
@@ -133,6 +139,32 @@ Dùng để thử phản ứng của hộp hoặc "đẩy" hệ thống ra khỏ
 4. Khi hết hạn, hoặc khi bấm **Trả về RL ngay** (bridge ghi `het_han = 0`), RL quyết định lại ngay ở bước kế tiếp. Lệnh ghi trước khi lượt bắt đầu (`ghi_luc` cũ) thì bị bỏ qua, nên không lan sang lượt sau.
 
 Lịch demo vẫn chạy tiếp trong lúc chỉnh tay.
+
+## 6c. Thử nhiễu và "RL đang nghĩ gì" (bridge 1.5)
+
+**Thử nhiễu** đo khả năng phục hồi, chạy được với cả RL và thermostat để so sánh:
+
+1. App gửi `commands/thu_nhieu`. Bridge chỉ nhận khi có lượt `ap_trung.py`, lượt đang **giữ nhiệt**, nhiệt **trong vùng**, không có phép thử khác và không có lệnh chỉnh tay.
+2. Bridge ghi `lenh_tay.json` giống chỉnh tay:
+   - lạnh: bóng 0 %, quạt 100 %;
+   - nóng: bóng 100 %, quạt 75 %.
+
+   Bảo vệ 38,3 / 38,8 °C vẫn thắng.
+3. Hết nhiễu, bộ điều khiển lấy lại quyền. Bridge đọc từng số đo trong CSV ([thu_nhieu.py](thu_nhieu.py)) và đo:
+   - `ve_vung_s`: tới lần đầu nhiệt vào lại vùng;
+   - `on_dinh_s`: tới lúc bắt đầu ở yên trong vùng 60 s liên tục;
+   - `lech_max_c`.
+
+   Quá 10 phút: `CHUA_VE_VUNG`. Lượt kết thúc giữa chừng: `HUY`.
+4. Kết quả lên `thu_nhieu/<id>` kèm cảnh báo `KET_QUA_THU_NHIEU`, và được ghi thêm một dòng vào `ket_qua_thu_nhieu.jsonl` trên Pi.
+
+**RL đang nghĩ gì:** mỗi quyết định (5 s), `ap_trung.py` ghi `nao_rl.json` nguyên khối:
+- trạng thái Q2, giải mã bằng `decode_state` (ngược của `state_id`);
+- 9 giá trị Q, hành động được chọn và lý do.
+
+Bridge gửi bản mới lên `nao_rl` nếu file còn mới hơn 30 s. Lỗi ghi file không bao giờ ảnh hưởng vòng điều khiển.
+
+**Telegram:** xem [HUONG_DAN_TELEGRAM.md](HUONG_DAN_TELEGRAM.md).
 
 ## 7. Kiểm thử
 

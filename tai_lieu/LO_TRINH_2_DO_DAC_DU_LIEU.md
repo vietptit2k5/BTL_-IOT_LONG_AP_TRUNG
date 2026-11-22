@@ -100,3 +100,5 @@ Dữ liệu rút gọn (mỗi 5 s một mẫu) cũng có trên Firebase: vào co
 cd Code_HopAp_Demo
 python -m unittest test_do_nhiet_hop test_khao_sat_rl test_do_dap_ung_bo_sung test_ke_hoach_do_day_du test_do_am test_dht_reader test_kiem_tra_dht11 -v
 ```
+
+**Lấy nhanh dữ liệu một lượt mà không cần scp:** app → Lịch sử → nút ⤓ cạnh lượt. File CSV có mẫu 5 giây, gồm thời gian UTC, nhiệt, độ ẩm, % bóng, % quạt, giai đoạn, ngày ấp. Đủ để vẽ đồ thị và đưa vào báo cáo. Khi cần phân tích chính xác (MAE, số lần đổi mức) thì vẫn dùng CSV gốc 1 giây trên Pi.

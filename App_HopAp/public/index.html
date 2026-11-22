@@ -32,7 +32,7 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>
         <span>Tổng quan</span>
       </a>
-      <a href="#/dieu-khien" data-tab="dieu-khien">
+      <a href="#/dieu-khien" data-tab="dieu-khien" class="control-only">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>
         <span>Điều khiển</span>
       </a>
@@ -76,6 +76,8 @@
         <div id="menu-panel" class="popover menu-panel" hidden>
           <p class="muted small">Đăng nhập bằng</p>
           <p id="user-email" class="user-email">--</p>
+          <p class="role-line"><span id="role" class="badge idle">Đang kiểm tra…</span></p>
+          <p class="muted tiny uid-line">UID: <code id="user-uid">--</code></p>
           <button id="theme" class="menu-item" type="button">
             <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
             <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
@@ -85,7 +87,7 @@
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
             <span>Đăng xuất</span>
           </button>
-          <p class="muted tiny about">Pi tự đo và điều khiển cục bộ; đám mây lưu trữ, hiển thị và nhận lệnh. · <span id="app-version">Phiên bản app: v12</span></p>
+          <p class="muted tiny about">Pi tự đo và điều khiển cục bộ; đám mây lưu trữ, hiển thị và nhận lệnh. · <span id="app-version">Phiên bản app: v15</span></p>
         </div>
       </div>
     </div>
@@ -123,7 +125,13 @@
         <div id="tay-banner" class="banner warn" hidden>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 11V6a2 2 0 0 0-4 0M14 10V4a2 2 0 0 0-4 0v2M10 10.5V6a2 2 0 0 0-4 0v8a8 8 0 0 0 16 0v-2a2 2 0 0 0-4 0"/></svg>
           <span id="tay-banner-text">Đang chỉnh tay</span>
-          <a href="#/dieu-khien" data-scroll="card-tay" class="link small">Điều khiển</a>
+          <a href="#/dieu-khien" data-scroll="card-tay" class="link small control-only">Điều khiển</a>
+        </div>
+
+        <div id="thu-banner" class="banner warn" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12h4l3-8 4 16 3-8h6"/></svg>
+          <span id="thu-banner-text">Đang thử nhiễu</span>
+          <a href="#/dieu-khien" data-scroll="card-thu" class="link small control-only">Chi tiết</a>
         </div>
 
         <div class="temp-block">
@@ -167,13 +175,32 @@
           <span id="controller" class="tiny muted">--</span>
         </div>
       </dl>
+
+      <article class="card brain-card" id="brain">
+        <div class="card-head">
+          <h2>RL đang nghĩ gì</h2>
+          <span id="brain-badge" class="badge idle">--</span>
+        </div>
+        <p id="brain-text" class="brain-text">--</p>
+        <div id="brain-detail" hidden>
+          <dl id="brain-chips" class="brain-chips"></dl>
+          <h3>Giá trị Q của 9 hành động (bóng/quạt %)</h3>
+          <div id="brain-bars" class="brain-bars" role="list"></div>
+          <p id="brain-shift" class="muted tiny"></p>
+        </div>
+        <details class="help">
+          <summary>Đọc bảng này thế nào?</summary>
+          <p>Mỗi 5 giây, Q-learning gom nhiệt độ thành một <b>trạng thái</b>: sai lệch so với mốc, xu hướng, lượng nhiệt còn tích trong bóng và hành động trước đó. Với trạng thái này, Q-table có 9 giá trị, mỗi giá trị ứng với một cặp bóng/quạt.</p>
+          <p>Giá trị Q là phần thưởng dài hạn dự kiến nếu chọn hành động đó: càng cao càng tốt. RL chọn thanh <b>cao nhất</b> (viền cam). Hành động chưa từng thử ở trạng thái này khi huấn luyện ghi "chưa học" và không bao giờ được chọn.</p>
+        </details>
+      </article>
       </div>
 
       <div class="col">
       <article class="card lich-card">
         <div class="card-head">
           <h2>Lịch ấp 21 ngày</h2>
-          <a href="#/dieu-khien" data-scroll="card-me" class="link small">Quản lý mẻ</a>
+          <a href="#/dieu-khien" data-scroll="card-me" class="link small control-only">Quản lý mẻ</a>
         </div>
         <div class="lich-row">
           <div>
@@ -200,6 +227,15 @@
         </div>
         <div class="chart-box mini"><canvas id="mini-chart" aria-label="Nhiệt độ 10 phút gần nhất"></canvas></div>
         <p id="mini-empty" class="empty-state" hidden>Chưa có lượt nào đang chạy.</p>
+      </article>
+
+      <article class="card health-card">
+        <div class="card-head">
+          <h2>Thiết bị</h2>
+          <span id="health-badge" class="badge idle">--</span>
+        </div>
+        <dl id="health-list" class="health-list"></dl>
+        <p id="health-note" class="muted tiny">--</p>
       </article>
       </div>
     </section>
@@ -343,8 +379,43 @@
           <p>Chỉ có 9 cặp bóng/quạt đã khảo sát (bóng 100 % đi với quạt 75 %). Các bước chỉnh tay không tính vào chỉ số của RL.</p>
         </details>
       </article>
+
+      <article class="card step" id="card-thu">
+        <header class="step-head">
+          <span class="step-num">4</span>
+          <div>
+            <h2>Thử nhiễu</h2>
+            <p class="muted small">Cố ý đẩy nhiệt lệch khỏi mốc, rồi đo bộ điều khiển kéo về vùng nhanh cỡ nào.</p>
+          </div>
+        </header>
+        <p id="thu-progress" class="banner idle" role="status" aria-live="polite">--</p>
+        <div class="field-group">
+          <h3>Kiểu nhiễu</h3>
+          <div class="choices" role="radiogroup" aria-label="Kiểu nhiễu">
+            <label><input type="radio" name="thu-kieu" value="lanh" checked><span>Làm lạnh<small>bóng 0 %, quạt 100 %</small></span></label>
+            <label><input type="radio" name="thu-kieu" value="nong"><span>Làm nóng<small>bóng 100 %, quạt 75 %</small></span></label>
+          </div>
+          <h3>Thời gian nhiễu</h3>
+          <div class="choices compact" role="radiogroup" aria-label="Thời gian nhiễu">
+            <label><input type="radio" name="thu-han" value="60" checked><span>1 phút</span></label>
+            <label><input type="radio" name="thu-han" value="120"><span>2 phút</span></label>
+          </div>
+        </div>
+        <ul id="thu-checks" class="checks" aria-label="Điều kiện thử nhiễu"></ul>
+        <div class="btn-row">
+          <button id="thu-start" class="primary" type="button" disabled>Bắt đầu thử nhiễu</button>
+          <button id="thu-cancel" class="ghost" type="button" disabled>Hủy</button>
+        </div>
+        <p id="thu-status" class="status">--</p>
+        <details class="help">
+          <summary>Đo những gì?</summary>
+          <p>Hết thời gian nhiễu, bộ điều khiển lấy lại quyền. Pi đo: <b>về vùng</b> là thời gian tới lần đầu nhiệt vào lại vùng mục tiêu; <b>ổn định</b> là thời gian tới khi bắt đầu ở yên trong vùng 60 s liên tục; <b>lệch tối đa</b> so với mốc.</p>
+          <p>Chạy cùng kịch bản với lượt Q-learning và lượt Thermostat để so sánh trong mục Lịch sử. Bảo vệ 38,3 / 38,8 °C vẫn luôn thắng; kết quả cũng được lưu trên Pi (ket_qua_thu_nhieu.jsonl).</p>
+        </details>
+      </article>
     </section>
 
+    <!-- ================================================================ (tiếp) THỬ NHIỄU nằm trong mục Điều khiển -->
     <!-- ================================================================ BIỂU ĐỒ -->
     <section class="view charts" data-view="bieu-do" aria-label="Biểu đồ" hidden>
       <article class="card chart-card">
@@ -381,7 +452,8 @@
           </div>
           <label class="small toggle"><input id="show-replay" type="checkbox"> Hiện phát lại / đọc thử</label>
         </div>
-        <p class="muted small">Chạm vào tối đa 2 lượt để so sánh.</p>
+        <p class="muted small">Chạm vào tối đa 2 lượt để so sánh. Nút <b>⤓</b> tải dữ liệu lượt đó (CSV, mẫu 5 giây) về máy.</p>
+        <p id="history-status" class="status" role="status" aria-live="polite"></p>
         <div id="history" class="run-list"><p class="empty-state">Đang tải…</p></div>
       </article>
 
@@ -400,6 +472,22 @@
           </div>
           <h3 class="chart-sub">Nhiệt độ 10 phút đầu giữ nhiệt</h3>
           <div class="chart-box tall"><canvas id="compare-chart" aria-label="Đồ thị so sánh hai lượt"></canvas></div>
+        </div>
+      </article>
+
+      <article class="card thu-card">
+        <div class="card-head">
+          <h2>Kết quả thử nhiễu</h2>
+          <span id="thu-count" class="muted small"></span>
+        </div>
+        <div id="thu-summary" class="thu-summary"></div>
+        <p id="thu-empty" class="empty-state">Chưa có phép thử nào. Chạy ở mục Điều khiển → bước 4.</p>
+        <div class="table-wrap" id="thu-table-wrap" hidden>
+          <table class="metrics thu-table">
+            <thead><tr><th scope="col">Lúc</th><th scope="col">Bộ điều khiển · nhiễu</th><th scope="col">Về vùng</th>
+              <th scope="col">Ổn định</th><th scope="col">Lệch tối đa</th></tr></thead>
+            <tbody id="thu-rows"></tbody>
+          </table>
         </div>
       </article>
     </section>

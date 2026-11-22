@@ -138,3 +138,24 @@
 - Điều khiển: 3 bước (mẻ, lượt, chỉnh tay), nút lựa chọn lớn thay danh sách thả xuống, danh sách điều kiện ✓/○, giải thích an toàn thu gọn. Dừng khẩn cấp là thanh nổi hiện ở mọi mục khi đang chạy.
 - Lịch sử: danh sách thẻ, bảng so sánh 2 lượt đánh dấu ★ chỉ số tốt hơn.
 - Logic mới có test (17 test app). Đã chạy trong DOM giả lập và chụp thử bằng Edge headless (điện thoại 390 px, máy tính 1440 px). Firebase và lệnh không đổi; chỉ cần deploy hosting.
+
+## Phân quyền tài khoản: chỉ xem / điều khiển (22/11, app v13)
+
+- Thêm nhánh `quyen/<uid>`. Quy tắc Firebase chỉ cho gửi lệnh (`stop`, `ngay_ap`, `me_ap`, `luot`, `tay`) khi `quyen/<uid> = "dieu_khien"` hoặc khi là UID của Pi. Tài khoản mặc định là chỉ xem.
+- App v13: tài khoản chỉ xem không có mục Điều khiển, nút gợi ý và thanh Dừng khẩn cấp (theo quyết định của nhóm). Menu tài khoản hiện quyền và UID.
+- Pi không đổi. Cần thêm `quyen/<UID của mình>` trong Console trước khi deploy, và nên tắt tự đăng ký trong Authentication.
+- Test: 18 test app; đã chạy DOM giả lập cho cả hai quyền.
+
+## Ba tính năng demo: Telegram, RL đang nghĩ gì, thử nhiễu (22/11, bridge 1.5, app v14)
+
+- **Telegram:** `thong_bao_telegram.py` nhắn cảnh báo mức cảnh báo / nguy hiểm, cùng tin kết thúc lượt và kết quả thử nhiễu, kể cả khi app đóng. Gửi trong luồng nền, mỗi cảnh báo một lần, bỏ cảnh báo cũ hơn 15 phút, che token trong log. Có lệnh `telegram-chat-id` và `telegram-thu`. Cấu hình `telegram_bi_mat.json` (gitignore). Hướng dẫn: HUONG_DAN_TELEGRAM.md.
+- **RL đang nghĩ gì:** `ap_trung.py` ghi `nao_rl.json` mỗi quyết định (trạng thái giải mã, 9 giá trị Q, hành động chọn, lý do, nhiệt đã dịch); bridge gửi lên `nao_rl`; app có thẻ ở Tổng quan.
+- **Thử nhiễu:** lệnh `commands/thu_nhieu` (lạnh / nóng, 1–2 phút). Bridge kiểm tra điều kiện, ghi lệnh tay, rồi đo về vùng / ổn định 60 s / lệch tối đa từ từng dòng CSV (`thu_nhieu.py`). Kết quả lên `thu_nhieu/<id>`, cảnh báo KET_QUA_THU_NHIEU, ghi thêm vào `ket_qua_thu_nhieu.jsonl` trên Pi. App: bước 4 ở Điều khiển, bảng và trung bình theo bộ điều khiển ở Lịch sử.
+- Quy tắc Firebase: `nao_rl`, `thu_nhieu` chỉ Pi ghi; `commands/thu_nhieu` cần quyền điều khiển.
+- Test: 237 Python, 20 app; chạy DOM giả lập và chụp thử bằng Edge headless. Kiểm thử phần cứng: T14–T16.
+
+## Sức khỏe thiết bị và tải CSV (22/11, bridge 1.6, app v15)
+
+- `suc_khoe.py`: bridge đọc mỗi 30 s, chỉ đọc. Gồm: nhiệt CPU; cờ sụt áp / giảm xung (`vcgencmd get_throttled`); Wi-Fi dBm, IP; % RAM; dung lượng thẻ nhớ còn trống; uptime, tải CPU. Bridge thêm vào: % đọc tốt của DS18B20 trong lượt (Engine đếm từng số đo), trạng thái Telegram, phiên bản và thời gian chạy của bridge. Gửi lên `suc_khoe` (chỉ Pi ghi).
+- App: thẻ "Thiết bị" ở Tổng quan, chấm màu theo ngưỡng (CPU 70 / 80 °C; Wi-Fi −60 / −70 / −80 dBm; DS18B20 99 / 95 %; DHT11 70 / 40 %; thẻ nhớ 3 / 1 GB). Lịch sử: nút ⤓ tải CSV mẫu 5 s của từng lượt (UTF-8 có BOM để Excel đọc đúng tiếng Việt).
+- Test: 240 Python, 22 app; DOM giả lập (cả tài khoản chỉ xem) và ảnh chụp Edge headless. Kiểm thử phần cứng: T17, T18.

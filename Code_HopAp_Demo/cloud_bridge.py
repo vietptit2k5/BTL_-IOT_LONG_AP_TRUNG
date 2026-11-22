@@ -36,8 +36,10 @@ import threading
 import time
 
 import me_ap
+import suc_khoe
+import thu_nhieu as tn
 
-VERSION = '1.4'
+VERSION = '1.6'
 DEVICE = 'hop_ap_01'
 CSV_FIELDS = (
     'timestamp_utc', 'elapsed_s', 'event', 'phase', 'sensor_id',
@@ -73,9 +75,12 @@ ALERT_LEVEL = {
     'DUNG_TU_XA': 'canh_bao',
 }
 ALERT_LEVEL.update(CHUYEN_GIAI_DOAN='thong_tin', DOI_NGAY='thong_tin', TAO_ME='thong_tin', KET_THUC_ME='thong_tin',
-                   BAT_DAU_LUOT='canh_bao', DUNG_BAT_THUONG='nguy_hiem', CHINH_TAY='canh_bao', TRA_VE_RL='thong_tin')
+                   BAT_DAU_LUOT='canh_bao', DUNG_BAT_THUONG='nguy_hiem', CHINH_TAY='canh_bao', TRA_VE_RL='thong_tin',
+                   THU_NHIEU='thong_tin', KET_QUA_THU_NHIEU='thong_tin')
 NO_COOLDOWN = {'ON_DINH', 'KET_THUC', 'DUNG_TU_XA', 'CHUYEN_GIAI_DOAN', 'DOI_NGAY', 'TAO_ME', 'KET_THUC_ME',
-               'BAT_DAU_LUOT', 'DUNG_BAT_THUONG', 'CHINH_TAY', 'TRA_VE_RL'}
+               'BAT_DAU_LUOT', 'DUNG_BAT_THUONG', 'CHINH_TAY', 'TRA_VE_RL', 'THU_NHIEU', 'KET_QUA_THU_NHIEU'}
+HEALTH_EVERY_S = 30          # Gửi sức khỏe thiết bị mỗi 30 s.
+NAO_FRESH_S = 30              # nao_rl.json cũ hơn thì không gửi (lượt đã dừng).
 MANUAL_LAMP = (0, 25, 50, 75, 100)
 MANUAL_FAN = (75, 100)
 MANUAL_SECONDS = (60, 120, 300)
@@ -433,7 +438,7 @@ class Engine:
         }
 
     def feed(self, rows):
-        out = {'samples': {}, 'events': {}, 'alerts': {}}
+        out = {'samples': {}, 'events': {}, 'alerts': {}, 'diem': []}
         for values in rows:
             if not values:
                 continue
@@ -467,7 +472,10 @@ class Engine:
         if event == 'END':
             self.s['ended'] = True
             self._alert(out, 'KET_THUC', elapsed, 'Lượt chạy đã kết thúc; Pi đã gửi lệnh tắt bóng và quạt.', temp)
+        if event == 'MEASUREMENT':
+            self.s['dem_do'] = self.s.get('dem_do', 0) + 1
         if event == 'MEASUREMENT' and (temp is None or (age is not None and age > SENSOR_STALE_S)):
+            self.s['dem_loi_do'] = self.s.get('dem_loi_do', 0) + 1
             if not self.s['sensor_bad']:
                 self.s['sensor_bad'] = True
                 self._alert(out, 'LOI_CAM_BIEN', elapsed, 'Mất số đo DS18B20; Pi sẽ tự dừng nếu quá 3 s.', temp)
@@ -490,6 +498,7 @@ class Engine:
         }
         if event != 'MEASUREMENT':
             return
+        out.setdefault('diem', []).append((t, temp, in_band, cls))
         bucket = int(elapsed // SAMPLE_EVERY_S)
         if bucket != self.s['last_bucket']:
             self.s['last_bucket'] = bucket
@@ -741,12 +750,18 @@ def stop_is_fresh(command, handled_ts, now=None):
 
 class Bridge:
     def __init__(self, store, base, csv_path=None, state_path=None, period=5.0, source='truc_tiep', clock=time.time,
-                 lich_path=None, do_am_path=None, tay_path=None):
+                 lich_path=None, do_am_path=None, tay_path=None, nao_path=None, notifier=None, thu_log_path=None):
         self.store, self.base, self.fixed_csv = store, Path(base), Path(csv_path) if csv_path else None
         self.lich_path = Path(lich_path) if lich_path else me_ap.MAC_DINH
         self.lich_sig, self.lich_put_at = None, 0.0
         self.do_am_path = Path(do_am_path) if do_am_path else Path(__file__).resolve().with_name('do_am_moi_nhat.json')
         self.tay_path = Path(tay_path) if tay_path else Path(__file__).resolve().with_name('lenh_tay.json')
+        self.nao_path = Path(nao_path) if nao_path else Path(__file__).resolve().with_name('nao_rl.json')
+        self.thu_log_path = Path(thu_log_path) if thu_log_path else Path(__file__).resolve().with_name('ket_qua_thu_nhieu.jsonl')
+        self.notifier = notifier  # TelegramNotifier hoặc None
+        self.nao_ts = None
+        self.health_at, self.started_at, self.cloud_ok_at = None, clock(), None
+        self.health_reader = suc_khoe.collect  # thay được khi kiểm thử
         self.do_am_sig, self.do_am_put_at = None, 0.0
         # Phụ thuộc phần cứng, thay được khi kiểm thử.
         self.running_probe = running_controllers
@@ -816,6 +831,9 @@ class Bridge:
             self._handle_batch_command()
             self._handle_run_command()
             self._handle_manual_command()
+            self._handle_disturbance_command()
+            self._publish_brain()
+            self._publish_health()
             self._publish_schedule()
             self._publish_humidity()
         try:
@@ -823,8 +841,15 @@ class Bridge:
                 'ts': now_ms(), 'phien_ban': VERSION, 'may': socket.gethostname(),
                 'phien': self.engine.session_id if self.engine else None})
             self._set_online(True)
+            self.cloud_ok_at = now_ms()
         except CloudError as exc:
             self._set_online(False, exc)
+
+    def _post_alerts(self, alerts):
+        self.store.patch(self._path('alerts'), alerts)
+        if self.notifier is not None and self.source == 'truc_tiep':
+            for key, alert in alerts.items():
+                self.notifier.offer(key, alert)
 
     def _set_online(self, ok, exc=None):
         if ok and self.online is not True:
@@ -863,6 +888,7 @@ class Bridge:
                 'noi_dung': 'Chương trình điều khiển đã dừng mà không ghi kết thúc (bị tắt đột ngột?). '
                             'Kiểm tra tận nơi bóng và quạt đã tắt; nếu bóng còn sáng hãy rút adapter 12 V.',
                 'phien': self.engine.session_id, 'nhiet_c': None}
+        test = self._track_disturbance(out)
         sid = self.engine.session_id
         session_patch = {}
         if self.engine.s['latest'] and not self.state.get('meta_sent_' + sid):
@@ -876,7 +902,7 @@ class Bridge:
             if session_patch:
                 self.store.patch(self._path('sessions', sid), session_patch)
             if out['alerts']:
-                self.store.patch(self._path('alerts'), out['alerts'])
+                self._post_alerts(out['alerts'])
                 for alert in out['alerts'].values():
                     log(f'CẢNH BÁO {alert["loai"]}: {alert["noi_dung"]}')
             latest = self.engine.s['latest']
@@ -887,12 +913,17 @@ class Bridge:
                             trang_thai='KET_THUC' if self.engine.s['ended'] else 'DANG_CHAY',
                             nguon=self.source, bridge_ts=now_ms())
                 self.store.put(self._path('live'), live)
+            if test is not None:
+                self.store.put(self._path('thu_nhieu', test['id']), test)
         except CloudError as exc:
             self.engine.restore(before)  # Không tiến vị trí đọc: lần sau gửi lại đúng các dòng này (khóa cố định).
             self._set_online(False, exc)
             return
         if 'meta' in session_patch:
             self.state['meta_sent_' + sid] = True
+        if test is not None and test['trang_thai'] not in tn.ACTIVE and not test.get('da_bao'):
+            test['da_bao'] = True  # chỉ đánh dấu khi cảnh báo kết quả đã lên Firebase
+            self._log_disturbance(test)
         self.tail.offset = new_offset
         self.state['phien'] = {'csv': str(self.tail.path), 'offset': new_offset,
                                'engine': self.engine.snapshot(), 'id': sid}
@@ -941,7 +972,7 @@ class Bridge:
                  'noi_dung': f'Lệnh dừng từ {command.get("by", "?")}: {result}.',
                  'phien': self.engine.session_id if self.engine else None, 'nhiet_c': None}
         try:
-            self.store.patch(self._path('alerts'), {f'{alert["ts"]}_DUNG_TU_XA': alert})
+            self._post_alerts({f'{alert["ts"]}_DUNG_TU_XA': alert})
         except CloudError:
             pass
         log(f'LỆNH DỪNG từ {command.get("by", "?")}: {result}')
@@ -1005,7 +1036,7 @@ class Bridge:
             alert = {'ts': now_ms(), 'loai': alert_kind, 'muc': ALERT_LEVEL.get(alert_kind, 'thong_tin'),
                      'noi_dung': alert_text, 'phien': self.engine.session_id if self.engine else None, 'nhiet_c': None}
             try:
-                self.store.patch(self._path('alerts'), {f'{alert["ts"]}_{alert_kind}': alert})
+                self._post_alerts({f'{alert["ts"]}_{alert_kind}': alert})
             except CloudError:
                 pass
         log(f'LỆNH {name} từ {reply["yeu_cau_boi"]}: {result}')
@@ -1068,6 +1099,138 @@ class Bridge:
         temp = self.tay_path.with_suffix('.tmp')
         temp.write_text(json.dumps(dict(data, ghi_luc=time.time()), ensure_ascii=False), encoding='utf-8')
         os.replace(temp, self.tay_path)  # Ghi nguyên khối: ap_trung không bao giờ đọc file dở.
+
+    # ---- thử nhiễu (đo khả năng phục hồi của bộ điều khiển)
+    def _active_test(self):
+        test = self.state.get('thu_nhieu')
+        return test if test and test.get('trang_thai') in tn.ACTIVE else None
+
+    def _track_disturbance(self, out):
+        """Đưa điểm đo mới vào phép thử đang chạy. Trả phép thử cần gửi lên (đang chạy / vừa xong) hoặc None."""
+        test = self.state.get('thu_nhieu')
+        if not test or test.get('da_bao'):
+            return None
+        if test['trang_thai'] in tn.ACTIVE:
+            for t, temp, in_band, cls in out.get('diem', []):
+                tn.feed(test, t, temp, in_band, cls)
+            if self.engine.s['ended'] and test['trang_thai'] in tn.ACTIVE:
+                tn.cancel(test, 'lượt chạy kết thúc trước khi đo xong')
+        if test['trang_thai'] not in tn.ACTIVE:
+            kind = 'KET_QUA_THU_NHIEU'
+            out['alerts'][f'{test["id"]}_{kind}'] = {
+                'ts': now_ms() if test['trang_thai'] == 'HUY' else max(test['het_han_ts'], int((test['last_t'] or 0) * 1000)),
+                'loai': kind,
+                'muc': ALERT_LEVEL[kind], 'noi_dung': tn.summary_text(test), 'phien': test['phien'],
+                'nhiet_c': test['nhiet_c']}
+        return test
+
+    def _log_disturbance(self, test):
+        try:  # Lưu cả trên Pi để đưa vào báo cáo, kể cả khi mất Firebase.
+            with self.thu_log_path.open('a', encoding='utf-8') as f:
+                f.write(json.dumps(test, ensure_ascii=False) + '\n')
+        except OSError as exc:
+            log(f'Không ghi được {self.thu_log_path.name}: {exc}')
+        log(tn.summary_text(test))
+
+    def _manual_active(self):
+        try:
+            return float(json.loads(self.tay_path.read_text(encoding='utf-8')).get('het_han', 0)) > time.time()
+        except (OSError, ValueError, TypeError, AttributeError):
+            return False
+
+    def _handle_disturbance_command(self):
+        command = self._take_command('thu_nhieu')
+        if command is None:
+            return
+        who = str(command.get('by', '?'))[:100]
+        action = command.get('hanh_dong')
+        active = self._active_test()
+        if action == 'huy':
+            if active is None:
+                return self._reply('thu_nhieu', command, 'KHONG_CO_THU_NHIEU')
+            if active['trang_thai'] == 'DANG_NHIEU':
+                self._write_manual({'bong': 0, 'quat': 100, 'het_han': 0, 'by': who})
+            tn.cancel(active, f'{who} hủy')
+            self._save_state()
+            return self._reply('thu_nhieu', command, 'DA_HUY_THU')
+        kind, seconds = command.get('kieu'), command.get('thoi_han_s')
+        if action != 'bat_dau' or kind not in tn.KIEU or isinstance(seconds, bool) or seconds not in tn.THOI_HAN:
+            return self._reply('thu_nhieu', command, 'KHONG_HOP_LE')
+        reasons = []
+        if self.source != 'truc_tiep' or not os.path.isdir('/proc'):
+            reasons.append('chỉ chạy được trên Raspberry Pi')
+        if not any('ap_trung.py' in cmd for _, cmd in self.running()):
+            reasons.append('không có lượt ap_trung đang chạy')
+        latest = self.engine.s['latest'] if self.engine else None
+        if not latest or self.engine.s['ended'] or now_ms() - latest['ts'] > 30000:
+            reasons.append('chưa có số đo mới của lượt đang chạy')
+        elif latest['giai_doan'] != 'giu_nhiet':
+            reasons.append(f'lượt chưa ở giai đoạn giữ nhiệt (đang: {latest["giai_doan_ten"]})')
+        elif not latest['trong_vung']:
+            reasons.append('nhiệt đang ngoài vùng mục tiêu, chờ ổn định rồi thử')
+        if active is not None:
+            reasons.append('đang có một phép thử nhiễu khác')
+        if self._manual_active():
+            reasons.append('đang chỉnh tay')
+        if reasons:
+            return self._reply('thu_nhieu', command, 'TU_CHOI: ' + '; '.join(reasons))
+        lamp, fan = tn.KIEU[kind]
+        now = time.time()
+        self._write_manual({'bong': lamp, 'quat': fan, 'het_han': now + seconds, 'by': f'thử nhiễu ({who})',
+                            'ts': command.get('ts')})
+        test = tn.new_test(kind, seconds, now, who, latest['muc_tieu_c'], latest['vung_c'],
+                           self.meta['bo_dieu_khien'], self.engine.session_id)
+        self.state['thu_nhieu'] = test
+        self._save_state()
+        try:
+            self.store.put(self._path('thu_nhieu', test['id']), test)
+        except CloudError:
+            pass  # chu kỳ sau gửi lại cùng số đo
+        command = dict(command, thu_id=test['id'])
+        return self._reply('thu_nhieu', command, 'DANG_THU_NHIEU', 'THU_NHIEU',
+                           f'{who} bắt đầu thử nhiễu {tn.KIEU_TEN[kind]} trong {seconds // 60} phút; '
+                           'sau đó đo thời gian bộ điều khiển kéo nhiệt về vùng.')
+
+    # ---- sức khỏe thiết bị (chỉ đọc)
+    def _publish_health(self):
+        now = self.clock()
+        if self.health_at is not None and now - self.health_at < HEALTH_EVERY_S:
+            return
+        self.health_at = now
+        try:
+            data = self.health_reader(self.base)
+        except Exception as exc:  # noqa: BLE001 - đọc hệ thống lỗi không được làm hỏng bridge
+            log(f'Không đọc được sức khỏe thiết bị: {type(exc).__name__}: {exc}')
+            return
+        s = self.engine.s if self.engine else {}
+        n, bad = s.get('dem_do', 0), s.get('dem_loi_do', 0)
+        data['ds18b20'] = ({'doc': n, 'loi': bad, 'ty_le_ok_pct': round(100 * (n - bad) / n, 1),
+                            'phien': self.engine.session_id, 'dang_chay': not s.get('ended')} if n else None)
+        bot = self.notifier
+        data['telegram'] = {'bat': bot is not None,
+                            'so_chat': len(getattr(bot, 'config', {}).get('chat_id', [])),
+                            'lan_cuoi_ok_ts': getattr(bot, 'last_ok_ts', None),
+                            'loi_cuoi': getattr(bot, 'last_error', None)}
+        data.update(ts=now_ms(), bridge=VERSION, bridge_chay_s=int(now - self.started_at))
+        try:
+            self.store.put(self._path('suc_khoe'), data)
+        except CloudError:
+            self.health_at = None  # thử lại chu kỳ sau
+
+    # ---- "RL đang nghĩ gì": ap_trung ghi nao_rl.json mỗi quyết định, bridge chuyển lên app
+    def _publish_brain(self):
+        try:
+            data = json.loads(self.nao_path.read_text(encoding='utf-8'))
+        except (OSError, ValueError):
+            return
+        ts = data.get('ts') if isinstance(data, dict) else None
+        if not isinstance(ts, (int, float)) or ts == self.nao_ts or now_ms() - ts > NAO_FRESH_S * 1000:
+            return
+        try:
+            self.store.put(self._path('nao_rl'), dict(data, bridge_ts=now_ms()))
+            self.nao_ts = ts
+        except CloudError:
+            pass
 
     def _handle_run_command(self):
         command = self._take_command('luot')
@@ -1170,7 +1333,7 @@ class Bridge:
                      'noi_dung': f'{requester} đổi sang {me_ap.describe(info)}.',
                      'phien': self.engine.session_id if self.engine else None, 'nhiet_c': None}
             try:
-                self.store.patch(self._path('alerts'), {f'{alert["ts"]}_DOI_NGAY': alert})
+                self._post_alerts({f'{alert["ts"]}_DOI_NGAY': alert})
             except CloudError:
                 pass
             self.lich_sig = None  # Gửi lịch mới ngay chu kỳ này.
@@ -1251,6 +1414,35 @@ def replay_writer(source, target, speed, done):
 
 # --------------------------------------------------------------------------- dòng lệnh
 
+def telegram_cli(command):
+    import thong_bao_telegram as tg
+    try:
+        raw = json.loads(tg.FILE.read_text(encoding='utf-8'))
+        config = tg.load_config(tg.FILE) if command == 'telegram-thu' else {
+            'token': str(raw.get('token', '')).strip(), 'chat_id': [], 'muc': (), 'them': ()}
+    except (OSError, ValueError) as exc:
+        log(f'LỖI: đọc {tg.FILE.name}: {exc}')
+        return 1
+    bot = tg.TelegramNotifier(config, background=False, log=log)
+    try:
+        if command == 'telegram-chat-id':
+            chats = bot.chat_ids()
+            if not chats:
+                log('Chưa thấy tin nhắn nào. Mở Telegram, nhắn /start cho bot (hoặc thêm bot vào nhóm) rồi chạy lại.')
+            for chat_id, name in chats:
+                log(f'chat_id {chat_id}  ({name})')
+            return 0
+        if not config['chat_id']:
+            log('LỖI: chưa có chat_id trong file cấu hình.')
+            return 1
+        bot.send_text('🟢 Thử kết nối · Hộp ấp nhóm 13\nCloud bridge trên Pi gửi được tin Telegram.\n' + tg.APP_URL)
+        log(f'Đã gửi tin thử tới {len(config["chat_id"])} cuộc trò chuyện.')
+        return 0
+    except tg.TelegramError as exc:
+        log(f'LỖI Telegram: {exc}')
+        return 1
+
+
 def main(argv=None):
     if hasattr(sys.stdout, 'reconfigure'):
         sys.stdout.reconfigure(encoding='utf-8')
@@ -1273,7 +1465,11 @@ def main(argv=None):
     p.add_argument('csv', type=Path, nargs='+')
     p.add_argument('--bo-dieu-khien', help='Ghi đè nhãn bộ điều khiển')
     sub.add_parser('kiem-tra', parents=[common], help='Thử đăng nhập, ghi và đọc')
+    sub.add_parser('telegram-chat-id', help='In chat_id của những ai vừa nhắn cho bot (cần telegram_bi_mat.json)')
+    sub.add_parser('telegram-thu', help='Gửi một tin thử tới các chat_id trong telegram_bi_mat.json')
     args = parser.parse_args(argv)
+    if args.lenh.startswith('telegram-'):
+        return telegram_cli(args.lenh)
     store = make_store(args)
 
     if args.lenh == 'kiem-tra':
@@ -1327,7 +1523,9 @@ def main(argv=None):
         log('Phát lại xong.')
         return 0
 
-    bridge = Bridge(store, args.thu_muc, csv_path=args.csv, period=args.chu_ky, lich_path=args.lich)
+    from thong_bao_telegram import make_notifier
+    bridge = Bridge(store, args.thu_muc, csv_path=args.csv, period=args.chu_ky, lich_path=args.lich,
+                    notifier=make_notifier(log=log))
     try:
         bridge.run()
     except KeyboardInterrupt:

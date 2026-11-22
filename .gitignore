@@ -1,6 +1,8 @@
 # ---- Bí mật: KHÔNG BAO GIỜ đẩy lên git
 firebase_bi_mat.json
 **/firebase_bi_mat.json
+telegram_bi_mat.json
+**/telegram_bi_mat.json
 .pi-access/
 *_ed25519
 *_ed25519.pub
@@ -29,6 +31,8 @@ Code_HopAp_Demo/logs/
 Code_HopAp_Demo/.venv/
 trang_thai_me_ap*.json
 do_am_moi_nhat.json
+nao_rl.json
+ket_qua_thu_nhieu.jsonl
 *.tmp
 
 # ---- App / Firebase CLI

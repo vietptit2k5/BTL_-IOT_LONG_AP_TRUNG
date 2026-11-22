@@ -72,7 +72,7 @@ Q1 bám nhiệt tốt nhất (MAE 0,057 °C) nhưng **đổi mức 88 lần mỗ
 | File | Phần cần đọc |
 |---|---|
 | [../Code_HopAp_Demo/thu_rl_du_lieu_moi.py](../Code_HopAp_Demo/thu_rl_du_lieu_moi.py) | `read_package` (kiểm tra gói), `NewPilot`: làm ấm, giao cho Q, phục hồi, bảo vệ |
-| [../Code_HopAp_Demo/ap_trung.py](../Code_HopAp_Demo/ap_trung.py) | `ApTrungPolicy`: **dịch mốc** `T' = T − (M − 37,5)` để dùng Q2 cho 37,8 / 37,5 / 37,2 °C; xử lý state chưa học; thermostat đối chứng |
+| [../Code_HopAp_Demo/ap_trung.py](../Code_HopAp_Demo/ap_trung.py) | `ApTrungPolicy`: **dịch mốc** `T' = T − (M − 37,5)` để dùng Q2 cho 37,8 / 37,5 / 37,2 °C; xử lý state chưa học; thermostat đối chứng; `decode_state` + `nao_rl.json` để app hiện "RL đang nghĩ gì" (trạng thái, 9 giá trị Q, hành động chọn) |
 | [../Code_HopAp_Demo/me_ap.py](../Code_HopAp_Demo/me_ap.py) | Lịch 21 ngày, tạm dừng lịch demo |
 | [../Code_HopAp_Demo/chinh_sach_nhiet.py](../Code_HopAp_Demo/chinh_sach_nhiet.py) | `SoftGuard` (bảo vệ mềm), `ReferenceController` (thermostat/PID dùng làm đối chứng) |
 

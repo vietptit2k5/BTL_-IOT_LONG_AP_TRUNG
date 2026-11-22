@@ -190,3 +190,90 @@ test('so sánh chỉ số 2 lượt', () => {
   assert.equal(by.lam_am_s.a, '--');
   assert.equal(L.compareMetrics({ mae_c: 0.1 }, null)[0].win, null);
 });
+
+test('phân quyền: chỉ xem / điều khiển', () => {
+  assert.equal(L.canControl('dieu_khien'), true);
+  assert.equal(L.canControl('xem'), false);
+  assert.equal(L.canControl(null), false);  // chưa đọc được quyền: chưa cho điều khiển
+  assert.equal(L.roleLabel('xem'), 'Chỉ xem');
+  assert.deepEqual(L.tabsFor('xem'), ['tong-quan', 'bieu-do', 'lich-su']);
+  assert.equal(L.tabFromHash('#/dieu-khien', L.tabsFor('xem')), 'tong-quan');
+  assert.equal(L.tabFromHash('#/dieu-khien', L.tabsFor('dieu_khien')), 'dieu-khien');
+});
+
+test('RL đang nghĩ gì: giải thích trạng thái và giá trị Q', () => {
+  const now = 1_000_000;
+  const nao = { ts: now - 3000, che_do: 'q', muc_tieu_c: 37.8, nhiet_c: 37.71, nhiet_dich_c: 37.41, dT5: -0.012,
+    state: 1234, chon: 3, ly_do: 'q_max', thanh_phan: { sai_so: 3, xu_huong: 1, nho_nhiet: 2, truoc: 5, bao_ve: 0 },
+    q: [1.2, 0.4, null, 2.5, 2.1, null, null, null, -0.3], so_lan: [10, 4, 0, 30, 22, 0, 0, 0, 2] };
+  const v = L.brainView(nao, true, now);
+  assert.equal(v.kind, 'q');
+  assert.equal(v.bars.length, 9);
+  assert.equal(v.bars[3].chosen && v.bars[3].best, true);
+  assert.equal(v.bars[3].width, 100);
+  assert.equal(v.bars[8].width, 10);
+  assert.equal(v.bars[2].known, false);
+  assert.match(v.text, /bóng 25 %, quạt 100 % vì có giá trị Q cao nhất \(2,50\) trong 5\/9/);
+  assert.match(v.shift, /37,71 − \(37,8 − 37,5\) = 37,41/);
+  assert.equal(v.chips[0].v, 'thấp hơn 0,08–0,2 °C');
+  assert.match(v.chips[1].v, /gần như đứng yên \(-0,012 °C\)/);
+  assert.equal(L.brainView(nao, false, now).kind, 'empty');
+  assert.equal(L.brainView({ ...nao, ts: now - 60000 }, true, now).kind, 'empty');
+  assert.equal(L.brainView({ ts: now, che_do: 'bao_ve' }, true, now).tone, 'bad');
+  assert.match(L.brainView({ ts: now, che_do: 'thermostat', chon: 1 }, true, now).text, /bóng 0 %, quạt 100 %/);
+  assert.match(L.brainView({ ...nao, ly_do: 'chua_hoc_lam_mat' }, true, now).text, /chưa gặp khi huấn luyện/);
+});
+
+test('thử nhiễu: tiến trình, kết quả, điều kiện, trung bình', () => {
+  const base = { kieu: 'lanh', muc_tieu_c: 37.5, nhiet_c: 37.31, bat_dau_ts: 1000, het_han_ts: 61000, bo_dieu_khien: 'Q-learning 3 giai đoạn' };
+  assert.match(L.testProgress({ ...base, trang_thai: 'DANG_NHIEU' }, 31000).text, /còn 0:30 · lệch hiện tại -0,19 °C/);
+  assert.match(L.testProgress({ ...base, trang_thai: 'DANG_PHUC_HOI', ve_vung_s: 22 }, 91000).text, /Hết nhiễu 0:30 trước: đã về vùng sau 0:22/);
+  const done = { ...base, trang_thai: 'XONG', ra_vung: true, ve_vung_s: 22, on_dinh_s: 30, lech_max_c: 0.31 };
+  assert.match(L.testResultText(done), /Về vùng sau 0:22, ổn định sau 0:30; lệch tối đa 0,31 °C/);
+  assert.match(L.testResultText({ ...done, ra_vung: false }), /không ra khỏi vùng/);
+  const list = L.testList({ a: done, b: { ...done, bat_dau_ts: 5000, trang_thai: 'DANG_NHIEU' } });
+  assert.equal(list[0].bat_dau_ts, 5000);
+  assert.equal(L.activeTest(list).trang_thai, 'DANG_NHIEU');
+  const live = { giai_doan: 'giu_nhiet', trong_vung: true };
+  const ok = { piOnline: true, running: true, live, active: null, manualActive: false, pending: false };
+  assert.equal(L.canDisturb(ok).ok, true);
+  assert.equal(L.canDisturb({ ...ok, live: { ...live, trong_vung: false } }).ok, false);
+  assert.equal(L.canDisturb({ ...ok, live: { giai_doan: 'tay', trong_vung: true } }).ok, false);
+  const sum = L.testSummary([done, { ...done, ve_vung_s: 40 }, { ...done, bo_dieu_khien: 'Thermostat 3 giai đoạn', ve_vung_s: 70 }]);
+  assert.deepEqual(sum.map((g) => [g.key, g.n, g.ve]), [['Q-learning 3 giai đoạn · nhiễu lạnh', 2, 31], ['Thermostat 3 giai đoạn · nhiễu lạnh', 1, 70]]);
+  assert.match(L.commandStatus({ da_xu_ly: true, ket_qua: 'DANG_THU_NHIEU', xu_ly_ts: 1 }).text, /bắt đầu thử nhiễu/);
+});
+
+test('sức khỏe thiết bị', () => {
+  const now = 10_000_000;
+  const sk = { ts: now - 5000, cpu_c: 74.2, nguon: { yeu_hien_tai: false, tung_yeu: true, ma: '0x50000' }, wifi_dbm: -58,
+    ip: '192.168.0.172', ram_dung_pct: 41.3, the_nho_trong_gb: 18.2, uptime_s: 93784, tai_1phut: 0.31,
+    ds18b20: { doc: 200, loi: 1, ty_le_ok_pct: 99.5, dang_chay: true }, telegram: { bat: true, so_chat: 2, lan_cuoi_ok_ts: now - 120000 },
+    bridge: '1.6', bridge_chay_s: 3600, may: 'pi' };
+  const v = L.healthView(sk, { ty_le_ok_pct: 62 }, now);
+  const by = Object.fromEntries(v.items.map((i) => [i.k, i]));
+  assert.equal(by['Nhiệt CPU Pi'].tone, 'warn');
+  assert.equal(by['Nguồn điện Pi'].v, 'Từng sụt áp');
+  assert.equal(by['Wi-Fi'].v, '-58 dBm · mạnh');
+  assert.equal(by['Pi chạy liên tục'].v, '1 ngày 2 giờ');
+  assert.equal(by['DS18B20 (nhiệt)'].tone, 'ok');
+  assert.equal(by['DHT11 (độ ẩm)'].tone, 'warn');
+  assert.match(by.Telegram.hint, /2 phút trước/);
+  assert.equal(v.badge, 'Cần chú ý');
+  assert.equal(L.healthView({ ...sk, nguon: { yeu_hien_tai: true } }, null, now).badge, 'Có vấn đề');
+  assert.equal(L.healthView({ ...sk, ts: now - 200000 }, null, now).stale, true);
+  assert.equal(L.wifiQuality(-85).tone, 'bad');
+  assert.equal(L.fmtUptime(3000), '50 phút');
+});
+
+test('xuất CSV lượt chạy', () => {
+  const csv = L.sessionCsv({ bat_dau_ts: Date.UTC(2026, 10, 22, 7, 0, 0) },
+    { '000005': { t: 5, T: 37.51, RH: 58, L: 50, F: 100, g: 'giu_nhiet', n: 12, k: 2 }, '000000': { t: 0, T: 30.1, L: 75, F: 100, g: 'lam_am' } });
+  const lines = csv.replace('\ufeff', '').trim().split('\r\n');
+  assert.equal(csv[0], '\ufeff');
+  assert.equal(lines[0], 'thoi_gian_utc,giay_tu_dau,nhiet_c,do_am_pct,bong_pct,quat_pct,giai_doan,ngay_ap,giai_doan_ap');
+  assert.equal(lines[1], '2026-11-22T07:00:00.000Z,0,30.1,,75,100,lam_am,,');
+  assert.equal(lines[2], '2026-11-22T07:00:05.000Z,5,37.51,58,50,100,giu_nhiet,12,2');
+  assert.equal(L.csvFileName('20261122_070000_rl'), 'hop_ap_20261122_070000_rl_mau5s.csv');
+  assert.equal(L.csvFileName('a/b c'), 'hop_ap_a_b_c_mau5s.csv');
+});

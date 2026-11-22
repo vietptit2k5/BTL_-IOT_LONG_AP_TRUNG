@@ -21,6 +21,7 @@ from datetime import datetime, timezone
 import hashlib
 import json
 import math
+import os
 from pathlib import Path
 import sys
 import time
@@ -46,6 +47,16 @@ WARM = (75, 100)
 # Chỉnh tay từ app: chỉ các cặp (bóng, quạt) đã khảo sát = 9 hành động của Q-table; bóng bật thì quạt không tắt.
 MANUAL_PAIRS = {(round(h * 100), round(f * 100)) for h, f in ACTIONS}
 TAY_FILE = Path(__file__).with_name('lenh_tay.json')
+NAO_FILE = Path(__file__).with_name('nao_rl.json')  # "RL đang nghĩ gì": bridge đọc và đưa lên app.
+
+
+def decode_state(state):
+    """Ngược của rl_vung_on_dinh.state_id: các thành phần của trạng thái Q2 (để giải thích trên app)."""
+    guard, state = state % 2, state // 2
+    previous, state = state % 9, state // 9
+    stored, state = state % 5, state // 5
+    trend, error_bin = state % 3, state // 3
+    return {'sai_so': error_bin, 'xu_huong': trend, 'nho_nhiet': stored, 'truoc': previous, 'bao_ve': guard}
 
 
 def phase_name(info, suffix=''):
@@ -56,7 +67,7 @@ class ApTrungPolicy:
     """Policy cho do_nhiet_hop.main(control_policy=...). now là đồng hồ đơn điệu; lịch dùng giờ thật."""
 
     def __init__(self, package, minutes=30, lich_path=me_ap.MAC_DINH, wall_clock=time.time,
-                 check_start_temperature=True, controller='rl', tay_path=TAY_FILE):
+                 check_start_temperature=True, controller='rl', tay_path=TAY_FILE, nao_path=None):
         if not 1 <= minutes <= MAX_MINUTES:
             raise ValueError(f'--phut phải trong 1–{MAX_MINUTES}.')
         if controller not in CONTROLLERS:
@@ -71,6 +82,8 @@ class ApTrungPolicy:
             self.thermostat = ReferenceController(config['configuration'], Q_CENTER, ACTIONS)
         self.package, self.minutes, self.lich_path, self.wall = package, minutes, Path(lich_path), wall_clock
         self.tay_path, self.manual_active = Path(tay_path), False
+        self.nao_path = None if nao_path is None else Path(nao_path)  # None: không ghi (mô phỏng, kiểm thử)
+        self._nao_mode = self._nao_at = None
         self.created_wall = wall_clock()  # Lệnh tay ghi trước lượt này (lượt cũ) thì bỏ qua.
         self.check_start = check_start_temperature
         self.model = package['model']
@@ -160,6 +173,7 @@ class ApTrungPolicy:
                 raise ValueError(f'Hết {WARM_LIMIT_S}s làm ấm mà chưa tới {target - WARM_HANDOVER_BELOW:.1f} °C; dừng.')
             self._track_trend(reading)
             if self.guard.active or t < target - WARM_HANDOVER_BELOW:
+                self._think(now, 'lam_am', nhiet_c=round(t, 3))
                 return core.AutoDecision('lam_am_ap', 0 if self.guard.active else WARM[0], WARM[1],
                                          f'Làm ấm tới {target - WARM_HANDOVER_BELOW:.1f} °C; {me_ap.describe(self.info)}')
             self.hold_started = now
@@ -172,6 +186,7 @@ class ApTrungPolicy:
             return None
         if self.guard.active:
             self.recovery_started, self.last_control = None, None
+            self._think(now, 'bao_ve', nhiet_c=round(t, 3))
             return core.AutoDecision(phase_name(self.info, '_bao_ve'), 0, 100,
                                      f'Ngắt mềm {me_ap.NGAT_MEM_C}→{me_ap.BAT_LAI_C} °C (cố định, không theo ngày).')
         if was_guard:
@@ -183,6 +198,7 @@ class ApTrungPolicy:
                 self.stats['chinh_tay'] = self.stats.get('chinh_tay', 0) + 1
             self.manual_active, self.recovery_started, self.last_control = True, None, None
             self._track_trend(reading)
+            self._think(now, 'tay', nhiet_c=round(t, 3), bong=lamp, quat=fan, con_lai_s=round(remaining), boi=who)
             return core.AutoDecision(phase_name(self.info, '_tay'), lamp, fan,
                                      f'Chỉnh tay ({who}): bóng {lamp} %, quạt {fan} %, còn {remaining:.0f} s; '
                                      f'{me_ap.describe(self.info)}')
@@ -209,6 +225,24 @@ class ApTrungPolicy:
             return None
         return lamp, fan, remaining, str(data.get('by', '?'))[:60]
 
+    def _think(self, now, mode, **extra):
+        """Ghi nao_rl.json (nguyên khối). Chế độ không phải quyết định Q/thermostat: tối đa mỗi 5 s một lần."""
+        if self.nao_path is None:
+            return
+        if (mode == self._nao_mode and mode not in ('q', 'thermostat') and self._nao_at is not None
+                and now - self._nao_at < CONTROL_PERIOD_S):
+            return
+        data = {'ts': int(self.wall() * 1000), 'che_do': mode, 'bo_dieu_khien': self.controller,
+                'muc_tieu_c': self.info['muc_tieu_c'], 'vung_c': list(self.info['vung_c']), 'ngay': self.info['ngay'],
+                'giai_doan': self.info['giai_doan'], **extra}
+        try:
+            temp = self.nao_path.with_suffix('.tmp')
+            temp.write_text(json.dumps(data, ensure_ascii=False), encoding='utf-8')
+            os.replace(temp, self.nao_path)
+        except OSError:
+            return  # Không bao giờ để việc hiển thị làm hỏng vòng điều khiển.
+        self._nao_mode, self._nao_at = mode, now
+
     def _track_trend(self, reading):
         if self.sample_at is None or reading.at - self.sample_at >= CONTROL_PERIOD_S:
             self.sample_at, self.sample_temperature = reading.at, reading.temperature
@@ -216,9 +250,11 @@ class ApTrungPolicy:
     def _thermostat_decision(self, now, reading, t, target):
         d = self._delta(reading, t)
         self.thermostat.target = target
-        heat, fan = ACTIONS[self.thermostat.select(t, d)]
+        action = self.thermostat.select(t, d)
+        heat, fan = ACTIONS[action]
         self.last_control, self.sample_at, self.sample_temperature = now, reading.at, t
         self.stats['quyet_dinh'] += 1
+        self._think(now, 'thermostat', nhiet_c=round(t, 3), dT5=round(d, 4), chon=action)
         return core.AutoDecision(phase_name(self.info), heat * 100, fan * 100,
                                  f'Thermostat ±0,1 °C quanh mốc {target:.1f} °C; dT5={d:+.3f}; {me_ap.describe(self.info)}')
 
@@ -250,6 +286,11 @@ class ApTrungPolicy:
         self.last_control, self.sample_at, self.sample_temperature = now, reading.at, t
         self.stats['quyet_dinh'] += 1
         self.states.add(state)
+        q_row, visits = self.package['policy']['q'][state], self.package['policy']['visits'][state]
+        self._think(now, 'q', nhiet_c=round(t, 3), nhiet_dich_c=round(shifted, 3), dT5=round(d, 4), state=state,
+                    thanh_phan=decode_state(state), chon=action, ly_do='q_max' if seen else 'chua_hoc_lam_mat',
+                    q=[round(float(q_row[i]), 4) if visits[i] > 0 else None for i in range(len(ACTIONS))],
+                    so_lan=[int(v) for v in visits])
         return core.AutoDecision(phase_name(info), heat * 100, fan * 100, note)
 
     def _recover(self, now, reading, target, force=False):
@@ -265,6 +306,7 @@ class ApTrungPolicy:
             self.recovery_started = None
         self._track_trend(reading)
         self.last_control = None if not force else now
+        self._think(now, 'phuc_hoi', nhiet_c=round(reading.temperature, 3))
         return core.AutoDecision(phase_name(self.info, '_phuc_hoi'), WARM[0], WARM[1],
                                  f'Làm ấm phục hồi tới {target - RECOVERY_EXIT_BELOW:.1f} °C; {me_ap.describe(self.info)}')
 
@@ -301,7 +343,7 @@ def main(argv=None):
     args = parser.parse_args(argv)
     data = read_package(Path(__file__).with_name('goi_rl_moi_20261120.json'))
     try:
-        policy = ApTrungPolicy(data, args.phut, args.lich, controller=args.bo_dieu_khien)
+        policy = ApTrungPolicy(data, args.phut, args.lich, controller=args.bo_dieu_khien, nao_path=NAO_FILE)
     except me_ap.LichError as exc:
         print(f'LỖI: {exc}', file=sys.stderr)
         return 1

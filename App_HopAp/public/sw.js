@@ -1,6 +1,6 @@
 // Service worker: cho phép "Thêm vào màn hình chính" và mở vỏ app khi mạng chập chờn.
 // Dữ liệu Firebase luôn lấy trực tiếp (không cache) để không hiển thị số đo cũ như số mới.
-const CACHE = 'hop-ap-v12';
+const CACHE = 'hop-ap-v15';
 const SHELL = ['./', 'index.html', 'styles.css', 'app.js', 'logic.js', 'firebase-config.js',
   'manifest.webmanifest', 'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png'];
 

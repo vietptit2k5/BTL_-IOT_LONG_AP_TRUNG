@@ -360,7 +360,13 @@ table.metrics { width: 100%; border-collapse: collapse; font-size: 0.88rem; font
 .pop-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; border-top: 1px solid var(--border); margin-top: 8px; padding-top: 8px; }
 
 .menu-panel { width: min(300px, calc(100vw - 24px)); gap: 4px; }
-.user-email { font-weight: 650; overflow-wrap: anywhere; margin-bottom: 8px; }
+.user-email { font-weight: 650; overflow-wrap: anywhere; margin-bottom: 6px; }
+.role-line { margin-bottom: 4px; }
+.uid-line { margin-bottom: 8px; overflow-wrap: anywhere; }
+.uid-line code { font-size: 0.95em; user-select: all; }
+/* Tài khoản chỉ xem: ẩn mọi lối vào điều khiển (quy tắc Firebase vẫn chặn nếu ai đó gửi lệnh trực tiếp). */
+body.viewer .control-only { display: none !important; }
+body.viewer .tabs { grid-template-columns: repeat(3, 1fr); }
 .menu-item { display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px; border: 0; border-radius: 10px; background: none; cursor: pointer; text-align: left; }
 .menu-item:hover { background: var(--surface-2); }
 .menu-item svg { width: 18px; height: 18px; }
@@ -428,6 +434,7 @@ table.metrics { width: 100%; border-collapse: collapse; font-size: 0.88rem; font
   .view.overview { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
   .view.control { grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); }
   .view.history { grid-template-columns: minmax(320px, 0.9fr) minmax(0, 1.3fr); }
+  .view.history .thu-card { grid-column: 1 / -1; }
 }
 
 @media (max-width: 480px) {
@@ -436,6 +443,51 @@ table.metrics { width: 100%; border-collapse: collapse; font-size: 0.88rem; font
   #conn { max-width: 104px; overflow: hidden; text-overflow: ellipsis; }
   .card { padding: 14px; }
 }
+
+/* ------------------------------------------------------------------ RL đang nghĩ gì */
+.brain-text { font-size: 0.92rem; margin-bottom: 4px; }
+.brain-chips { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 10px 0 0; }
+.brain-chips div { background: var(--surface-2); border-radius: 10px; padding: 8px 10px; min-width: 0; }
+.brain-chips dt { color: var(--muted); font-size: 0.72rem; }
+.brain-chips dd { margin: 2px 0 0; font-size: 0.86rem; font-weight: 650; overflow-wrap: anywhere; }
+.brain-bars { display: grid; gap: 5px; margin-bottom: 8px; }
+.qbar { display: grid; grid-template-columns: 58px minmax(0, 1fr) 62px; gap: 8px; align-items: center; font-size: 0.8rem; font-variant-numeric: tabular-nums; }
+.qbar .lab { color: var(--muted); }
+.qbar .track { height: 14px; border-radius: 4px; background: var(--surface-2); overflow: hidden; }
+.qbar .fill { display: block; height: 100%; border-radius: 4px; background: color-mix(in srgb, var(--chart-fan) 55%, var(--surface-2)); transition: width 0.4s ease; }
+.qbar .val { text-align: right; }
+.qbar.unknown .val { color: var(--muted); font-style: italic; }
+.qbar.chosen .lab, .qbar.chosen .val { color: var(--accent); font-weight: 750; }
+.qbar.chosen .fill { background: var(--accent); }
+.qbar.chosen .track { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+/* ------------------------------------------------------------------ thiết bị */
+.health-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 0 0 8px; }
+.health-list div { position: relative; background: var(--surface-2); border-radius: 10px; padding: 8px 10px 8px 22px; min-width: 0; }
+.health-list div::before { content: ""; position: absolute; left: 9px; top: 13px; width: 7px; height: 7px; border-radius: 50%; background: var(--muted); }
+.health-list div.h-ok::before { background: var(--ok); }
+.health-list div.h-warn::before { background: var(--warn); }
+.health-list div.h-bad::before { background: var(--bad); }
+.health-list dt { color: var(--muted); font-size: 0.72rem; }
+.health-list dd { margin: 1px 0 0; font-size: 0.86rem; font-weight: 650; overflow-wrap: anywhere; }
+.health-list .hint { display: block; font-size: 0.7rem; color: var(--muted); font-weight: 400; margin-top: 1px; }
+.health-list div.h-bad dd { color: var(--bad); }
+.health-list div.h-warn dd { color: var(--warn); }
+
+/* ------------------------------------------------------------------ lịch sử: hàng lượt + nút tải */
+.run-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px; align-items: stretch; }
+.dl-btn { width: 46px; border: 1.5px solid var(--border); border-radius: 12px; background: var(--surface-2); color: var(--text); cursor: pointer; display: grid; place-items: center; }
+.dl-btn svg { width: 18px; height: 18px; }
+.dl-btn:hover { border-color: var(--accent); color: var(--accent); }
+.dl-btn:disabled { opacity: 0.5; cursor: progress; }
+
+/* ------------------------------------------------------------------ thử nhiễu */
+.thu-summary { display: grid; gap: 8px; margin-bottom: 10px; }
+.thu-summary .row { display: flex; justify-content: space-between; gap: 10px; padding: 9px 12px; border-radius: 10px; background: var(--surface-2); font-size: 0.86rem; }
+.thu-summary .row b { font-variant-numeric: tabular-nums; }
+.thu-table td:nth-child(2), .thu-table th:nth-child(2) { text-align: left; color: var(--text); }
+.thu-table td:first-child, .thu-table th:first-child { white-space: nowrap; }
+.thu-table .note { display: block; font-size: 0.74rem; color: var(--muted); }
 
 /* Chưa có số đo: ẩn khung đồ thị, chỉ hiện lời nhắn. */
 .chart-card.is-empty .chart-box, .chart-card.is-empty .chart-sub, .chart-card.is-empty .legend,

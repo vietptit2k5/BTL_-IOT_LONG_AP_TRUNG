@@ -1,5 +1,11 @@
 {
   "rules": {
+    "quyen": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": false
+      }
+    },
     "hop_ap_01": {
       ".read": "auth != null",
       "live": {
@@ -16,25 +22,38 @@
       },
       "commands": {
         "stop": {
-          ".write": "auth != null",
+          ".write": "auth != null && (auth.uid === 'zxm5m1NT0jcpR9ndrtuVx8g5gWA3' || root.child('quyen').child(auth.uid).val() === 'dieu_khien')",
           ".validate": "newData.hasChildren(['value','ts','by']) && newData.child('value').isBoolean() && newData.child('ts').isNumber() && newData.child('by').val() === auth.token.email"
         },
         "ngay_ap": {
-          ".write": "auth != null",
+          ".write": "auth != null && (auth.uid === 'zxm5m1NT0jcpR9ndrtuVx8g5gWA3' || root.child('quyen').child(auth.uid).val() === 'dieu_khien')",
           ".validate": "newData.hasChildren(['ngay','ts','by']) && newData.child('ngay').isNumber() && newData.child('ngay').val() >= 1 && newData.child('ngay').val() <= 21 && newData.child('ts').isNumber() && newData.child('by').val() === auth.token.email"
         },
         "me_ap": {
-          ".write": "auth != null",
+          ".write": "auth != null && (auth.uid === 'zxm5m1NT0jcpR9ndrtuVx8g5gWA3' || root.child('quyen').child(auth.uid).val() === 'dieu_khien')",
           ".validate": "newData.hasChildren(['hanh_dong','ts','by']) && newData.child('ts').isNumber() && newData.child('by').val() === auth.token.email && (newData.child('hanh_dong').val() === 'ket_thuc' || (newData.child('hanh_dong').val() === 'tao' && newData.child('ngay').isNumber() && newData.child('ngay').val() >= 1 && newData.child('ngay').val() <= 21 && (newData.child('giay_moi_ngay').val() === 86400 || newData.child('giay_moi_ngay').val() === 300 || newData.child('giay_moi_ngay').val() === 120 || newData.child('giay_moi_ngay').val() === 60)))"
         },
         "luot": {
-          ".write": "auth != null",
+          ".write": "auth != null && (auth.uid === 'zxm5m1NT0jcpR9ndrtuVx8g5gWA3' || root.child('quyen').child(auth.uid).val() === 'dieu_khien')",
           ".validate": "newData.hasChildren(['hanh_dong','bo_dieu_khien','phut','co_nguoi','ts','by']) && newData.child('ts').isNumber() && newData.child('by').val() === auth.token.email && newData.child('hanh_dong').val() === 'bat_dau' && (newData.child('bo_dieu_khien').val() === 'rl' || newData.child('bo_dieu_khien').val() === 'thermostat') && (newData.child('phut').val() === 10 || newData.child('phut').val() === 20 || newData.child('phut').val() === 30 || newData.child('phut').val() === 45 || newData.child('phut').val() === 60) && newData.child('co_nguoi').val() === true"
         },
+        "thu_nhieu": {
+          ".write": "auth != null && (auth.uid === 'zxm5m1NT0jcpR9ndrtuVx8g5gWA3' || root.child('quyen').child(auth.uid).val() === 'dieu_khien')",
+          ".validate": "newData.hasChildren(['hanh_dong','ts','by']) && newData.child('ts').isNumber() && newData.child('by').val() === auth.token.email && (newData.child('hanh_dong').val() === 'huy' || (newData.child('hanh_dong').val() === 'bat_dau' && (newData.child('kieu').val() === 'lanh' || newData.child('kieu').val() === 'nong') && (newData.child('thoi_han_s').val() === 60 || newData.child('thoi_han_s').val() === 120)))"
+        },
         "tay": {
-          ".write": "auth != null",
+          ".write": "auth != null && (auth.uid === 'zxm5m1NT0jcpR9ndrtuVx8g5gWA3' || root.child('quyen').child(auth.uid).val() === 'dieu_khien')",
           ".validate": "newData.hasChildren(['hanh_dong','ts','by']) && newData.child('ts').isNumber() && newData.child('by').val() === auth.token.email && (newData.child('hanh_dong').val() === 'tra_ve' || (newData.child('hanh_dong').val() === 'dat' && (newData.child('bong').val() === 0 || newData.child('bong').val() === 25 || newData.child('bong').val() === 50 || newData.child('bong').val() === 75 || newData.child('bong').val() === 100) && (newData.child('quat').val() === 75 || newData.child('quat').val() === 100) && !(newData.child('bong').val() === 100 && newData.child('quat').val() === 100) && (newData.child('thoi_han_s').val() === 60 || newData.child('thoi_han_s').val() === 120 || newData.child('thoi_han_s').val() === 300)))"
         }
+      },
+      "suc_khoe": {
+        ".write": "auth != null && auth.uid === 'zxm5m1NT0jcpR9ndrtuVx8g5gWA3'"
+      },
+      "nao_rl": {
+        ".write": "auth != null && auth.uid === 'zxm5m1NT0jcpR9ndrtuVx8g5gWA3'"
+      },
+      "thu_nhieu": {
+        ".write": "auth != null && auth.uid === 'zxm5m1NT0jcpR9ndrtuVx8g5gWA3'"
       },
       "lich": {
         ".write": "auth != null && auth.uid === 'zxm5m1NT0jcpR9ndrtuVx8g5gWA3'"

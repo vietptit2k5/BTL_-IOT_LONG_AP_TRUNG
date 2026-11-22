@@ -38,8 +38,10 @@ const state = {
   unsubs: [], samplesUnsub: null,
   lich: null, dayCmd: null, dayInputTouched: false, doAm: null,
   batchCmd: null, runCmd: null, tayCmd: null,
-  tab: null, scrollTo: null,
+  tab: null, scrollTo: null, role: null, roleUnsub: null,
+  nao: null, thuCmd: null, tests: [], health: null,
 };
+const controller = () => L.canControl(state.role);
 const serverNow = () => Date.now() + state.offset;
 const hasBatch = () => !!state.lich && state.lich.co_me === true;
 const connection = () => L.connectionState(state.bridge, state.live, serverNow());
@@ -159,7 +161,7 @@ function showTab(tab) {
   if (target) requestAnimationFrame(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }));
   else if (changed) window.scrollTo(0, 0);
 }
-const route = () => showTab(L.tabFromHash(location.hash));
+const route = () => showTab(L.tabFromHash(location.hash, L.tabsFor(state.role)));
 window.addEventListener('hashchange', route);
 document.addEventListener('click', (event) => {
   const link = event.target.closest('a[href^="#/"]');
@@ -220,8 +222,10 @@ onAuthStateChanged(auth, (user) => {
   $('app-view').hidden = !signedIn;
   ['tabs', 'bell-wrap', 'menu-wrap'].forEach((id) => { $(id).hidden = !signedIn; });
   $('user-email').textContent = user ? user.email : '--';
+  $('user-uid').textContent = user ? user.uid : '--';
   closePops();
   stopListening();
+  watchRole(user);
   if (signedIn) {
     $('password').value = '';
     route();
@@ -233,6 +237,27 @@ onAuthStateChanged(auth, (user) => {
     setChip('Chưa đăng nhập', 'idle');
   }
 });
+
+// ------------------------------------------------------------------ phân quyền (chỉ xem / điều khiển)
+function applyRole(role) {
+  state.role = role;
+  document.body.classList.toggle('viewer', !controller());
+  $('role').textContent = `Quyền: ${L.roleLabel(role)}`;
+  $('role').className = `badge ${controller() ? 'ok' : 'idle'}`;
+  route();  // tài khoản chỉ xem đang ở #/dieu-khien thì về Tổng quan
+  if (state.unsubs.length) renderStatus();
+}
+
+function watchRole(user) {
+  if (state.roleUnsub) state.roleUnsub();
+  state.roleUnsub = null;
+  applyRole(user ? null : 'xem');
+  if (!user) return;
+  // Đọc quyen/<uid> của chính mình; lỗi hoặc không có thì coi là chỉ xem.
+  state.roleUnsub = onValue(ref(db, `quyen/${user.uid}`),
+    (snap) => applyRole(snap.val() === 'dieu_khien' ? 'dieu_khien' : 'xem'),
+    () => applyRole('xem'));
+}
 
 // ------------------------------------------------------------------ đăng ký nghe dữ liệu
 function listen(path, cb, q) {
@@ -254,6 +279,11 @@ function startListening() {
   listen(`${ROOT}/commands/me_ap`, (v) => { state.batchCmd = v; renderControls(); });
   listen(`${ROOT}/commands/luot`, (v) => { state.runCmd = v; renderControls(); });
   listen(`${ROOT}/commands/tay`, (v) => { state.tayCmd = v; renderControls(); });
+  listen(`${ROOT}/commands/thu_nhieu`, (v) => { state.thuCmd = v; renderControls(); });
+  listen(`${ROOT}/nao_rl`, (v) => { state.nao = v; renderBrain(); });
+  listen(`${ROOT}/suc_khoe`, (v) => { state.health = v; renderHealth(); });
+  listen(`${ROOT}/thu_nhieu`, (v) => { state.tests = L.testList(v); renderTests(); renderControls(); },
+    query(ref(db, `${ROOT}/thu_nhieu`), orderByKey(), limitToLast(30)));
   listen(`${ROOT}/alerts`, renderAlerts, query(ref(db, `${ROOT}/alerts`), orderByKey(), limitToLast(30)));
   listen(`${ROOT}/sessions`, (v) => { state.sessions = v; renderHistory(); });
 }
@@ -302,7 +332,7 @@ function renderStatus() {
   $('hero-detail').textContent = h.detail;
   $('hero-dot').className = `dot ${h.tone}${c.running ? ' pulse' : ''}`;
   const cta = $('hero-cta');
-  cta.hidden = c.running || !c.piOnline;
+  cta.hidden = c.running || !c.piOnline || !controller();
   cta.textContent = hasBatch() ? 'Bắt đầu lượt' : 'Tạo mẻ ấp';
   cta.dataset.scroll = hasBatch() ? 'card-luot' : 'card-me';
   const live = state.live;
@@ -310,6 +340,8 @@ function renderStatus() {
     ? `Số đo lúc ${L.fmtClock(live.ts)} · ${L.ago(live.ts, serverNow())}${c.running ? '' : ' · không có lượt đang chạy'}`
     : 'Chưa có số đo';
   $('hero').classList.toggle('stale', !c.running);
+  renderBrain();
+  renderHealth();
   document.querySelector('.view.overview').classList.toggle('stale', !c.running);
   renderControls();
 }
@@ -546,6 +578,7 @@ function twoStep(btn, idleText, confirmText, statusEl, action) {
       return;
     }
     reset();
+    if (!controller()) return;  // phòng hờ: tài khoản chỉ xem không gửi lệnh (Firebase cũng chặn)
     btn.disabled = true;
     try {
       await action();
@@ -651,6 +684,7 @@ const resetTay = twoStep($('tay-apply'), 'Áp dụng chỉnh tay',
   $('tay-status'),
   () => { const p = tayPick(); return sendCommand('tay', { hanh_dong: 'dat', bong: p.lamp, quat: p.fan, thoi_han_s: p.seconds }); });
 $('tay-return').addEventListener('click', async () => {
+  if (!controller()) return;
   $('tay-return').disabled = true;
   try {
     await sendCommand('tay', { hanh_dong: 'tra_ve' });
@@ -690,7 +724,7 @@ function renderStop(c) {
   const s = L.stopStatus(state.stopCmd);
   const live = state.live || {};
   $('stop-status').textContent = state.stopCmd && (s.pending || state.stopCmd.ket_qua) ? `Dừng khẩn cấp: ${s.text}` : '';
-  const show = c.running || s.pending;
+  const show = (c.running || s.pending) && controller();  // tài khoản chỉ xem: không có nút dừng
   $('stopbar').hidden = !show;
   document.body.classList.toggle('has-stopbar', show);
   $('stopbar-text').textContent = s.pending ? 'Đã gửi lệnh dừng, chờ Pi…'
@@ -700,11 +734,120 @@ function renderStop(c) {
   if (!allowed) resetStop();
 }
 
+// ---- thử nhiễu
+const resetThu = twoStep($('thu-start'), 'Bắt đầu thử nhiễu',
+  () => `Bấm lần nữa: ${L.THU_KIEU[pick('thu-kieu')]} trong ${Number(pick('thu-han')) / 60} phút`, $('thu-status'),
+  () => sendCommand('thu_nhieu', { hanh_dong: 'bat_dau', kieu: pick('thu-kieu'), thoi_han_s: Number(pick('thu-han')) }));
+$('thu-cancel').addEventListener('click', async () => {
+  if (!controller()) return;
+  $('thu-cancel').disabled = true;
+  try {
+    await sendCommand('thu_nhieu', { hanh_dong: 'huy' });
+  } catch (error) {
+    $('thu-status').textContent = `Không gửi được: ${error.code || error.message}`;
+  }
+  renderControls();
+});
+
+function renderDisturbance(c) {
+  const cmd = L.commandStatus(state.thuCmd, '');
+  const active = L.activeTest(state.tests);
+  const gate = L.canDisturb({ piOnline: c.piOnline, running: c.running, live: state.live, active,
+    manualActive: L.manualState(state.tayCmd, serverNow()).active, pending: cmd.pending });
+  renderChecks($('thu-checks'), gate.checks);
+  $('thu-start').disabled = !gate.ok;
+  if (!gate.ok) resetThu();
+  $('thu-cancel').disabled = !(active && c.piOnline && !cmd.pending);
+  const prog = L.testProgress(active || state.tests[0], serverNow());
+  $('thu-progress').textContent = prog.text;
+  $('thu-progress').className = `banner ${prog.tone}`;
+  $('thu-status').textContent = cmd.text;
+  $('thu-status').className = toneClass(cmd.tone);
+  $('thu-banner').hidden = !active;
+  if (active) $('thu-banner-text').textContent = prog.text;
+}
+
+function renderTests() {
+  const list = state.tests;
+  $('thu-count').textContent = list.length ? `${list.length} lần` : '';
+  $('thu-empty').hidden = list.length > 0;
+  $('thu-table-wrap').hidden = list.length === 0;
+  const sum = $('thu-summary');
+  sum.replaceChildren(...L.testSummary(list).map((g) => {
+    const row = make('div', 'row');
+    row.append(make('span', '', `${g.key} (${g.n} lần)`),
+      make('b', '', `về vùng TB ${L.fmtDuration(g.ve)} · ổn định ${L.fmtDuration(g.on)} · lệch ${L.fmtNum(g.lech, 2, ' °C')}`));
+    return row;
+  }));
+  const tbody = $('thu-rows');
+  tbody.replaceChildren();
+  for (const t of list) {
+    const tr = tbody.insertRow();
+    tr.insertCell().textContent = L.fmtDateTime(t.bat_dau_ts);
+    const who = tr.insertCell();
+    who.append(document.createTextNode(`${t.bo_dieu_khien || '?'}`),
+      make('span', 'note', `${L.THU_KIEU[t.kieu] || t.kieu}, ${t.thoi_han_s / 60} phút${t.bao_ve ? ' · có bảo vệ' : ''}`));
+    const done = t.trang_thai === 'XONG';
+    if (done && t.ra_vung) {
+      tr.insertCell().textContent = L.fmtDuration(t.ve_vung_s);
+      tr.insertCell().textContent = L.fmtDuration(t.on_dinh_s);
+    } else {
+      const cell = tr.insertCell();
+      cell.colSpan = 2;
+      cell.textContent = L.THU_ACTIVE.includes(t.trang_thai) ? 'đang chạy…' : L.testResultText(t).split(';')[0];
+    }
+    tr.insertCell().textContent = L.fmtNum(t.lech_max_c, 2, ' °C');
+  }
+}
+
+// ---- sức khỏe thiết bị
+function renderHealth() {
+  const v = L.healthView(state.health, state.doAm, serverNow());
+  $('health-badge').textContent = v.badge;
+  $('health-badge').className = `badge ${v.tone}`;
+  $('health-note').textContent = v.note;
+  $('health-list').replaceChildren(...v.items.map((i) => {
+    const d = make('div', `h-${i.tone}`);  // không dùng .ok/.warn chung: chúng tô cả nền và chữ
+    const dd = make('dd', '', i.v);
+    if (i.hint) dd.append(make('span', 'hint', i.hint));
+    d.append(make('dt', '', i.k), dd);
+    return d;
+  }));
+}
+
+// ---- RL đang nghĩ gì
+function renderBrain() {
+  const v = L.brainView(state.nao, connection().running, serverNow());
+  $('brain-badge').textContent = v.badge;
+  $('brain-badge').className = `badge ${v.tone}`;
+  $('brain-text').textContent = v.text;
+  $('brain-detail').hidden = v.kind !== 'q';
+  if (v.kind !== 'q') return;
+  $('brain-chips').replaceChildren(...v.chips.map((ch) => {
+    const d = make('div');
+    d.append(make('dt', '', ch.k), make('dd', '', ch.v));
+    return d;
+  }));
+  $('brain-bars').replaceChildren(...v.bars.map((b) => {
+    const row = make('div', `qbar${b.chosen ? ' chosen' : ''}${b.known ? '' : ' unknown'}`);
+    row.setAttribute('role', 'listitem');
+    row.title = `${b.title}${b.visits != null ? ` · đã thử ${b.visits} lần khi huấn luyện` : ''}`;
+    const track = make('span', 'track');
+    const fill = make('span', 'fill');
+    fill.style.width = `${b.width}%`;
+    track.append(fill);
+    row.append(make('span', 'lab', b.label), track, make('span', 'val', b.chosen ? `${b.value} ✓` : b.value));
+    return row;
+  }));
+  $('brain-shift').textContent = v.shift;
+}
+
 function renderControls() {
   const c = connection();
   renderBatchAndDay(c);
   renderRun(c);
   renderManual(c);
+  renderDisturbance(c);
   renderStop(c);
 }
 
@@ -752,11 +895,46 @@ function renderHistory() {
     btn.append(make('span', 'pick'), main, nums);
     btn.title = 'Chọn để so sánh';
     btn.addEventListener('click', () => toggleSelect(r.id, idx < 0));
-    list.append(btn);
+    const dl = make('button', 'dl-btn');
+    dl.type = 'button';
+    dl.setAttribute('aria-label', `Tải CSV lượt ${r.meta.bo_dieu_khien || r.id} ${L.fmtDateTime(r.meta.bat_dau_ts)}`);
+    dl.title = 'Tải CSV (mẫu 5 giây)';
+    dl.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>';
+    dl.addEventListener('click', () => downloadRun(r.id, dl));
+    const rowEl = make('div', 'run-row');
+    rowEl.append(btn, dl);
+    list.append(rowEl);
   }
 }
 
 $('show-replay').addEventListener('change', () => { state.historySig = ''; renderHistory(); });
+
+/** Tải mẫu 5 s của một lượt từ Firebase rồi lưu thành file CSV trên máy đang xem. */
+async function downloadRun(sid, btn) {
+  const status = $('history-status');
+  btn.disabled = true;
+  status.textContent = 'Đang tải dữ liệu…';
+  status.className = 'status';
+  try {
+    const snap = await get(ref(db, `${ROOT}/sessions/${sid}/samples`));
+    const meta = sessionOf(sid).meta || {};
+    const csv = L.sessionCsv(meta, snap.val());
+    const rows = csv.split('\r\n').length - 2;
+    const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = L.csvFileName(sid);
+    document.body.append(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
+    status.textContent = `Đã tạo ${a.download} (${rows} dòng).`;
+  } catch (error) {
+    status.textContent = `Không tải được: ${error.code || error.message}`;
+    status.className = 'status bad-text';
+  }
+  btn.disabled = false;
+}
 $('compare-clear').addEventListener('click', () => { state.selected = []; state.historySig = ''; renderHistory(); renderCompare(); });
 
 function toggleSelect(sid, on) {
