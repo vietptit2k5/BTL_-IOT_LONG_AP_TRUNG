@@ -87,7 +87,7 @@
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
             <span>Đăng xuất</span>
           </button>
-          <p class="muted tiny about">Pi tự đo và điều khiển cục bộ; đám mây lưu trữ, hiển thị và nhận lệnh. · <span id="app-version">Phiên bản app: v15</span></p>
+          <p class="muted tiny about">Pi tự đo và điều khiển cục bộ; đám mây lưu trữ, hiển thị và nhận lệnh. · <span id="app-version">Phiên bản app: v16</span></p>
         </div>
       </div>
     </div>
@@ -245,14 +245,20 @@
       <article class="card step" id="card-me">
         <header class="step-head">
           <span class="step-num">1</span>
-          <div>
+          <div class="grow-head">
             <h2>Mẻ ấp</h2>
             <p id="batch-summary" class="muted small">--</p>
           </div>
+          <span id="batch-state" class="badge idle">--</span>
         </header>
 
-        <div class="field-group">
-          <h3>Tạo mẻ mới</h3>
+        <div id="batch-actions" class="btn-row batch-actions" hidden>
+          <button id="batch-continue" class="primary" type="button" hidden>Chạy tiếp</button>
+          <button id="batch-end" class="ghost" type="button" disabled>Kết thúc mẻ</button>
+        </div>
+
+        <div id="batch-form" class="field-group">
+          <h3 id="batch-form-title">Tạo mẻ mới</h3>
           <div class="form-row">
             <label class="field">
               <span>Bắt đầu từ ngày</span>
@@ -261,22 +267,35 @@
             <label class="field grow">
               <span>Tốc độ lịch</span>
               <select id="batch-speed">
-                <option value="86400">Thời gian thật</option>
+                <option value="86400">Thời gian thật (21 ngày)</option>
                 <option value="300">Demo: 1 ngày = 5 phút</option>
                 <option value="120">Demo: 1 ngày = 2 phút</option>
                 <option value="60">Demo: 1 ngày = 1 phút</option>
               </select>
             </label>
           </div>
-          <div class="btn-row">
-            <button id="batch-create" class="primary" type="button" disabled>Tạo mẻ mới</button>
-            <button id="batch-end" class="ghost" type="button" disabled>Kết thúc mẻ</button>
-          </div>
-          <p id="batch-status" class="status" role="status" aria-live="polite">--</p>
+          <ul id="batch-checks" class="checks" aria-label="Điều kiện tạo mẻ"></ul>
+          <button id="batch-create" class="primary" type="button" disabled>Tạo mẻ và bắt đầu ấp</button>
         </div>
+        <p id="batch-status" class="status" role="status" aria-live="polite">--</p>
+        <p id="stop-status" class="status muted"></p>
+        <details class="help">
+          <summary>Mẻ ấp chạy thế nào?</summary>
+          <p>Tạo mẻ xong, Pi chạy Q-learning ngay: làm ấm rồi giữ nhiệt theo mốc của ngày ấp (37,8 / 37,5 / 37,2 °C). Pi tự chạy phiên mới khi phiên cũ hết, tự chạy tiếp khi Pi khởi động lại, và dừng sưởi khi đủ 21 ngày.</p>
+          <p><b>Dừng khẩn cấp</b> (thanh dưới cùng) tạm dừng mẻ; bấm <b>Chạy tiếp</b> để ấp tiếp. Nếu chương trình điều khiển dừng 3 lần liên tiếp ngay sau khi chạy, Pi tự tạm dừng mẻ và báo Nguy hiểm.</p>
+          <p>Mẻ demo: lịch đứng yên trong lúc làm ấm, chỉ chạy khi RL đang giữ nhiệt. Bảo vệ cố định 38,3 °C (ngắt mềm) và 38,8 °C (dừng) luôn hoạt động.</p>
+        </details>
+      </article>
 
+      <article class="card step" id="card-ngay">
+        <header class="step-head">
+          <span class="step-num">2</span>
+          <div>
+            <h2>Đổi ngày ấp</h2>
+            <p class="muted small">Chỉ dùng khi mẻ đang chạy. RL chuyển sang mốc của ngày mới trong ≤ 5 giây.</p>
+          </div>
+        </header>
         <div class="field-group">
-          <h3>Đổi ngày ấp</h3>
           <div class="form-row">
             <div class="stepper">
               <button type="button" class="step-btn" data-step="-1" aria-label="Lùi 1 ngày">−</button>
@@ -290,51 +309,10 @@
             </div>
           </div>
           <p id="day-preview" class="muted small">--</p>
-          <button id="day-send" class="primary" type="button" disabled>Đổi ngày</button>
-          <p id="day-status" class="status" role="status" aria-live="polite">--</p>
         </div>
-
-        <details class="help">
-          <summary>Mẻ ấp và lịch hoạt động thế nào?</summary>
-          <p>Mẻ demo: lịch đứng yên trong lúc làm ấm và giữa các lượt, chỉ chạy khi RL đang giữ nhiệt. Mẻ thời gian thật luôn chạy theo đồng hồ.</p>
-          <p>Khi đổi ngày, RL chuyển sang mốc mới trong ≤ 5 giây. Bảo vệ cố định 38,3 °C (ngắt mềm) và 38,8 °C (dừng), không đổi theo ngày.</p>
-        </details>
-      </article>
-
-      <article class="card step" id="card-luot">
-        <header class="step-head">
-          <span class="step-num">2</span>
-          <div>
-            <h2>Lượt chạy</h2>
-            <p class="muted small">Bật sưởi và để bộ điều khiển giữ nhiệt theo lịch.</p>
-          </div>
-        </header>
-        <div class="field-group">
-          <h3>Bộ điều khiển</h3>
-          <div class="choices" role="radiogroup" aria-label="Bộ điều khiển">
-            <label><input type="radio" name="run-ctrl" value="rl" checked><span>Q-learning<small>RL</small></span></label>
-            <label><input type="radio" name="run-ctrl" value="thermostat"><span>Thermostat<small>đối chứng</small></span></label>
-          </div>
-          <h3>Thời lượng</h3>
-          <div class="choices compact" role="radiogroup" aria-label="Thời lượng">
-            <label><input type="radio" name="run-min" value="10"><span>10′</span></label>
-            <label><input type="radio" name="run-min" value="20"><span>20′</span></label>
-            <label><input type="radio" name="run-min" value="30" checked><span>30′</span></label>
-            <label><input type="radio" name="run-min" value="45"><span>45′</span></label>
-            <label><input type="radio" name="run-min" value="60"><span>60′</span></label>
-          </div>
-        </div>
-        <ul id="run-checks" class="checks" aria-label="Điều kiện bắt đầu"></ul>
-        <label class="check ack"><input id="run-ack" type="checkbox">
-          <span>Tôi đang ở cạnh hộp; hộp rỗng, đã nguội ≤ 30 °C, adapter 12 V đã cắm.</span></label>
-        <button id="run-start" class="primary" type="button" disabled>Bắt đầu lượt</button>
-        <p id="run-status" class="status" role="status" aria-live="polite">--</p>
-        <p id="stop-status" class="status muted"></p>
-        <details class="help">
-          <summary>Pi kiểm tra gì trước khi bật tải?</summary>
-          <p>Có mẻ ấp, không có chương trình khác đang chạy, đọc được DS18B20, hộp ≤ 30 °C. Thiếu điều kiện nào thì Pi từ chối và báo lý do.</p>
-          <p>Khi lượt đang chạy, nút <b>Dừng khẩn cấp</b> luôn nằm ở thanh dưới cùng màn hình. Dừng từ xa không thay thế việc rút adapter 12 V nếu tải không tắt.</p>
-        </details>
+        <ul id="day-checks" class="checks" aria-label="Điều kiện đổi ngày"></ul>
+        <button id="day-send" class="primary" type="button" disabled>Đổi ngày</button>
+        <p id="day-status" class="status" role="status" aria-live="polite">--</p>
       </article>
 
       <article class="card step" id="card-tay">
@@ -375,7 +353,7 @@
         <p id="tay-status" class="status">--</p>
         <details class="help">
           <summary>An toàn khi chỉnh tay</summary>
-          <p>Chỉ nhận khi lượt <b>ap_trung</b> đã vào giữ nhiệt. Bảo vệ 38,3 °C (tắt bóng, quạt 100 %) và dừng cứng 38,8 °C vẫn luôn thắng lệnh tay.</p>
+          <p>Chỉ nhận khi mẻ đã qua làm ấm và đang giữ nhiệt. Bảo vệ 38,3 °C (tắt bóng, quạt 100 %) và dừng cứng 38,8 °C vẫn luôn thắng lệnh tay.</p>
           <p>Chỉ có 9 cặp bóng/quạt đã khảo sát (bóng 100 % đi với quạt 75 %). Các bước chỉnh tay không tính vào chỉ số của RL.</p>
         </details>
       </article>
@@ -410,7 +388,7 @@
         <details class="help">
           <summary>Đo những gì?</summary>
           <p>Hết thời gian nhiễu, bộ điều khiển lấy lại quyền. Pi đo: <b>về vùng</b> là thời gian tới lần đầu nhiệt vào lại vùng mục tiêu; <b>ổn định</b> là thời gian tới khi bắt đầu ở yên trong vùng 60 s liên tục; <b>lệch tối đa</b> so với mốc.</p>
-          <p>Chạy cùng kịch bản với lượt Q-learning và lượt Thermostat để so sánh trong mục Lịch sử. Bảo vệ 38,3 / 38,8 °C vẫn luôn thắng; kết quả cũng được lưu trên Pi (ket_qua_thu_nhieu.jsonl).</p>
+          <p>Kết quả và trung bình nằm ở mục Lịch sử (gồm cả các lần thử thermostat chạy bằng dòng lệnh trên Pi để so sánh). Bảo vệ 38,3 / 38,8 °C vẫn luôn thắng; kết quả cũng được lưu trên Pi (ket_qua_thu_nhieu.jsonl).</p>
         </details>
       </article>
     </section>

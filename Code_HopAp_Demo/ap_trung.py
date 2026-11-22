@@ -39,7 +39,8 @@ RECOVERY_EXIT_BELOW = 0.5
 WARM_LIMIT_S = 900
 RECOVERY_TIMEOUT_S = 450
 CONTROL_PERIOD_S = 5
-MAX_MINUTES = 100               # do_nhiet_hop giới hạn phiên tự động 7200 s (gồm làm ấm 900 s).
+MAX_MINUTES = 100               # Lượt thử (dòng lệnh): do_nhiet_hop giới hạn phiên 7200 s (gồm làm ấm 900 s).
+MAX_MINUTES_ME = 1440           # Ấp theo mẻ (--theo-me, bridge tự chạy): mỗi phiên ≤ 1 ngày; bridge nối phiên tới ngày 21.
 COOL = 1                        # ACTIONS[1] = bóng 0 %, quạt 100 %.
 CONTROLLERS = {'rl': 'Q-learning 3 giai đoạn', 'thermostat': 'Thermostat 3 giai đoạn'}
 CONFIG_KEYS = {'rl': 'ap-trung', 'thermostat': 'ap-trung-thermostat'}
@@ -67,9 +68,10 @@ class ApTrungPolicy:
     """Policy cho do_nhiet_hop.main(control_policy=...). now là đồng hồ đơn điệu; lịch dùng giờ thật."""
 
     def __init__(self, package, minutes=30, lich_path=me_ap.MAC_DINH, wall_clock=time.time,
-                 check_start_temperature=True, controller='rl', tay_path=TAY_FILE, nao_path=None):
-        if not 1 <= minutes <= MAX_MINUTES:
-            raise ValueError(f'--phut phải trong 1–{MAX_MINUTES}.')
+                 check_start_temperature=True, controller='rl', tay_path=TAY_FILE, nao_path=None,
+                 max_minutes=MAX_MINUTES):
+        if not 1 <= minutes <= max_minutes:
+            raise ValueError(f'--phut phải trong 1–{max_minutes}.')
         if controller not in CONTROLLERS:
             raise ValueError(f'Bộ điều khiển phải là một trong {sorted(CONTROLLERS)}.')
         self.controller = controller
@@ -330,7 +332,11 @@ def main(argv=None):
     if hasattr(sys.stdout, 'reconfigure'):
         sys.stdout.reconfigure(encoding='utf-8')
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('--phut', type=int, default=30, help=f'Thời gian điều khiển sau làm ấm (1–{MAX_MINUTES}).')
+    parser.add_argument('--phut', type=int, default=30,
+                        help=f'Thời gian điều khiển sau làm ấm (1–{MAX_MINUTES}; với --theo-me tới {MAX_MINUTES_ME}).')
+    parser.add_argument('--theo-me', action='store_true',
+                        help='Một phiên của mẻ ấp do bridge tự chạy: không đòi hộp ≤ 30 °C lúc bắt đầu (phiên nối tiếp '
+                             'khi hộp đang ấm), phiên dài tới 1 ngày. Mọi bảo vệ nhiệt/cảm biến giữ nguyên.')
     parser.add_argument('--bo-dieu-khien', choices=sorted(CONTROLLERS), default='rl',
                         help='rl = Q2 dịch mốc (mặc định); thermostat = đối chứng, cùng lịch/bảo vệ/CSV.')
     parser.add_argument('--dht11', action='store_true', help='Tự đọc DHT11 ở GPIO17 (khi do_am.py KHÔNG chạy).')
@@ -343,7 +349,9 @@ def main(argv=None):
     args = parser.parse_args(argv)
     data = read_package(Path(__file__).with_name('goi_rl_moi_20261120.json'))
     try:
-        policy = ApTrungPolicy(data, args.phut, args.lich, controller=args.bo_dieu_khien, nao_path=NAO_FILE)
+        policy = ApTrungPolicy(data, args.phut, args.lich, controller=args.bo_dieu_khien, nao_path=NAO_FILE,
+                               check_start_temperature=not args.theo_me,
+                               max_minutes=MAX_MINUTES_ME if args.theo_me else MAX_MINUTES)
     except me_ap.LichError as exc:
         print(f'LỖI: {exc}', file=sys.stderr)
         return 1
@@ -372,7 +380,8 @@ def main(argv=None):
         command += ['--do-am-file', str(Path(__file__).with_name('do_am_moi_nhat.json'))]
     if args.khong_oled:
         command.append('--khong-oled')
-    code = core.main(command, control_policy=policy, max_session_seconds=core.MAX_SURVEY_SECONDS)
+    code = core.main(command, control_policy=policy, incubation=args.theo_me,
+                     max_session_seconds=core.MAX_INCUBATION_SECONDS if args.theo_me else core.MAX_SURVEY_SECONDS)
     policy.demo_clock('pause')  # Kết thúc theo bất kỳ cách nào (hết giờ, dừng khẩn cấp, lỗi): đứng lịch demo.
     config.update(profile=policy.metadata(), hardware_program_exit_code=code)
     (folder / 'cau_hinh.json').write_text(json.dumps(config, ensure_ascii=False, indent=2), encoding='utf-8')

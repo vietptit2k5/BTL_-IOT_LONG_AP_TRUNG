@@ -84,9 +84,11 @@ export function runHeadline(c, live, hasBatch) {
       tone,
     };
   }
-  return hasBatch
-    ? { title: 'Hộp đang nghỉ', detail: 'Mẻ ấp đã sẵn sàng. Bắt đầu một lượt để bật sưởi.', tone: 'idle' }
-    : { title: 'Chưa có mẻ ấp', detail: 'Tạo mẻ ấp trước, rồi bắt đầu lượt chạy.', tone: 'idle' };
+  const b = typeof hasBatch === 'object' && hasBatch !== null ? hasBatch : { has: !!hasBatch };
+  if (!b.has) return { title: 'Chưa có mẻ ấp', detail: 'Tạo mẻ ấp: hệ thống tự làm ấm và giữ nhiệt bằng RL.', tone: 'idle' };
+  if (b.chay) return { title: 'Đang khởi động phiên ấp…', detail: 'Pi đang chạy chương trình RL cho mẻ (vài giây).', tone: 'warn' };
+  if (b.done) return { title: 'Mẻ ấp đã đủ 21 ngày', detail: 'Hệ thống đã dừng sưởi. Kết thúc mẻ để lưu lại.', tone: 'idle' };
+  return { title: 'Mẻ ấp đang tạm dừng', detail: `${b.reason ? `${b.reason}. ` : ''}Bấm "Chạy tiếp" ở mục Điều khiển để ấp tiếp.`, tone: 'warn' };
 }
 
 /** Thang nhiệt ở Tổng quan: vị trí % (0–100) của một nhiệt độ trên [lo, hi]. */
@@ -244,7 +246,7 @@ export function dayCommandStatus(cmd) {
   if (!cmd || typeof cmd !== 'object') return { text: 'Chưa đổi ngày từ app.', pending: false };
   if (cmd.da_xu_ly !== true) return { text: `Đã gửi yêu cầu ngày ${cmd.ngay}, đang chờ Pi…`, pending: true };
   const r = cmd.ket_qua || '';
-  const text = DAY_RESULT[r] || r;
+  const text = DAY_RESULT[r] || (r.startsWith('TU_CHOI:') ? `Pi từ chối: ${r.slice(8).trim()}.` : r);
   return { text: `Ngày ${cmd.ngay} (${cmd.yeu_cau_boi || '?'}, ${fmtDateTime(cmd.xu_ly_ts)}): ${text}`, pending: false };
 }
 
@@ -253,7 +255,9 @@ export const RUN_MINUTES = [10, 20, 30, 45, 60];
 export const DEMO_SPEEDS = { 86400: 'Thời gian thật', 300: 'Demo: 1 ngày = 5 phút', 120: 'Demo: 1 ngày = 2 phút', 60: 'Demo: 1 ngày = 1 phút' };
 
 const COMMAND_RESULT = {
-  DA_TAO: 'Pi đã tạo mẻ mới.',
+  DA_TAO: 'Pi đã tạo mẻ và bắt đầu ấp bằng RL.',
+  DA_TIEP_TUC: 'Mẻ ấp chạy tiếp.',
+  DANG_KET_THUC: 'Đang tắt sưởi và kết thúc mẻ…',
   DA_KET_THUC: 'Pi đã kết thúc mẻ (file lịch được lưu lại).',
   KHONG_CO_ME: 'Không có mẻ nào để kết thúc.',
   KHONG_HOP_LE: 'Tham số không hợp lệ.',
@@ -307,7 +311,7 @@ export const isHoldPhase = (pha) => /^ap_ngay\d{2}_gd[123]/.test(String(pha || '
 /** Lệnh tay đang có hiệu lực trên Pi? Dựa vào phản hồi DA_AP_DUNG + het_han_ms (đồng hồ máy chủ). */
 export function manualState(cmd, now) {
   const on = !!cmd && cmd.da_xu_ly === true && cmd.ket_qua === 'DA_AP_DUNG' && isNum(cmd.het_han_ms) && cmd.het_han_ms > now;
-  if (!on) return { active: false, text: 'RL / thermostat đang điều khiển.' };
+  if (!on) return { active: false, text: 'RL đang điều khiển.' };
   const left = Math.ceil((cmd.het_han_ms - now) / 1000);
   const mmss = `${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}`;
   return { active: true, left, text: `Đang chỉnh tay: bóng ${cmd.bong} %, quạt ${cmd.quat} % · còn ${mmss} (${cmd.yeu_cau_boi || '?'})` };
@@ -317,8 +321,8 @@ export function manualState(cmd, now) {
 export function canManual({ piOnline, running, pha, pending, lamp, fan }) {
   return gate([
     { label: 'Pi đang online', need: 'Pi online', ok: !!piOnline },
-    { label: 'Có lượt đang chạy', need: 'có lượt đang chạy', ok: !!running },
-    ...(running ? [{ label: 'Lượt ap_trung đã qua làm ấm', need: 'lượt ap_trung đã qua làm ấm', ok: isHoldPhase(pha) }] : []),
+    { label: 'Mẻ ấp đang chạy', need: 'có lượt đang chạy', ok: !!running },
+    ...(running ? [{ label: 'Đã qua giai đoạn làm ấm', need: 'lượt ap_trung đã qua làm ấm', ok: isHoldPhase(pha) }] : []),
     ...(pending ? [{ label: 'Lệnh trước đã xử lý xong', need: 'chờ lệnh trước xử lý xong', ok: false }] : []),
     { label: 'Cặp bóng/quạt đã khảo sát', need: 'cặp bóng/quạt đã khảo sát (bóng 100 % chỉ đi với quạt 75 %)', ok: isManualPair(lamp, fan) },
   ]);
@@ -458,7 +462,7 @@ export function canDisturb({ piOnline, running, live, active, manualActive, pend
   const hold = !!running && !!live && live.giai_doan === 'giu_nhiet';
   return gate([
     { label: 'Pi đang online', need: 'Pi online', ok: !!piOnline },
-    { label: 'Lượt ap_trung đang giữ nhiệt', need: 'lượt đang giữ nhiệt', ok: hold },
+    { label: 'Mẻ đang giữ nhiệt', need: 'lượt đang giữ nhiệt', ok: hold },
     { label: 'Nhiệt đang trong vùng mục tiêu', need: 'nhiệt trong vùng', ok: hold && live.trong_vung === true },
     { label: 'Không có phép thử khác / chỉnh tay', need: 'không có thử nhiễu hay chỉnh tay khác', ok: !active && !manualActive },
     ...(pending ? [{ label: 'Lệnh trước đã xử lý xong', need: 'chờ lệnh trước xử lý xong', ok: false }] : []),
@@ -551,3 +555,36 @@ export function sessionCsv(meta, samples) {
 }
 
 export const csvFileName = (sid) => `hop_ap_${String(sid).replace(/[^\w.-]+/g, '_')}_mau5s.csv`;
+
+// ------------------------------------------------------------------ mẻ ấp chạy liên tục (bridge 1.7)
+/** Trạng thái mẻ từ lich (chay, ly_do_dung do bridge gửi) và kết nối. */
+export function batchState(lich, c) {
+  const has = !!lich && lich.co_me === true;
+  if (!has) return { has: false, chay: false, done: false, label: 'Chưa có mẻ', tone: 'idle', reason: null };
+  const chay = lich.chay === true;
+  const done = lich.het_lich === true && !chay;
+  let label, tone;
+  if (chay && c.running) { label = 'Đang ấp'; tone = 'ok'; }
+  else if (chay) { label = c.piOnline ? 'Đang khởi động' : 'Pi mất kết nối'; tone = 'warn'; }
+  else if (done) { label = 'Đủ 21 ngày'; tone = 'idle'; }
+  else { label = 'Tạm dừng'; tone = 'warn'; }
+  return { has, chay, done, label, tone, reason: lich.ly_do_dung || null };
+}
+
+export function canCreateBatch({ piOnline, chay, pending, day }) {
+  return gate([
+    { label: 'Pi đang online', need: 'Pi online', ok: !!piOnline },
+    { label: 'Không có mẻ đang chạy', need: 'kết thúc mẻ đang chạy', ok: !chay },
+    { label: 'Ngày bắt đầu từ 1 đến 21', need: 'ngày 1–21', ok: stageForDay(day) !== null },
+    ...(pending ? [{ label: 'Lệnh trước đã xử lý xong', need: 'chờ lệnh trước xử lý xong', ok: false }] : []),
+  ]);
+}
+
+export function canChangeDay({ piOnline, chay, running, pending, day }) {
+  return gate([
+    { label: 'Pi đang online', need: 'Pi online', ok: !!piOnline },
+    { label: 'Mẻ ấp đang chạy', need: 'mẻ ấp đang chạy', ok: !!chay && !!running },
+    { label: 'Ngày từ 1 đến 21', need: 'ngày 1–21', ok: stageForDay(day) !== null },
+    ...(pending ? [{ label: 'Lệnh trước đã xử lý xong', need: 'chờ lệnh trước xử lý xong', ok: false }] : []),
+  ]);
+}

@@ -37,6 +37,7 @@ SENSOR_TIMEOUT = 3.0
 MAX_SECONDS = 600.0
 MAX_SURVEY_SECONDS = 7200.0     # Chỉ khảo sát tự động có callback và bảo vệ cảm biến.
 MAX_SINGLE_TEMPERATURE_SECONDS = 25200.0  # Chỉ phép đo đủ ma trận một mốc, có giới hạn riêng.
+MAX_INCUBATION_SECONDS = 26 * 3600.0       # Ấp theo mẻ (ap_trung --theo-me): một phiên ≤ 1 ngày ấp + làm ấm; bridge nối phiên.
 FAN_KICK_SECONDS = 1.0
 COOLDOWN_SECONDS = 10.0
 W1_ROOT = Path('/sys/bus/w1/devices')
@@ -616,14 +617,17 @@ def prepare(args, max_session_seconds=MAX_SECONDS, automatic=False):
 
 
 def main(argv=None, control_policy=None, max_session_seconds=MAX_SECONDS,fan_off_trial_limits=None,
-         single_temperature_matrix=False):
+         single_temperature_matrix=False, incubation=False):
     for stream in (sys.stdout, sys.stderr):
         if hasattr(stream, 'reconfigure'):
             stream.reconfigure(encoding='utf-8', errors='backslashreplace')
     parser = make_parser()
     args = parser.parse_args(argv)
     try:
-        cap = MAX_SINGLE_TEMPERATURE_SECONDS if single_temperature_matrix else MAX_SURVEY_SECONDS
+        cap = (MAX_SINGLE_TEMPERATURE_SECONDS if single_temperature_matrix
+               else MAX_INCUBATION_SECONDS if incubation else MAX_SURVEY_SECONDS)
+        if incubation and control_policy is None:
+            raise ValueError('Phiên ấp theo mẻ chỉ dành cho bộ điều khiển tự động (ap_trung).')
         finite_range(max_session_seconds, 1, cap, 'Giới hạn nội bộ')
         if single_temperature_matrix:
             required={(h,f) for h in (0,25,50,75,100) for f in (75,100)}

@@ -105,7 +105,7 @@ test('độ ẩm: ưu tiên lượt đang chạy, rồi tới dịch vụ do_am,
 test('lệnh tạo mẻ / bắt đầu lượt: chờ, thành công, từ chối', () => {
   assert.equal(L.commandStatus(null).pending, false);
   assert.equal(L.commandStatus({ da_xu_ly: false }).pending, true);
-  assert.match(L.commandStatus({ da_xu_ly: true, ket_qua: 'DA_TAO', xu_ly_ts: 1 }).text, /tạo mẻ mới/);
+  assert.match(L.commandStatus({ da_xu_ly: true, ket_qua: 'DA_TAO', xu_ly_ts: 1 }).text, /tạo mẻ và bắt đầu ấp/);
   const refused = L.commandStatus({ da_xu_ly: true, ket_qua: 'TU_CHOI: hộp còn 31.5 °C > 30 °C, chờ nguội', xu_ly_ts: 1 });
   assert.equal(refused.tone, 'warn');
   assert.match(refused.text, /Pi từ chối: hộp còn 31.5/);
@@ -276,4 +276,26 @@ test('xuất CSV lượt chạy', () => {
   assert.equal(lines[2], '2026-11-22T07:00:05.000Z,5,37.51,58,50,100,giu_nhiet,12,2');
   assert.equal(L.csvFileName('20261122_070000_rl'), 'hop_ap_20261122_070000_rl_mau5s.csv');
   assert.equal(L.csvFileName('a/b c'), 'hop_ap_a_b_c_mau5s.csv');
+});
+
+test('mẻ ấp chạy liên tục: trạng thái, tạo mẻ, đổi ngày', () => {
+  const on = { piOnline: true, running: true }, idle = { piOnline: true, running: false };
+  const lich = { co_me: true, ngay: 12, chay: true };
+  assert.equal(L.batchState(null, on).has, false);
+  assert.equal(L.batchState(lich, on).label, 'Đang ấp');
+  assert.equal(L.batchState(lich, idle).label, 'Đang khởi động');
+  const paused = L.batchState({ ...lich, chay: false, ly_do_dung: 'Dừng khẩn cấp từ a@b.c' }, idle);
+  assert.equal(paused.label, 'Tạm dừng');
+  assert.match(L.runHeadline(idle, null, paused).detail, /Dừng khẩn cấp từ a@b.c\. Bấm "Chạy tiếp"/);
+  assert.equal(L.batchState({ ...lich, chay: false, het_lich: true }, idle).done, true);
+  assert.equal(L.runHeadline(idle, null, L.batchState(lich, idle)).title, 'Đang khởi động phiên ấp…');
+  assert.equal(L.canCreateBatch({ piOnline: true, chay: false, pending: false, day: 1 }).ok, true);
+  assert.match(L.canCreateBatch({ piOnline: true, chay: true, pending: false, day: 1 }).reason, /kết thúc mẻ đang chạy/);
+  assert.equal(L.canCreateBatch({ piOnline: true, chay: false, pending: false, day: 22 }).ok, false);
+  assert.equal(L.canChangeDay({ piOnline: true, chay: true, running: true, pending: false, day: 12 }).ok, true);
+  assert.equal(L.canChangeDay({ piOnline: true, chay: true, running: false, pending: false, day: 12 }).ok, false);
+  assert.equal(L.canChangeDay({ piOnline: true, chay: false, running: true, pending: false, day: 12 }).ok, false);
+  assert.match(L.dayCommandStatus({ ngay: 8, da_xu_ly: true, ket_qua: 'TU_CHOI: chỉ đổi ngày được khi mẻ ấp đang chạy', xu_ly_ts: 1 }).text,
+    /Pi từ chối: chỉ đổi ngày/);
+  assert.match(L.commandStatus({ da_xu_ly: true, ket_qua: 'DA_TAO', xu_ly_ts: 1 }).text, /bắt đầu ấp bằng RL/);
 });

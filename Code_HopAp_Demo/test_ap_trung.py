@@ -269,6 +269,17 @@ class TestPolicy(unittest.TestCase):
         self.assertEqual((dec.lamp, dec.fan), (0, 100))
         self.assertTrue(dec.phase.endswith('_bao_ve'))
 
+    def test_batch_session_limits_and_warm_start(self):
+        with self.assertRaises(ValueError):
+            ap_trung.ApTrungPolicy(self.package, ap_trung.MAX_MINUTES_ME, self.lich, wall_clock=self.wall)
+        p = ap_trung.ApTrungPolicy(self.package, ap_trung.MAX_MINUTES_ME, self.lich, wall_clock=self.wall,
+                                   check_start_temperature=False, max_minutes=ap_trung.MAX_MINUTES_ME,
+                                   tay_path=self.tay)
+        p.bind_sensor(self.package['sensor_id'])
+        p.observe_output(self.now, 0, 100)
+        dec = self.call(p, 37.6)  # phiên nối tiếp: hộp đang ấm, giao ngay cho RL, không đòi ≤ 30 °C
+        self.assertEqual(dec.phase, 'ap_ngay05_gd1')
+
     def test_finishes_after_requested_minutes(self):
         p = self.make(minutes=1)
         self.call(p, 28.0)

@@ -35,16 +35,21 @@ python3 me_ap.py xem                          # Ngày 5/21 · Giai đoạn 1 · 
 
 **Demo rút gọn thời gian:** `python3 me_ap.py bat-dau --ngay 1 --giay-moi-ngay 120` (1 ngày = 2 phút). App ghi rõ "Demo rút gọn". Muốn chủ động thì dùng thời gian thật và tự đổi ngày lúc trình bày: ngày 5, sau 10 phút đổi sang ngày 12, rồi ngày 19.
 
-## Làm hoàn toàn trên app (22/11)
+## Làm hoàn toàn trên app: tạo mẻ là chạy (bridge 1.7, app v16)
 
-Cần hai dịch vụ `hop-ap-bridge` và `hop-ap-do-am` đang chạy trên Pi, và đã cài `tmux`.
+Cần hai dịch vụ `hop-ap-bridge` và `hop-ap-do-am` đang chạy trên Pi, và đã cài `tmux`. Hệ thống chạy như một máy ấp thật; luôn có người giám sát, nên không còn bước xác nhận hay giới hạn thời gian của mỗi lượt.
 
-1. **Tạo mẻ** (thẻ Lịch ấp → Mẻ ấp): chọn ngày bắt đầu và tốc độ lịch (thời gian thật, hoặc demo 1 ngày = 5 / 2 / 1 phút), bấm **Tạo mẻ mới** 2 lần. Nếu đang có mẻ thì mẻ cũ bị thay.
-2. **Bắt đầu lượt** (thẻ Lượt chạy): chọn RL hoặc Thermostat và thời lượng 10–60 phút, **tích xác nhận đang có người ở cạnh hộp**, rồi bấm **Bắt đầu lượt** 2 lần. Pi kiểm tra lại: có mẻ, không có chương trình điều khiển nào khác đang chạy, đọc được DS18B20, hộp ≤ 30 °C. Thiếu điều kiện nào thì **từ chối** và ghi lý do trên app.
-3. Trong lúc chạy: **Đổi ngày** và **Dừng khẩn cấp** như trước. Trên Pi xem được bằng `tmux attach -t hopap_app`; log nằm trong `.cloud_bridge/luot_app_*.log`.
-4. **Kết thúc mẻ**: chỉ làm được khi không có lượt đang chạy. File lịch được đổi tên lưu lại, không bị xóa.
+1. **Tạo mẻ** (Điều khiển → 1 Mẻ ấp): chọn ngày bắt đầu và tốc độ lịch (thời gian thật 21 ngày, hoặc demo 1 ngày = 5 / 2 / 1 phút), bấm **Tạo mẻ và bắt đầu ấp** 2 lần. Pi chỉ kiểm tra: không có mẻ khác đang chạy, đọc được DS18B20. Sau đó chạy **Q-learning** ngay: làm ấm, rồi giữ nhiệt theo mốc của ngày.
+2. **Pi tự giữ mẻ chạy** (bridge giám sát mỗi 5 s):
+   - Mỗi phiên `ap_trung.py --theo-me` dài tối đa 1 ngày. Hết phiên thì chạy phiên mới; phiên mới giao ngay cho RL nếu hộp đang ấm.
+   - Pi mất điện hoặc khởi động lại thì tự chạy tiếp.
+   - Đủ 21 ngày thì dừng sưởi (cảnh báo **HET_ME**).
+   - Chương trình điều khiển dừng 3 lần liên tiếp ngay sau khi chạy (trong vòng 10 phút) thì **tạm dừng mẻ** và báo **TAM_DUNG_ME** (nguy hiểm), để không bật / tắt liên tục khi cảm biến hoặc bóng hỏng.
+3. **Đổi ngày** (Điều khiển → 2): chỉ dùng được khi mẻ đang chạy; Pi cũng từ chối nếu mẻ không chạy.
+4. **Dừng khẩn cấp** (thanh dưới cùng): tắt sưởi và **tạm dừng mẻ**. Bấm **Chạy tiếp** để ấp tiếp đúng ngày đang dở.
+5. **Kết thúc mẻ**: dừng chương trình điều khiển nếu đang chạy, rồi đổi tên file lịch để lưu lại (không xóa).
 
-Quy tắc bảo mật của Firebase chặn lệnh sai ngay từ máy chủ (thiếu xác nhận có người, thời lượng ngoài 10/20/30/45/60, ngày ngoài 1–21, tốc độ lạ). Lượt bắt đầu từ app chạy tách khỏi bridge (`KillMode=process`), nên bridge khởi động lại thì lượt vẫn chạy tiếp và vẫn được bảo vệ đầy đủ.
+Mọi lớp bảo vệ tự động vẫn giữ nguyên: ngắt mềm 38,3 °C, dừng cứng 38,8 °C, dừng khi mất số đo quá 3 s, KSD301 và cầu chì 3 A. Thermostat chỉ còn chạy bằng dòng lệnh trên Pi (`python3 ap_trung.py --bo-dieu-khien thermostat --phut 30`) khi cần số liệu so sánh. Trên Pi xem phiên đang chạy bằng `tmux attach -t hopap_app`; log nằm trong `.cloud_bridge/luot_app_*.log`.
 
 ## Kiểm chứng
 

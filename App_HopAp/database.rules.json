@@ -31,7 +31,7 @@
         },
         "me_ap": {
           ".write": "auth != null && (auth.uid === 'zxm5m1NT0jcpR9ndrtuVx8g5gWA3' || root.child('quyen').child(auth.uid).val() === 'dieu_khien')",
-          ".validate": "newData.hasChildren(['hanh_dong','ts','by']) && newData.child('ts').isNumber() && newData.child('by').val() === auth.token.email && (newData.child('hanh_dong').val() === 'ket_thuc' || (newData.child('hanh_dong').val() === 'tao' && newData.child('ngay').isNumber() && newData.child('ngay').val() >= 1 && newData.child('ngay').val() <= 21 && (newData.child('giay_moi_ngay').val() === 86400 || newData.child('giay_moi_ngay').val() === 300 || newData.child('giay_moi_ngay').val() === 120 || newData.child('giay_moi_ngay').val() === 60)))"
+          ".validate": "newData.hasChildren(['hanh_dong','ts','by']) && newData.child('ts').isNumber() && newData.child('by').val() === auth.token.email && (newData.child('hanh_dong').val() === 'ket_thuc' || newData.child('hanh_dong').val() === 'tiep_tuc' || (newData.child('hanh_dong').val() === 'tao' && newData.child('ngay').isNumber() && newData.child('ngay').val() >= 1 && newData.child('ngay').val() <= 21 && (newData.child('giay_moi_ngay').val() === 86400 || newData.child('giay_moi_ngay').val() === 300 || newData.child('giay_moi_ngay').val() === 120 || newData.child('giay_moi_ngay').val() === 60)))"
         },
         "luot": {
           ".write": "auth != null && (auth.uid === 'zxm5m1NT0jcpR9ndrtuVx8g5gWA3' || root.child('quyen').child(auth.uid).val() === 'dieu_khien')",

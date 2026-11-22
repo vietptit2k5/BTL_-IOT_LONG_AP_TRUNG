@@ -2,7 +2,7 @@
 
 Đây là app trong sơ đồ IoT Level-2. App đọc Firebase Realtime Database mà [cloud_bridge.py](../Code_HopAp_Demo/cloud_bridge.py) đang ghi, theo dõi trực tiếp qua WebSocket (Firebase JS SDK lo phần này). Cùng một bộ code chạy được trên điện thoại và làm web dashboard trên màn hình rộng, dùng khi trình chiếu.
 
-## Bố cục (app v15)
+## Bố cục (app v16)
 
 App có 4 mục. Trên điện thoại, thanh mục nằm ở đáy màn hình; từ 960 px trở lên, thanh mục nằm trên thanh tiêu đề. Mỗi mục có địa chỉ riêng (`#/tong-quan`, `#/dieu-khien`, `#/bieu-do`, `#/lich-su`), nên nút Quay lại của trình duyệt và đường dẫn chia sẻ đều dùng được.
 
@@ -12,12 +12,12 @@ App có 4 mục. Trên điện thoại, thanh mục nằm ở đáy màn hình; 
 | Chuông | 30 thông báo gần nhất, lọc "Tất cả" hoặc "Cảnh báo & nguy hiểm". Tin chưa đọc được tô sáng; mở chuông thì coi như đã đọc (ghi nhớ trên máy này). Có nút bật thông báo trình duyệt (chỉ hiện khi app không ở trên màn hình) |
 | Thông báo nổi | Cảnh báo / nguy hiểm mới, và tin kết thúc lượt, hiện ở góc phải 7 s (nguy hiểm thì 15 s). Chạm vào để mở chuông |
 | **Tổng quan** | Hộp đang làm gì (Giữ nhiệt / Làm ấm / Chỉnh tay / Bảo vệ / Hộp đang nghỉ…) kèm nút gợi ý bước tiếp theo. Nhiệt độ lớn, mốc, xu hướng, **thang nhiệt** 36,5–39 °C (vùng mục tiêu, vạch bảo vệ 38,3 và dừng 38,8). Ô độ ẩm, bóng, quạt (có thanh mức), giai đoạn. Lịch 21 ngày thu gọn, đồ thị nhiệt 10 phút gần nhất. Đang chỉnh tay hoặc thử nhiễu thì có dải báo kèm đếm ngược. Thẻ **RL đang nghĩ gì**: trạng thái RL nhìn thấy (sai lệch, xu hướng, nhiệt tích trong bóng, hành động trước), 9 thanh giá trị Q và vì sao chọn thanh cao nhất; lượt thermostat / bảo vệ / làm ấm thì ghi rõ RL đang nghỉ. Thẻ **Thiết bị**: nhiệt CPU Pi, nguồn (sụt áp), Wi-Fi, RAM, thẻ nhớ, thời gian chạy liên tục, % đọc tốt của DS18B20 / DHT11, trạng thái Telegram và phiên bản bridge; chấm màu xanh / vàng / đỏ cho từng mục |
-| **Điều khiển** | 3 bước theo thứ tự. **1 Mẻ ấp:** tạo / kết thúc mẻ, đổi ngày bằng nút −/+ hoặc chọn nhanh GĐ1/2/3, có xem trước mốc của ngày chọn. **2 Lượt chạy:** chọn bộ điều khiển và thời lượng bằng nút lớn, danh sách điều kiện ✓/○ cho biết còn thiếu gì, ô xác nhận có người ở cạnh hộp. **3 Chỉnh tay:** bóng, quạt, thời hạn, Áp dụng / Trả về RL. **4 Thử nhiễu:** làm lạnh / làm nóng 1–2 phút, rồi Pi đo thời gian bộ điều khiển kéo nhiệt về vùng. Phần giải thích an toàn nằm trong mục "ⓘ" thu gọn |
+| **Điều khiển** | **1 Mẻ ấp:** chọn ngày bắt đầu và tốc độ lịch, bấm **Tạo mẻ và bắt đầu ấp**; Pi chạy Q-learning ngay và tự giữ mẻ chạy tới ngày 21. Khi mẻ chạy chỉ còn nút **Kết thúc mẻ**; khi tạm dừng (sau Dừng khẩn cấp hoặc lỗi) có lý do và nút **Chạy tiếp**. **2 Đổi ngày ấp:** nút −/+ hoặc chọn nhanh GĐ1/2/3, xem trước mốc; chỉ dùng được khi mẻ đang chạy. **3 Chỉnh tay:** bóng, quạt, thời hạn, Áp dụng / Trả về RL. **4 Thử nhiễu:** làm lạnh / làm nóng 1–2 phút, rồi Pi đo thời gian bộ điều khiển kéo nhiệt về vùng. Phần giải thích an toàn nằm trong mục "ⓘ" thu gọn |
 | **Biểu đồ** | Nhiệt độ có dải mục tiêu đổi theo giai đoạn, % bóng/quạt dạng bậc thang. Xem 10 phút, 30 phút hoặc cả lượt |
 | **Lịch sử** | Danh sách lượt dạng thẻ (bộ điều khiển, thời điểm, % trong vùng, MAE). Chạm tối đa 2 thẻ để so sánh: bảng chỉ số cạnh nhau, lượt tốt hơn ở từng chỉ số được đánh dấu ★, và đồ thị chồng 10 phút đầu giữ nhiệt. Mặc định chọn sẵn Thermostat và lượt Q-learning mới nhất đã có tóm tắt. Thẻ **Kết quả thử nhiễu**: từng lần thử và trung bình theo bộ điều khiển. Nút **⤓** cạnh mỗi lượt tải file CSV (mẫu 5 giây: thời gian UTC, nhiệt, độ ẩm, % bóng, % quạt, giai đoạn, ngày ấp) về máy; tài khoản chỉ xem cũng tải được. Đây là dữ liệu đã lấy mẫu 5 s; CSV gốc 1 s vẫn nằm trên Pi trong `ket_qua_ap_trung/` |
 | **Dừng khẩn cấp** | Thanh nổi ở đáy màn hình, **hiện ở mọi mục** khi có lượt đang chạy. Phải bấm 2 lần trong 5 giây. App ghi `commands/stop` kèm email người bấm |
 
-Mọi lệnh làm thay đổi hộp (tạo/kết thúc mẻ, đổi ngày, bắt đầu lượt, chỉnh tay, dừng) đều phải bấm 2 lần. Pi vẫn tự kiểm tra lại điều kiện an toàn và trả lời bằng dòng trạng thái ngay dưới nút. Pi mất kết nối quá 15 s thì chuyển trạng thái đỏ và làm mờ số đo.
+Mọi lệnh làm thay đổi hộp (tạo / chạy tiếp / kết thúc mẻ, đổi ngày, chỉnh tay, thử nhiễu, dừng) đều phải bấm 2 lần. App không còn chọn thermostat; thermostat chỉ chạy bằng dòng lệnh trên Pi để lấy số liệu so sánh. Pi vẫn tự kiểm tra lại điều kiện an toàn và trả lời bằng dòng trạng thái ngay dưới nút. Pi mất kết nối quá 15 s thì chuyển trạng thái đỏ và làm mờ số đo.
 
 ## 1. Tạo tài khoản đăng nhập app và phân quyền (app v13)
 

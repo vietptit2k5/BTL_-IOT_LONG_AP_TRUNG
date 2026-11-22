@@ -228,6 +228,8 @@ a.link::after { content: " →"; }
 
 /* ------------------------------------------------------------------ điều khiển */
 .step-head { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 4px; }
+.step-head .grow-head { flex: 1; min-width: 0; }
+.batch-actions { margin-top: 12px; }
 .step-num {
   display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
   background: var(--accent-soft); color: var(--accent); font-weight: 800;

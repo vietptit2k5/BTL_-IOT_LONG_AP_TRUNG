@@ -37,7 +37,7 @@ const state = {
   samplesSid: null, series: [], range: 600,
   unsubs: [], samplesUnsub: null,
   lich: null, dayCmd: null, dayInputTouched: false, doAm: null,
-  batchCmd: null, runCmd: null, tayCmd: null,
+  batchCmd: null, tayCmd: null,
   tab: null, scrollTo: null, role: null, roleUnsub: null,
   nao: null, thuCmd: null, tests: [], health: null,
 };
@@ -277,7 +277,6 @@ function startListening() {
   listen(`${ROOT}/do_am`, (v) => { state.doAm = v; renderHumidity(); renderLich(); });
   listen(`${ROOT}/commands/ngay_ap`, (v) => { state.dayCmd = v; renderControls(); });
   listen(`${ROOT}/commands/me_ap`, (v) => { state.batchCmd = v; renderControls(); });
-  listen(`${ROOT}/commands/luot`, (v) => { state.runCmd = v; renderControls(); });
   listen(`${ROOT}/commands/tay`, (v) => { state.tayCmd = v; renderControls(); });
   listen(`${ROOT}/commands/thu_nhieu`, (v) => { state.thuCmd = v; renderControls(); });
   listen(`${ROOT}/nao_rl`, (v) => { state.nao = v; renderBrain(); });
@@ -327,14 +326,15 @@ function currentBand() {
 function renderStatus() {
   const c = connection();
   setChip(c.short, c.tone, c.label);
-  const h = L.runHeadline(c, state.live, hasBatch());
+  const batch = L.batchState(state.lich, c);
+  const h = L.runHeadline(c, state.live, batch);
   $('hero-title').textContent = h.title;
   $('hero-detail').textContent = h.detail;
   $('hero-dot').className = `dot ${h.tone}${c.running ? ' pulse' : ''}`;
   const cta = $('hero-cta');
-  cta.hidden = c.running || !c.piOnline || !controller();
-  cta.textContent = hasBatch() ? 'Bắt đầu lượt' : 'Tạo mẻ ấp';
-  cta.dataset.scroll = hasBatch() ? 'card-luot' : 'card-me';
+  cta.hidden = c.running || !c.piOnline || !controller() || batch.chay;
+  cta.textContent = !batch.has || batch.done ? 'Tạo mẻ ấp' : 'Chạy tiếp';
+  cta.dataset.scroll = 'card-me';
   const live = state.live;
   $('updated').textContent = live && live.ts
     ? `Số đo lúc ${L.fmtClock(live.ts)} · ${L.ago(live.ts, serverNow())}${c.running ? '' : ' · không có lượt đang chạy'}`
@@ -548,14 +548,13 @@ function renderLich() {
   const speed = has && lich.rut_gon
     ? `Demo: 1 ngày = ${lich.giay_moi_ngay} s · ${lich.tam_dung ? 'lịch đang dừng, chạy khi RL giữ nhiệt' : 'lịch đang chạy'}`
     : (has ? 'Thời gian thật' : '');
-  $('lich-speed').textContent = speed;
-  $('lich-speed').hidden = !speed;
+  const pausedNote = has && lich.chay === false ? ' · mẻ đang tạm dừng' : '';
+  $('lich-speed').textContent = speed + pausedNote;
+  $('lich-speed').hidden = !(speed + pausedNote);
   const rh = L.rhAdvice(L.currentRh(state.live, state.doAm, serverNow()).value, has ? lich.do_am_khuyen_nghi : null);
   $('lich-rh').textContent = `Độ ẩm: ${rh.text}`;
   $('lich-rh').className = `badge ${rh.tone} small`;
   $('lich-rh').hidden = !has;
-  $('batch-summary').textContent = has ? `Đang có mẻ: ${L.lichText(lich)}${speed ? ` · ${speed}` : ''}.`
-    : 'Chưa có mẻ ấp. Tạo mẻ mới để bắt đầu.';
   if (has && !state.dayInputTouched && document.activeElement !== $('day-input')) $('day-input').value = lich.ngay;
   renderControls();
 }
@@ -568,7 +567,7 @@ function twoStep(btn, idleText, confirmText, statusEl, action) {
     clearTimeout(timer);
     timer = null;
     btn.classList.remove('confirm');
-    btn.textContent = idleText;
+    btn.textContent = typeof idleText === 'function' ? idleText() : idleText;
   };
   btn.addEventListener('click', async () => {
     if (!timer) {
@@ -603,12 +602,15 @@ function renderChecks(el, checks) {
 }
 
 // ---- mẻ ấp và đổi ngày
-const resetCreate = twoStep($('batch-create'), 'Tạo mẻ mới',
-  () => `Bấm lần nữa: từ ngày ${$('batch-day').value}, ${L.DEMO_SPEEDS[$('batch-speed').value]}${hasBatch() ? ' (thay mẻ cũ)' : ''}`,
+const createLabel = () => (hasBatch() ? 'Tạo mẻ mới (thay mẻ cũ) và bắt đầu ấp' : 'Tạo mẻ và bắt đầu ấp');
+const resetCreate = twoStep($('batch-create'), createLabel,
+  () => `Bấm lần nữa: ấp từ ngày ${$('batch-day').value}, ${L.DEMO_SPEEDS[$('batch-speed').value]}`,
   $('batch-status'),
   () => sendCommand('me_ap', { hanh_dong: 'tao', ngay: Number($('batch-day').value), giay_moi_ngay: Number($('batch-speed').value) }));
-const resetEnd = twoStep($('batch-end'), 'Kết thúc mẻ', () => 'Bấm lần nữa để kết thúc', $('batch-status'),
+const resetEnd = twoStep($('batch-end'), 'Kết thúc mẻ', () => 'Bấm lần nữa: tắt sưởi, kết thúc mẻ', $('batch-status'),
   () => sendCommand('me_ap', { hanh_dong: 'ket_thuc' }));
+const resetContinue = twoStep($('batch-continue'), 'Chạy tiếp', () => 'Bấm lần nữa: ấp tiếp mẻ này', $('batch-status'),
+  () => sendCommand('me_ap', { hanh_dong: 'tiep_tuc' }));
 const resetDay = twoStep($('day-send'), 'Đổi ngày',
   () => {
     const day = Number($('day-input').value);
@@ -636,13 +638,31 @@ document.querySelectorAll('[data-step]').forEach((b) => b.addEventListener('clic
 document.querySelectorAll('.chipbtn[data-day]').forEach((b) => b.addEventListener('click', () => setDayInput(Number(b.dataset.day))));
 
 function renderBatchAndDay(c) {
+  const b = L.batchState(state.lich, c);
+  const lich = state.lich;
   const batch = L.commandStatus(state.batchCmd, '');
+  $('batch-state').textContent = b.label;
+  $('batch-state').className = `badge ${b.tone}`;
+  const speed = b.has && lich.rut_gon ? ` · demo 1 ngày = ${lich.giay_moi_ngay} s` : b.has ? ' · thời gian thật' : '';
+  $('batch-summary').textContent = b.has
+    ? `${L.lichText(lich)}${speed}${!b.chay && b.reason ? ` · ${b.reason}` : ''}`
+    : 'Chưa có mẻ. Chọn ngày bắt đầu và tốc độ lịch: tạo xong hệ thống tự làm ấm và giữ nhiệt bằng RL.';
+  $('batch-actions').hidden = !b.has;
+  $('batch-continue').hidden = !b.has || b.chay || b.done;
+  $('batch-continue').disabled = !(c.piOnline && !batch.pending);
+  if ($('batch-continue').disabled) resetContinue();
+  $('batch-end').disabled = !(c.piOnline && b.has && !batch.pending);
+  if ($('batch-end').disabled) resetEnd();
+  $('batch-form').hidden = b.chay;
+  $('batch-form-title').textContent = b.has ? 'Hoặc tạo mẻ mới (thay mẻ đang tạm dừng)' : 'Tạo mẻ mới';
+  const create = L.canCreateBatch({ piOnline: c.piOnline, chay: b.chay, pending: batch.pending,
+    day: Number($('batch-day').value) });
+  renderChecks($('batch-checks'), create.checks);
+  $('batch-create').disabled = !create.ok;
+  if (!create.ok) resetCreate();
+  else if (!$('batch-create').classList.contains('confirm')) $('batch-create').textContent = createLabel();
   $('batch-status').textContent = batch.text;
   $('batch-status').className = toneClass(batch.tone);
-  $('batch-create').disabled = !(c.piOnline && !batch.pending && L.stageForDay(Number($('batch-day').value)) !== null);
-  $('batch-end').disabled = !(c.piOnline && hasBatch() && !c.running && !batch.pending);
-  if ($('batch-create').disabled) resetCreate();
-  if ($('batch-end').disabled) resetEnd();
 
   const dayCmd = L.dayCommandStatus(state.dayCmd);
   $('day-status').textContent = state.dayCmd ? dayCmd.text : '';
@@ -652,29 +672,10 @@ function renderBatchAndDay(c) {
   $('day-preview').textContent = stage === null ? 'Ngày phải từ 1 đến 21.'
     : `Ngày ${day} thuộc giai đoạn ${stage}: mốc ${L.fmtNum(L.STAGES[stage].target, 1, ' °C')}, vùng `
       + `${L.fmtNum(L.STAGES[stage].band[0], 1)}–${L.fmtNum(L.STAGES[stage].band[1], 1)} °C.`;
-  $('day-send').disabled = !(c.piOnline && !dayCmd.pending && stage !== null);
-  if ($('day-send').disabled) resetDay();
-}
-
-// ---- lượt chạy
-const ctrlLabel = () => (pick('run-ctrl') === 'rl' ? 'Q-learning' : 'Thermostat');
-const resetRun = twoStep($('run-start'), 'Bắt đầu lượt',
-  () => `Bấm lần nữa: ${ctrlLabel()} ${pick('run-min')} phút`, $('run-status'),
-  async () => {
-    await sendCommand('luot', { hanh_dong: 'bat_dau', bo_dieu_khien: pick('run-ctrl'),
-      phut: Number(pick('run-min')), co_nguoi: $('run-ack').checked });
-    $('run-ack').checked = false;  // Mỗi lượt phải xác nhận lại.
-  });
-
-function renderRun(c) {
-  const run = L.commandStatus(state.runCmd, '');
-  const gate = L.canStartRun({ piOnline: c.piOnline, running: c.running, hasBatch: hasBatch(),
-    ack: $('run-ack').checked, pending: run.pending });
-  renderChecks($('run-checks'), gate.checks);
-  $('run-start').disabled = !gate.ok;
-  if (!gate.ok) resetRun();
-  $('run-status').textContent = run.text;
-  $('run-status').className = toneClass(run.tone);
+  const change = L.canChangeDay({ piOnline: c.piOnline, chay: b.chay, running: c.running, pending: dayCmd.pending, day });
+  renderChecks($('day-checks'), change.checks);
+  $('day-send').disabled = !change.ok;
+  if (!change.ok) resetDay();
 }
 
 // ---- chỉnh tay
@@ -708,7 +709,7 @@ function renderManual(c) {
   $('tay-apply').disabled = !gate.ok;
   if (!gate.ok) resetTay();
   $('tay-return').disabled = !(active && c.piOnline && !cmd.pending);
-  $('tay-active').textContent = active ? m.text : (c.running ? 'RL / thermostat đang điều khiển.' : 'Chưa có lượt chạy.');
+  $('tay-active').textContent = active ? m.text : (c.running ? 'RL đang điều khiển.' : 'Mẻ ấp chưa chạy.');
   $('tay-active').className = `banner ${active ? 'warn' : c.running ? 'ok' : 'idle'}`;
   $('tay-status').textContent = cmd.text;
   $('tay-status').className = toneClass(cmd.tone);
@@ -845,13 +846,12 @@ function renderBrain() {
 function renderControls() {
   const c = connection();
   renderBatchAndDay(c);
-  renderRun(c);
   renderManual(c);
   renderDisturbance(c);
   renderStop(c);
 }
 
-['batch-speed', 'run-ack'].forEach((id) => $(id).addEventListener('change', renderControls));
+$('batch-speed').addEventListener('change', renderControls);
 $('batch-day').addEventListener('input', renderControls);
 document.querySelectorAll('.choices input').forEach((r) => r.addEventListener('change', renderControls));
 

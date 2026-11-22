@@ -39,7 +39,7 @@ import me_ap
 import suc_khoe
 import thu_nhieu as tn
 
-VERSION = '1.6'
+VERSION = '1.7'
 DEVICE = 'hop_ap_01'
 CSV_FIELDS = (
     'timestamp_utc', 'elapsed_s', 'event', 'phase', 'sensor_id',
@@ -74,11 +74,17 @@ ALERT_LEVEL = {
     'LOI_CAM_BIEN': 'nguy_hiem', 'LOI': 'nguy_hiem', 'KET_THUC': 'thong_tin', 'PI_KHONG_GHI': 'nguy_hiem',
     'DUNG_TU_XA': 'canh_bao',
 }
+ALERT_LEVEL.update(TIEP_TUC_ME='thong_tin', TAM_DUNG_ME='nguy_hiem', HET_ME='thong_tin')
 ALERT_LEVEL.update(CHUYEN_GIAI_DOAN='thong_tin', DOI_NGAY='thong_tin', TAO_ME='thong_tin', KET_THUC_ME='thong_tin',
                    BAT_DAU_LUOT='canh_bao', DUNG_BAT_THUONG='nguy_hiem', CHINH_TAY='canh_bao', TRA_VE_RL='thong_tin',
                    THU_NHIEU='thong_tin', KET_QUA_THU_NHIEU='thong_tin')
 NO_COOLDOWN = {'ON_DINH', 'KET_THUC', 'DUNG_TU_XA', 'CHUYEN_GIAI_DOAN', 'DOI_NGAY', 'TAO_ME', 'KET_THUC_ME',
-               'BAT_DAU_LUOT', 'DUNG_BAT_THUONG', 'CHINH_TAY', 'TRA_VE_RL', 'THU_NHIEU', 'KET_QUA_THU_NHIEU'}
+               'BAT_DAU_LUOT', 'DUNG_BAT_THUONG', 'CHINH_TAY', 'TRA_VE_RL', 'THU_NHIEU', 'KET_QUA_THU_NHIEU',
+               'TIEP_TUC_ME', 'TAM_DUNG_ME', 'HET_ME'}
+MAX_SEGMENT_MINUTES = 1440    # Một phiên của mẻ ≤ 1 ngày (ap_trung MAX_MINUTES_ME).
+ME_RETRY_WINDOW_S = 600       # Phiên chết trong vòng 10 phút sau khi chạy = một lần lỗi liên tiếp.
+ME_MAX_FAILS = 3              # Lỗi liên tiếp 3 lần thì tạm dừng mẻ (tránh bật/tắt liên tục khi cảm biến hỏng).
+ME_LAUNCH_GAP_S = 30          # Chờ tối thiểu giữa hai lần khởi động phiên.
 HEALTH_EVERY_S = 30          # Gửi sức khỏe thiết bị mỗi 30 s.
 NAO_FRESH_S = 30              # nao_rl.json cũ hơn thì không gửi (lượt đã dừng).
 MANUAL_LAMP = (0, 25, 50, 75, 100)
@@ -468,6 +474,7 @@ class Engine:
                 't': round(elapsed, 3), 'su_kien': event, 'giai_doan': cls, 'pha': row['phase'],
                 'ghi_chu': row['note'][:200], 'bong': lamp, 'quat': fan}
         if event == 'ERROR':
+            self.s['loi'] = True
             self._alert(out, 'LOI', elapsed, f'Chương trình trên Pi báo lỗi: {row["note"][:120]}', temp)
         if event == 'END':
             self.s['ended'] = True
@@ -713,8 +720,9 @@ def read_box_temperature(root='/sys/bus/w1/devices'):
     return read_ds18b20(root)
 
 
-def launch_run(base, controller, minutes, use_humidity_file):
-    """Chạy ap_trung.py tách khỏi bridge (tmux nếu có, không thì setsid), ghi log. Trả mô tả cách chạy."""
+def launch_run(base, controller, minutes, use_humidity_file, batch=False):
+    """Chạy ap_trung.py tách khỏi bridge (tmux nếu có, không thì setsid), ghi log. Trả mô tả cách chạy.
+    batch=True: một phiên của mẻ ấp (--theo-me)."""
     import subprocess
     base = Path(base)
     python = base / '.venv' / 'bin' / 'python'
@@ -723,6 +731,8 @@ def launch_run(base, controller, minutes, use_humidity_file):
     log_dir.mkdir(exist_ok=True)
     log = log_dir / f'luot_app_{datetime.now().strftime("%Y%m%d_%H%M%S")}.log'
     args = [python, 'ap_trung.py', '--bo-dieu-khien', controller, '--phut', str(minutes)]
+    if batch:
+        args.append('--theo-me')
     if use_humidity_file:
         args.append('--do-am')
     shell = f'cd {base} && ' + ' '.join(args) + f' 2>&1 | tee -a {log}'
@@ -832,6 +842,7 @@ class Bridge:
             self._handle_run_command()
             self._handle_manual_command()
             self._handle_disturbance_command()
+            self._supervise_batch()
             self._publish_brain()
             self._publish_health()
             self._publish_schedule()
@@ -964,6 +975,10 @@ class Bridge:
                 self._reset_stop(command, 'BO_QUA_LENH_CU')
             return
         result = self.execute_stop(command)
+        if self.state.get('me_chay'):  # Dừng khẩn cấp = tạm dừng mẻ; app có nút "Chạy tiếp".
+            self.state['me_chay'] = False
+            self.state['me_ly_do'] = f'Dừng khẩn cấp từ {str(command.get("by", "?"))[:60]}'
+            self.lich_sig = None
         self.state['stop_handled_ts'] = command['ts']
         self._save_state()
         self._reset_stop(command, result)
@@ -994,9 +1009,10 @@ class Bridge:
 
     def _publish_schedule(self):
         try:
-            data = dict(me_ap.current(me_ap.load(self.lich_path)), co_me=True)
+            data = dict(me_ap.current(me_ap.load(self.lich_path)), co_me=True,
+                        chay=bool(self.state.get('me_chay')), ly_do_dung=self.state.get('me_ly_do'))
         except me_ap.LichError as exc:
-            data = {'co_me': False, 'loi': str(exc)}
+            data = {'co_me': False, 'loi': str(exc), 'chay': False}
         sig = json.dumps({k: v for k, v in data.items() if k != 'giay_den_ngay_sau'}, sort_keys=True)
         now = self.clock()
         if sig == self.lich_sig and now - self.lich_put_at < 30:
@@ -1042,30 +1058,141 @@ class Bridge:
         log(f'LỆNH {name} từ {reply["yeu_cau_boi"]}: {result}')
 
     def _handle_batch_command(self):
+        """Mẻ ấp từ app: tạo = chạy RL ngay; tiếp tục sau khi tạm dừng; kết thúc = dừng và lưu lịch."""
         command = self._take_command('me_ap')
         if command is None:
             return
         who = str(command.get('by', '?'))[:100]
         action = command.get('hanh_dong')
+        busy = self.running()
         if action == 'tao':
             day, speed = command.get('ngay'), command.get('giay_moi_ngay')
             if isinstance(day, bool) or not isinstance(day, (int, float)) or day != int(day) or not 1 <= day <= 21 \
                     or speed not in DEMO_SPEEDS:
                 return self._reply('me_ap', command, 'KHONG_HOP_LE')
+            if self.state.get('me_chay') or busy:
+                return self._reply('me_ap', command, 'TU_CHOI: đang có mẻ chạy, kết thúc mẻ trước')
+            if self.source != 'truc_tiep' or not os.path.isdir('/proc'):
+                return self._reply('me_ap', command, 'TU_CHOI: chỉ chạy được trên Raspberry Pi')
+            if self.box_temperature() is None:
+                return self._reply('me_ap', command, 'TU_CHOI: không đọc được DS18B20, kiểm tra dây cảm biến')
+            self._archive_batch()
             me_ap.start_batch(self.lich_path, ngay=int(day), giay_moi_ngay=speed, nguon=f'app:{who}')
+            self.state.update(me_chay=True, me_ly_do=None, me_loi=0, me_khoi_dong_ts=0)
+            self._save_state()
             self.lich_sig = None
             info = me_ap.current(me_ap.load(self.lich_path))
-            return self._reply('me_ap', command, 'DA_TAO', 'TAO_ME', f'{who} tạo mẻ mới: {me_ap.describe(info)}.')
+            return self._reply('me_ap', command, 'DA_TAO', 'TAO_ME',
+                               f'{who} tạo mẻ mới: {me_ap.describe(info)}. Hệ thống bắt đầu làm ấm bằng RL.')
+        if action == 'tiep_tuc':
+            try:
+                info = me_ap.current(me_ap.load(self.lich_path))
+            except me_ap.LichError:
+                return self._reply('me_ap', command, 'KHONG_CO_ME')
+            if info['het_lich']:
+                return self._reply('me_ap', command, 'TU_CHOI: mẻ đã hết 21 ngày, hãy kết thúc mẻ')
+            if self.state.get('me_chay'):
+                return self._reply('me_ap', command, 'TU_CHOI: mẻ đang chạy')
+            self.state.update(me_chay=True, me_ly_do=None, me_loi=0, me_khoi_dong_ts=0)
+            self._save_state()
+            self.lich_sig = None
+            return self._reply('me_ap', command, 'DA_TIEP_TUC', 'TIEP_TUC_ME', f'{who} cho mẻ ấp chạy tiếp.')
         if action == 'ket_thuc':
-            if self.running():
-                return self._reply('me_ap', command, 'TU_CHOI: đang có lượt chạy, dừng lượt trước')
             if not self.lich_path.exists():
                 return self._reply('me_ap', command, 'KHONG_CO_ME')
-            archive = self.lich_path.with_name(f'trang_thai_me_ap.ket_thuc_{datetime.now().strftime("%Y%m%d_%H%M%S")}.json')
-            os.replace(self.lich_path, archive)  # Lưu lại, không xóa.
-            self.lich_sig = None
+            self.state.update(me_chay=False, me_ly_do='Đã kết thúc mẻ')
+            if busy:
+                self.execute_stop(command)
+                self.state['me_cho_ket_thuc'] = True  # lưu lịch khi chương trình điều khiển đã thoát
+                self._save_state()
+                return self._reply('me_ap', command, 'DANG_KET_THUC', 'KET_THUC_ME',
+                                   f'{who} kết thúc mẻ ấp: tắt bóng và quạt, lưu lịch.')
+            self._archive_batch()
+            self._save_state()
             return self._reply('me_ap', command, 'DA_KET_THUC', 'KET_THUC_ME', f'{who} kết thúc mẻ ấp.')
         return self._reply('me_ap', command, 'KHONG_HOP_LE')
+
+    def _archive_batch(self):
+        if self.lich_path.exists():  # Lưu lại, không xóa.
+            stamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            os.replace(self.lich_path, self.lich_path.with_name(f'trang_thai_me_ap.ket_thuc_{stamp}.json'))
+        self.state['me_cho_ket_thuc'] = False
+        self.lich_sig = None
+
+    def _pause_batch(self, reason, kind='TAM_DUNG_ME', text=None):
+        self.state.update(me_chay=False, me_ly_do=reason)
+        self._save_state()
+        self.lich_sig = None
+        alert = {'ts': now_ms(), 'loai': kind, 'muc': ALERT_LEVEL[kind], 'noi_dung': text or f'Mẻ ấp tạm dừng: {reason}.',
+                 'phien': self.engine.session_id if self.engine else None, 'nhiet_c': None}
+        try:
+            self._post_alerts({f'{alert["ts"]}_{kind}': alert})
+        except CloudError:
+            pass
+        log(alert['noi_dung'])
+
+    def _supervise_batch(self):
+        """Giữ mẻ chạy như máy ấp thật: hết phiên thì chạy phiên mới, Pi khởi động lại thì chạy tiếp, hết ngày 21 thì dừng."""
+        if self.state.get('me_cho_ket_thuc'):
+            if not self.running():
+                self._archive_batch()
+                self._save_state()
+            return
+        if not self.state.get('me_chay') or self.source != 'truc_tiep':
+            return
+        try:
+            info = me_ap.current(me_ap.load(self.lich_path))
+        except me_ap.LichError:
+            return self._pause_batch('không còn file lịch của mẻ')
+        busy = self.running()
+        if info['het_lich']:
+            if busy:
+                self.execute_stop({})
+            return self._pause_batch('đã hết 21 ngày', 'HET_ME', 'Mẻ ấp đã đủ 21 ngày: hệ thống dừng sưởi.')
+        if busy:
+            return
+        now = time.time()
+        last = self.state.get('me_khoi_dong_ts') or 0
+        if now - last < ME_LAUNCH_GAP_S:
+            return
+        if last and now - last < ME_RETRY_WINDOW_S:
+            self.state['me_loi'] = self.state.get('me_loi', 0) + 1
+            if self.state['me_loi'] >= ME_MAX_FAILS:
+                return self._pause_batch(
+                    f'chương trình điều khiển dừng {ME_MAX_FAILS} lần liên tiếp trong {ME_RETRY_WINDOW_S // 60} phút',
+                    text='Mẻ ấp TẠM DỪNG: chương trình điều khiển dừng 3 lần liên tiếp ngay sau khi chạy. '
+                         'Kiểm tra cảm biến DS18B20, bóng, adapter 12 V rồi bấm "Chạy tiếp" trên app.')
+        elif last:
+            self.state['me_loi'] = 0
+        if self.box_temperature() is None:
+            self.state['me_khoi_dong_ts'] = now  # đợi rồi thử lại; tính như một lần lỗi nếu cứ lặp lại
+            self._save_state()
+            log('Mẻ ấp: chưa đọc được DS18B20, chờ để chạy phiên mới.')
+            return
+        left = (info['giay_den_ngay_sau'] or 0) + (me_ap.SO_NGAY - info['ngay']) * info['giay_moi_ngay']
+        minutes = max(1, min(MAX_SEGMENT_MINUTES, math.ceil(left / 60)))
+        from do_am import read_latest
+        humidity_ok = read_latest(self.do_am_path)[2] == ''
+        try:
+            how = self.launcher(self.base, 'rl', minutes, humidity_ok, batch=True)
+        except Exception as exc:  # noqa: BLE001
+            self.state['me_khoi_dong_ts'] = now
+            self._save_state()
+            log(f'Mẻ ấp: không chạy được phiên mới: {type(exc).__name__}: {exc}')
+            return
+        first = not last
+        self.state['me_khoi_dong_ts'] = now
+        self._save_state()
+        kind = 'BAT_DAU_LUOT' if first else 'TIEP_TUC_ME'
+        text = (f'Mẻ ấp bắt đầu chạy RL ({me_ap.describe(info)}); phiên {minutes} phút, {how}.' if first else
+                f'Mẻ ấp chạy phiên mới ({me_ap.describe(info)}); {minutes} phút, {how}.')
+        alert = {'ts': now_ms(), 'loai': kind, 'muc': ALERT_LEVEL[kind], 'noi_dung': text,
+                 'phien': None, 'nhiet_c': None}
+        try:
+            self._post_alerts({f'{alert["ts"]}_{kind}': alert})
+        except CloudError:
+            pass
+        log(text)
 
     def running(self):
         return self.running_probe()
@@ -1311,14 +1438,14 @@ class Bridge:
             result = 'KHONG_HOP_LE'
         else:
             day = int(day)
-            try:
-                if self.lich_path.exists():
+            if not self.state.get('me_chay') or not self.lich_path.exists():
+                result = 'TU_CHOI: chỉ đổi ngày được khi mẻ ấp đang chạy'
+            else:
+                try:
                     me_ap.set_day(day, self.lich_path, nguon=f'app:{requester}')
-                else:
-                    me_ap.start_batch(self.lich_path, ngay=day, nguon=f'app:{requester}')
-                result = 'DA_DOI'
-            except me_ap.LichError as exc:
-                result = f'LOI: {exc}'[:120]
+                    result = 'DA_DOI'
+                except me_ap.LichError as exc:
+                    result = f'LOI: {exc}'[:120]
         self.state['ngay_handled_ts'] = ts
         self._save_state()
         reply = {'ngay': command.get('ngay'), 'ts': ts, 'by': self._pi_email(), 'yeu_cau_boi': requester,

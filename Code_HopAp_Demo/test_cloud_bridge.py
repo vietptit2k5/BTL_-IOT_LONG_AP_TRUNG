@@ -330,6 +330,8 @@ class TestBaGiaiDoan(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             bridge, store, lich = self.make_bridge(tmp)
             me_ap.start_batch(lich, ngay=3)
+            bridge.state['me_chay'] = True  # đổi ngày chỉ khi mẻ đang chạy
+            bridge.running_probe = lambda: [(1, 'python3 ap_trung.py --theo-me')]
             store.put('hop_ap_01/commands/ngay_ap', {'ngay': 12, 'ts': cb.now_ms(), 'by': 'a@b.c', 'da_xu_ly': False})
             bridge.cycle()
             self.assertEqual(me_ap.current(me_ap.load(lich))['ngay'], 12)
@@ -342,22 +344,30 @@ class TestBaGiaiDoan(unittest.TestCase):
             bridge.cycle()
             self.assertEqual(me_ap.current(me_ap.load(lich))['ngay'], 4)
 
-    def test_day_command_invalid_stale_and_creates_batch(self):
+    def test_day_command_invalid_stale_and_refused_without_running_batch(self):
         import me_ap
         with tempfile.TemporaryDirectory() as tmp:
             bridge, store, lich = self.make_bridge(tmp)
+            bridge.running_probe = lambda: [(1, 'python3 ap_trung.py --theo-me')]
             store.put('hop_ap_01/commands/ngay_ap', {'ngay': 30, 'ts': cb.now_ms(), 'by': 'a@b.c'})
             bridge.cycle()
             self.assertEqual(store.get('hop_ap_01/commands/ngay_ap')['ket_qua'], 'KHONG_HOP_LE')
-            self.assertFalse(lich.exists())
-            self.assertFalse(store.get('hop_ap_01/lich')['co_me'])
+            store.put('hop_ap_01/commands/ngay_ap', {'ngay': 8, 'ts': cb.now_ms(), 'by': 'a@b.c'})
+            bridge.cycle()
+            self.assertIn('chỉ đổi ngày được khi mẻ ấp đang chạy', store.get('hop_ap_01/commands/ngay_ap')['ket_qua'])
+            self.assertFalse(lich.exists())  # không còn tự tạo mẻ khi đổi ngày
+            me_ap.start_batch(lich, ngay=3)
+            store.put('hop_ap_01/commands/ngay_ap', {'ngay': 8, 'ts': cb.now_ms(), 'by': 'a@b.c'})
+            bridge.cycle()
+            self.assertIn('TU_CHOI', store.get('hop_ap_01/commands/ngay_ap')['ket_qua'])  # có mẻ nhưng đang tạm dừng
+            bridge.state['me_chay'] = True
+            bridge.state['ngay_handled_ts'] = 0  # như bridge vừa cài lại và thấy lệnh cũ còn trên Firebase
             store.put('hop_ap_01/commands/ngay_ap', {'ngay': 8, 'ts': cb.now_ms() - 3600_000 + 1, 'by': 'a@b.c'})
-            bridge.state['ngay_handled_ts'] = 0
             bridge.cycle()
             self.assertEqual(store.get('hop_ap_01/commands/ngay_ap')['ket_qua'], 'BO_QUA_LENH_CU')
             store.put('hop_ap_01/commands/ngay_ap', {'ngay': 8, 'ts': cb.now_ms(), 'by': 'a@b.c'})
             bridge.cycle()
-            self.assertEqual(me_ap.current(me_ap.load(lich))['ngay'], 8)  # chưa có mẻ: tạo mẻ ở ngày 8
+            self.assertEqual(me_ap.current(me_ap.load(lich))['ngay'], 8)
 
     def test_replay_never_touches_schedule(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -384,7 +394,8 @@ class TestLenhTuApp(unittest.TestCase):
         self.bridge = cb.Bridge(self.store, self.base, state_path=self.base / 's.json', lich_path=self.lich,
                                 do_am_path=self.base / 'do_am.json', tay_path=self.tay)
         self.launched = []
-        self.bridge.launcher = lambda base, ctrl, minutes, rh: self.launched.append((ctrl, minutes, rh)) or 'gia_lap'
+        self.bridge.launcher = lambda base, ctrl, minutes, rh, batch=False: \
+            self.launched.append((ctrl, minutes, rh, batch)) or 'gia_lap'
         self.bridge.running_probe = lambda: []
         self.bridge.box_temperature = lambda: 26.0
         from unittest import mock
@@ -412,22 +423,84 @@ class TestLenhTuApp(unittest.TestCase):
         self.assertIn('TAO_ME', self.alerts())
         self.assertEqual(self.send('me_ap', hanh_dong='tao', ngay=5, giay_moi_ngay=7)['ket_qua'], 'KHONG_HOP_LE')
 
-    def test_end_batch_refused_while_running_then_archived(self):
+    def test_end_batch_while_running_stops_then_archives(self):
         self.me_ap.start_batch(self.lich, ngay=3)
-        self.bridge.running_probe = lambda: [(123, 'python3 ap_trung.py')]
-        self.assertTrue(self.send('me_ap', hanh_dong='ket_thuc')['ket_qua'].startswith('TU_CHOI'))
-        self.assertTrue(self.lich.exists())
+        self.bridge.state['me_chay'] = True
+        self.bridge.running_probe = lambda: [(123, 'python3 ap_trung.py --theo-me')]
+        stops = []
+        self.bridge.execute_stop = lambda command: stops.append(command) or 'DA_GUI_SIGTERM_PID_123'
+        self.assertEqual(self.send('me_ap', hanh_dong='ket_thuc')['ket_qua'], 'DANG_KET_THUC')
+        self.assertEqual(len(stops), 1)
+        self.assertTrue(self.lich.exists())  # chờ chương trình thoát rồi mới lưu lịch
+        self.assertFalse(self.bridge.state['me_chay'])
         self.bridge.running_probe = lambda: []
-        self.assertEqual(self.send('me_ap', hanh_dong='ket_thuc')['ket_qua'], 'DA_KET_THUC')
+        self.bridge.cycle()
         self.assertFalse(self.lich.exists())
         self.assertEqual(len(list(self.base.glob('trang_thai_me_ap.ket_thuc_*.json'))), 1)  # lưu lại, không xóa
         self.assertFalse(self.store.get('hop_ap_01/lich')['co_me'])
+        self.assertEqual(self.launched, [])  # không chạy phiên mới sau khi kết thúc
+
+    def test_create_batch_runs_rl_and_chains_sessions(self):
+        reply = self.send('me_ap', hanh_dong='tao', ngay=12, giay_moi_ngay=60)
+        self.assertEqual(reply['ket_qua'], 'DA_TAO')
+        self.assertEqual(len(self.launched), 1)
+        ctrl, minutes, _, batch = self.launched[0]
+        self.assertEqual((ctrl, batch), ('rl', True))
+        self.assertEqual(minutes, 10)                 # còn 10 ngày demo × 1 phút (lịch demo đang dừng)
+        self.assertTrue(self.store.get('hop_ap_01/lich')['chay'])
+        self.assertIn('BAT_DAU_LUOT', self.alerts())
+        self.assertIn('đang có mẻ chạy', self.send('me_ap', hanh_dong='tao', ngay=1, giay_moi_ngay=60)['ket_qua'])
+        self.bridge.state['me_khoi_dong_ts'] -= 3600    # phiên trước chạy 1 giờ rồi kết thúc bình thường
+        self.bridge.cycle()
+        self.assertEqual(len(self.launched), 2)        # nối phiên, không cần ai bấm
+        self.assertEqual(self.bridge.state['me_loi'], 0)
+        self.assertIn('TIEP_TUC_ME', self.alerts())
+
+    def test_repeated_crashes_pause_batch_then_continue(self):
+        self.send('me_ap', hanh_dong='tao', ngay=5, giay_moi_ngay=86400)
+        self.assertEqual(self.launched[0][1], 1440)    # mẻ thật: mỗi phiên tối đa 1 ngày
+        for _ in range(3):
+            self.bridge.state['me_khoi_dong_ts'] -= 60  # phiên chết ngay sau 1 phút
+            self.bridge.cycle()
+        self.assertFalse(self.bridge.state['me_chay'])
+        self.assertIn('TAM_DUNG_ME', self.alerts())
+        self.assertIn('dừng 3 lần', self.store.get('hop_ap_01/lich')['ly_do_dung'])
+        n = len(self.launched)
+        self.bridge.state['me_khoi_dong_ts'] -= 3600
+        self.bridge.cycle()
+        self.assertEqual(len(self.launched), n)        # tạm dừng: không tự chạy nữa
+        self.assertEqual(self.send('me_ap', hanh_dong='tiep_tuc')['ket_qua'], 'DA_TIEP_TUC')
+        self.assertEqual(len(self.launched), n + 1)
+
+    def test_emergency_stop_pauses_batch_and_sensor_needed(self):
+        self.bridge.box_temperature = lambda: None
+        self.assertIn('DS18B20', self.send('me_ap', hanh_dong='tao', ngay=5, giay_moi_ngay=120)['ket_qua'])
+        self.bridge.box_temperature = lambda: 36.0     # bỏ yêu cầu hộp ≤ 30 °C: tạo mẻ khi hộp đang ấm
+        self.assertEqual(self.send('me_ap', hanh_dong='tao', ngay=5, giay_moi_ngay=120)['ket_qua'], 'DA_TAO')
+        self.bridge.running_probe = lambda: [(9, 'python3 ap_trung.py --theo-me')]
+        self.bridge.execute_stop = lambda command: 'DA_GUI_SIGTERM_PID_9'
+        self.store.put('hop_ap_01/commands/stop', {'value': True, 'ts': cb.now_ms(), 'by': 'a@b.c'})
+        self.bridge.cycle()
+        self.assertFalse(self.bridge.state['me_chay'])
+        self.assertIn('Dừng khẩn cấp', self.store.get('hop_ap_01/lich')['ly_do_dung'])
+
+    def test_end_of_schedule_stops_heating(self):
+        import me_ap
+        me_ap.start_batch(self.lich, ngay=21, giay_moi_ngay=60, paused=False, now=time.time() - 120)
+        self.bridge.state.update(me_chay=True, me_khoi_dong_ts=time.time() - 3600)
+        self.bridge.running_probe = lambda: [(9, 'python3 ap_trung.py --theo-me')]
+        stops = []
+        self.bridge.execute_stop = lambda command: stops.append(1) or 'DA_GUI_SIGTERM_PID_9'
+        self.bridge.cycle()
+        self.assertEqual(stops, [1])
+        self.assertFalse(self.bridge.state['me_chay'])
+        self.assertIn('HET_ME', self.alerts())
 
     def test_start_run_happy_path_once(self):
         self.me_ap.start_batch(self.lich, ngay=5)
         reply = self.send('luot', hanh_dong='bat_dau', bo_dieu_khien='rl', phut=30, co_nguoi=True)
         self.assertEqual(reply['ket_qua'], 'DA_BAT_DAU (gia_lap)')
-        self.assertEqual(self.launched, [('rl', 30, False)])
+        self.assertEqual(self.launched, [('rl', 30, False, False)])
         self.assertIn('BAT_DAU_LUOT', self.alerts())
         self.bridge.cycle()
         self.assertEqual(len(self.launched), 1)  # mỗi lệnh chỉ chạy một lần

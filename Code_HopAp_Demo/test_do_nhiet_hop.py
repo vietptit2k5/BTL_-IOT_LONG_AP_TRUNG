@@ -395,6 +395,22 @@ class ArgumentTests(unittest.TestCase):
                 app.main(args, control_policy=lambda now, reading: None, max_session_seconds=7201)
             outputs.assert_not_called()
 
+    def test_incubation_session_up_to_one_day_only_for_auto_policy(self):
+        args = ['giu', '--bong', '0', '--quat', '100', '--giay', '87305', '--dry-run']  # 1 ngày + làm ấm 900 s
+        policy = lambda now, reading: None
+        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()), \
+             patch.object(app, 'Outputs') as outputs:
+            with self.assertRaises(SystemExit):   # không có cờ ấp theo mẻ: vẫn giới hạn 7200 s
+                app.main(args, control_policy=policy, max_session_seconds=app.MAX_SURVEY_SECONDS)
+            with self.assertRaises(SystemExit):   # ấp theo mẻ phải có bộ điều khiển tự động
+                app.main(args, max_session_seconds=app.MAX_INCUBATION_SECONDS, incubation=True)
+            self.assertEqual(app.main(args, control_policy=policy, max_session_seconds=app.MAX_INCUBATION_SECONDS,
+                                      incubation=True), 0)
+            with self.assertRaises(SystemExit):
+                app.main(args, control_policy=policy, max_session_seconds=app.MAX_INCUBATION_SECONDS + 1,
+                         incubation=True)
+            outputs.assert_not_called()
+
     def test_invalid_values_rejected_before_hardware(self):
         for args in (['giu', '--bong', 'nan', '--quat', '100'],
                      ['giu', '--bong', '25', '--quat', '0'],

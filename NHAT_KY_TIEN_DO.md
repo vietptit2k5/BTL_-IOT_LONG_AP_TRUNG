@@ -159,3 +159,15 @@
 - `suc_khoe.py`: bridge đọc mỗi 30 s, chỉ đọc. Gồm: nhiệt CPU; cờ sụt áp / giảm xung (`vcgencmd get_throttled`); Wi-Fi dBm, IP; % RAM; dung lượng thẻ nhớ còn trống; uptime, tải CPU. Bridge thêm vào: % đọc tốt của DS18B20 trong lượt (Engine đếm từng số đo), trạng thái Telegram, phiên bản và thời gian chạy của bridge. Gửi lên `suc_khoe` (chỉ Pi ghi).
 - App: thẻ "Thiết bị" ở Tổng quan, chấm màu theo ngưỡng (CPU 70 / 80 °C; Wi-Fi −60 / −70 / −80 dBm; DS18B20 99 / 95 %; DHT11 70 / 40 %; thẻ nhớ 3 / 1 GB). Lịch sử: nút ⤓ tải CSV mẫu 5 s của từng lượt (UTF-8 có BOM để Excel đọc đúng tiếng Việt).
 - Test: 240 Python, 22 app; DOM giả lập (cả tài khoản chỉ xem) và ảnh chụp Edge headless. Kiểm thử phần cứng: T17, T18.
+
+## Tạo mẻ là chạy, bỏ lượt chạy và thermostat khỏi app (22/11, bridge 1.7, app v16)
+
+- Theo yêu cầu của nhóm: giống máy ấp thật, luôn có người giám sát. Bỏ các bước thủ tục: xác nhận có người, hộp ≤ 30 °C khi bắt đầu, giới hạn 2 giờ mỗi lượt. Giữ nguyên mọi bảo vệ tự động (38,3 / 38,8 °C, mất cảm biến, KSD301, cầu chì).
+- Bridge giữ trạng thái `me_chay` (lưu bền):
+  - tạo mẻ là chạy `ap_trung.py --theo-me` (RL), mỗi phiên tối đa 1 ngày (`do_nhiet_hop` có giới hạn riêng `MAX_INCUBATION_SECONDS` = 26 giờ, chỉ cho bộ điều khiển tự động);
+  - hết phiên thì nối phiên, Pi khởi động lại thì chạy tiếp, đủ 21 ngày thì dừng sưởi (HET_ME);
+  - lỗi 3 lần liên tiếp trong 10 phút thì tạm dừng mẻ (TAM_DUNG_ME);
+  - Dừng khẩn cấp thì tạm dừng mẻ; thêm lệnh `tiep_tuc`; kết thúc mẻ khi đang chạy thì dừng rồi lưu lịch.
+- Đổi ngày chỉ nhận khi mẻ đang chạy; không còn tự tạo mẻ.
+- App v16: Điều khiển có 1 Mẻ ấp, 2 Đổi ngày (tách riêng, khóa khi mẻ không chạy), 3 Chỉnh tay, 4 Thử nhiễu; bỏ thẻ Lượt chạy và lựa chọn thermostat. Thermostat vẫn chạy được bằng dòng lệnh trên Pi.
+- Test: 246 Python, 23 app; DOM giả lập với mẻ đang chạy và mẻ tạm dừng.
